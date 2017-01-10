@@ -23,7 +23,26 @@ public class Profil {
     private double endSchedule;
 
     public Profil(int id, String name, String type, int distance, String atmosphere, int startBudget, int endBudget, String payment, int places, int waitingTime, boolean terrace, boolean airConditionner, String days, double startSchedule, double endSchedule) {
+        super();
         this.id = id;
+        this.name = name;
+        this.type = type;
+        this.distance = distance;
+        this.atmosphere = atmosphere;
+        this.startBudget = startBudget;
+        this.endBudget = endBudget;
+        this.payment = payment;
+        this.places = places;
+        this.waitingTime = waitingTime;
+        this.terrace = terrace;
+        this.airConditionner = airConditionner;
+        this.days = days;
+        this.startSchedule = startSchedule;
+        this.endSchedule = endSchedule;
+    }
+
+    public Profil(String name, String type, int distance, String atmosphere, int startBudget, int endBudget, String payment, int places, int waitingTime, boolean terrace, boolean airConditionner, String days, double startSchedule, double endSchedule) {
+        super();
         this.name = name;
         this.type = type;
         this.distance = distance;

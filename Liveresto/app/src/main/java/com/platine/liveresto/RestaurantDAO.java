@@ -2,7 +2,10 @@ package com.platine.liveresto;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
 
 /**
  * Created by Nathanael on 04/01/2017.
@@ -37,15 +40,15 @@ public class RestaurantDAO {
     private static final String airConditionner="AirConditionner";
 
     //DatabaseHandler
-    private RestaurantDb restaurantDb = null;
+    private LiveRestoDb liveRestoDb = null;
 
     public RestaurantDAO(Context context){
-        this.restaurantDb = new RestaurantDb(context,DATABASE_NAME,DATABASE_VERSION);
+        this.liveRestoDb = new LiveRestoDb(context,DATABASE_NAME,DATABASE_VERSION);
     }
 
     //Add restaurant in Database
     public long putRestaurant(Restaurant restaurant) {
-        SQLiteDatabase db = this.restaurantDb.getWritableDatabase();
+        SQLiteDatabase db = this.liveRestoDb.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(name, restaurant.getName());
         values.put(adress,restaurant.getAdress());
@@ -66,8 +69,47 @@ public class RestaurantDAO {
         values.put(terrace,restaurant.isTerrace());
         values.put(airConditionner,restaurant.isAirConditionner());
         long retour = db.insert(TABLE_NAME,null,values);
-        restaurantDb.close();
+        liveRestoDb.close();
         return retour;
+    }
+
+    //Get restaurant's list
+    public ArrayList<Restaurant> getRestaurants(){
+        ArrayList<Restaurant> restaurants = new ArrayList<>();
+
+        SQLiteDatabase db = this.liveRestoDb.getReadableDatabase();
+        String[] fields = {
+                id,
+                name,
+                adress,
+                phoneNumber,
+                website,
+                picture,
+                longitude,
+                latitude,
+                favorite,
+                historic,
+                type,
+                atmosphere,
+                startBudget,
+                endBudget,
+                payment,
+                places,
+                waitingTime,
+                terrace,
+                airConditionner
+        };
+
+        Cursor cursor = db.query(TABLE_NAME,fields,null,null,null,null,null);
+        cursor.moveToFirst();
+
+        while(!cursor.isAfterLast()){
+            restaurants.add(new Restaurant(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getDouble(6),cursor.getDouble(7),(cursor.getInt(8)==1)?true:false,(cursor.getInt(9)==1)?true:false,cursor.getString(10),cursor.getString(11),cursor.getInt(12),cursor.getInt(13),cursor.getString(14),cursor.getInt(15),cursor.getInt(16),(cursor.getInt(17)==1)?true:false,(cursor.getInt(18)==1)?true:false));
+            cursor.moveToNext();
+        }
+
+        liveRestoDb.close();
+        return restaurants;
     }
 
 }
