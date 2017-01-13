@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.platine.liveresto.R;
@@ -44,16 +45,16 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
         TextView header = new TextView(this);
         header.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         header.setTextColor(Color.parseColor("#000000"));
-        header.setText("This is the header");
+        header.setText("Type de restaurant");
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == 0 ? 2 : 1;
+                return position == 0 ? 3 : 1;
             }
         });
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
         private View headerView;
         private int datasetSize;
 
+
         public class HeaderViewHolder extends RecyclerView.ViewHolder {
             public HeaderViewHolder(View v) {
                 super(v);
@@ -103,11 +105,11 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            public TextView textView;
+            public View textView;
 
-            public ViewHolder(TextView v) {
-                super(v);
-                textView = v;
+            public ViewHolder(View itemView) {
+                super(itemView);
+                textView = itemView;
             }
         }
 
@@ -132,10 +134,13 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             if (viewType == VIEW_HEADER) {
+                headerView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
+
+
                 return new HeaderViewHolder(headerView);
 
             } else {
-                TextView textView = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_element, parent, false);
+                View textView = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_element, parent, false);
                 return new ViewHolder(textView);
             }
         }
@@ -146,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
             if (position == 0) return;
 
             ViewHolder holder = (ViewHolder) viewHolder;
-            holder.textView.setText("Position " + (position - 1));
+            //holder.textView.setText("Position " + (position - 1));
 
         }
     }
