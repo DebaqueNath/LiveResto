@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 
 import com.platine.liveresto.R;
 import com.platine.liveresto.adapter.Adapter;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     private static final String EXTRA_ATTR = "EXTRA_ATTR";
 
     private RecyclerView recView;
+
     private Adapter adapter;
     private ArrayList listData;
 
@@ -26,6 +28,10 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        setTitle("Filtres");
 
         listData = (ArrayList) Data.getListData();
 
