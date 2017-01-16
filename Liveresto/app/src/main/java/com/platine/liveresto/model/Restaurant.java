@@ -1,4 +1,4 @@
-package com.platine.liveresto;
+package com.platine.liveresto.model;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

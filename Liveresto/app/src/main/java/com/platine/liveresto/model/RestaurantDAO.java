@@ -1,9 +1,12 @@
-package com.platine.liveresto;
+package com.platine.liveresto.model;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.platine.liveresto.model.LiveRestoDb;
+import com.platine.liveresto.model.Restaurant;
 
 import java.util.ArrayList;
 

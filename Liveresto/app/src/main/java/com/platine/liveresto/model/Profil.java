@@ -1,4 +1,4 @@
-package com.platine.liveresto;
+package com.platine.liveresto.model;
 
 /**
  * Created by Nathanael on 04/01/2017.
