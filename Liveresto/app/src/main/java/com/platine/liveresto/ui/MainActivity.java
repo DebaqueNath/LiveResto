@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
             }
         });
         recyclerView.setLayoutManager(gridLayoutManager);
-
+        //drawableRight sur button
         ElementsAdapter elementsAdapter = new ElementsAdapter(5);
         elementsAdapter.setHeader(header);
 
