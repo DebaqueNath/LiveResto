@@ -10,7 +10,6 @@ public class Filtre {
 
     //------- List of filters
     private double distanceMax;
-
     private ArrayList<String> days;
     private double hourBegin;
     private double hourEnd;

@@ -39,6 +39,11 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
 
         //fixtures();
 
+
+        Intent i = new Intent(this, RestaurantActivity.class);
+        startActivity(i);
+
+
         //TEST requête BDD par rapport aux filtres
        /* RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
 
@@ -180,8 +185,8 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
     public void fixtures() {
         //Restaurant
         RestaurantDAO restaurantDao = new RestaurantDAO(getApplicationContext());
-        Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "/img/r1.png", 3.121059, 50.616862, false, false, "Fast-Food", "Musical", 2, 11, "cartebancaire,especes,cheque", 10, 10, true, true);
-        Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "/img/r2.png", 3.071162, 50.636491, false, false, "Fast-Food", "Jeune", 2, 12, "cartebancaire,especes,cheque,ticketsrestaurant", 5, 15, false, true);
+        Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.121059, 50.616862, false, false, "Fast-Food", "Musical", 2, 11, "cartebancaire,especes,cheque", 10, 10, true, true);
+        Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.071162, 50.636491, false, false, "Fast-Food", "Jeune", 2, 12, "cartebancaire,especes,cheque,ticketsrestaurant", 5, 15, false, true);
         //Add restaurant
         restaurantDao.putRestaurant(r1);
         restaurantDao.putRestaurant(r2);
@@ -191,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
         Horaire h1 = new Horaire(1,"LU 08.30 14.30");
         Horaire h2 = new Horaire(1,"LU 19.30 22.30");
         Horaire h3 = new Horaire(2,"MA 08.30 14.30");
-        Horaire h4 = new Horaire(2,"MA 19.30 22.30");
+        Horaire h4 = new Horaire(2,"MA 17.30 19.30");
         //Add schedule
         horaireDao.putHoraire(h1);
         horaireDao.putHoraire(h2);
