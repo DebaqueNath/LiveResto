@@ -239,4 +239,30 @@ public class Restaurant {
     public void setShedule(ArrayList<Horaire> shedule) {
         this.shedule = shedule;
     }
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", adress='" + adress + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", website='" + website + '\'' +
+                ", picture='" + picture + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", favorite=" + favorite +
+                ", historic=" + historic +
+                ", type='" + type + '\'' +
+                ", atmosphere='" + atmosphere + '\'' +
+                ", startBudget=" + startBudget +
+                ", endBudget=" + endBudget +
+                ", payment='" + payment + '\'' +
+                ", places=" + places +
+                ", waitingTime=" + waitingTime +
+                ", terrace=" + terrace +
+                ", airConditionner=" + airConditionner +
+                ", shedule=" + shedule +
+                '}';
+    }
 }

@@ -53,11 +53,19 @@ public class Horaire {
     }
 
     public double getBeginHour(){
-
         return Double.parseDouble(this.schedule.substring(3,8));
     }
 
     public double getEndHour(){
         return Double.parseDouble(this.schedule.substring(9,14));
+    }
+
+    @Override
+    public String toString() {
+        return "Horaire{" +
+                "id=" + id +
+                ", idRestaurant=" + idRestaurant +
+                ", schedule='" + schedule + '\'' +
+                '}';
     }
 }

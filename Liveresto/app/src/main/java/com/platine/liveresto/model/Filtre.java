@@ -169,9 +169,10 @@ public class Filtre {
                 String day = h.getDay();
                 double begin = h.getBeginHour();
                 double end = h.getEndHour();
-                if(days.contains(day)){
-                    if((begin >= this.hourBegin && begin <= this.hourEnd)||(end >= this.hourBegin && end <= this.hourEnd)||(begin < this.hourBegin && end > this.hourEnd)){
+                if(days.contains(day) || days.isEmpty()){
+                    if((begin >= this.hourBegin && begin < this.hourEnd)||(end > this.hourBegin && end <= this.hourEnd)||(begin < this.hourBegin && end > this.hourEnd) || (this.hourBegin==0.0 && this.hourEnd==0.0)){
                         flag = true;
+                        break;
                     }
                 }
             }
@@ -182,14 +183,15 @@ public class Filtre {
             String[] split = type.split(",");
             flag = false;
             for (String s : split) {
-                if(getType().contains(s)){
+                if(getType().contains(s) || getType().isEmpty()){
                     flag = true;
+                    break;
                 }
             }
             if(!flag){continue;}
 
             //Budget
-            if((r.getStartBudget() >= this.startBudget && r.getStartBudget() <= this.endBudget)||(r.getEndBudget() >= this.startBudget && r.getEndBudget() <= this.endBudget)||(r.getStartBudget() < this.startBudget && r.getEndBudget() > this.endBudget)){
+            if((r.getStartBudget() >= this.startBudget && r.getStartBudget() < this.endBudget)||(r.getEndBudget() > this.startBudget && r.getEndBudget() <= this.endBudget)||(r.getStartBudget() < this.startBudget && r.getEndBudget() > this.endBudget) || (this.startBudget==0 && this.endBudget==0)){
                 //OKAY
             } else {
                 continue;
@@ -200,8 +202,9 @@ public class Filtre {
             String[] split2 = payment.split(",");
             flag = false;
             for (String s : split2) {
-                if(getPayment().contains(s)){
+                if(getPayment().contains(s) || getPayment().isEmpty()){
                     flag = true;
+                    break;
                 }
             }
             if(!flag){continue;}
@@ -211,21 +214,26 @@ public class Filtre {
             String[] split3 = atmosphere.split(",");
             flag = false;
             for (String s : split3) {
-                if(getAtmosphere().contains(s)){
+                if(getAtmosphere().contains(s) || getAtmosphere().isEmpty()){
                     flag = true;
+                    break;
                 }
             }
             if(!flag){continue;}
 
             //Places
-            if(r.getPlaces() < this.places) {
-                continue;
+            if(this.places != 0) {
+                if (r.getPlaces() < this.places) {
+                    continue;
+                }
             }
 
 
             //WaitingTime
-            if(r.getWaitingTime() > this.waitingTime){
-                continue;
+            if(this.waitingTime != 0) {
+                if (r.getWaitingTime() > this.waitingTime) {
+                    continue;
+                }
             }
 
             //Terrace

@@ -42,8 +42,11 @@ public class RestaurantDAO {
     //DatabaseHandler
     private LiveRestoDb liveRestoDb = null;
 
+    private Context context;
+
     public RestaurantDAO(Context context){
         this.liveRestoDb = new LiveRestoDb(context,DATABASE_NAME,DATABASE_VERSION);
+        this.context = context;
     }
 
     //Add restaurant in Database
@@ -104,7 +107,12 @@ public class RestaurantDAO {
         cursor.moveToFirst();
 
         while(!cursor.isAfterLast()){
-            restaurants.add(new Restaurant(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getDouble(6),cursor.getDouble(7),(cursor.getInt(8)==1)?true:false,(cursor.getInt(9)==1)?true:false,cursor.getString(10),cursor.getString(11),cursor.getInt(12),cursor.getInt(13),cursor.getString(14),cursor.getInt(15),cursor.getInt(16),(cursor.getInt(17)==1)?true:false,(cursor.getInt(18)==1)?true:false));
+            //Add schedule to restaurant
+            HoraireDAO horaireDao = new HoraireDAO(this.context);
+            Restaurant r = new Restaurant(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getDouble(6),cursor.getDouble(7),(cursor.getInt(8)==1)?true:false,(cursor.getInt(9)==1)?true:false,cursor.getString(10),cursor.getString(11),cursor.getInt(12),cursor.getInt(13),cursor.getString(14),cursor.getInt(15),cursor.getInt(16),(cursor.getInt(17)==1)?true:false,(cursor.getInt(18)==1)?true:false);
+            r.setShedule(horaireDao.getSchedule(r));
+            restaurants.add(r);
+
             cursor.moveToNext();
         }
 
