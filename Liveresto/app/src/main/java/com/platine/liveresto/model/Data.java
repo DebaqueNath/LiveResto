@@ -10,9 +10,20 @@ import java.util.List;
  */
 
 public class Data {
-    private static final String[] titles  = {"Budget", "Place(s)", "Type de restaurant"} ;
+    //private static final String[] titles  = {"Budget", "Place(s)", "Type de restaurant"} ;
+    public String name;
+    public int imageId;
 
-    public static List<Item> getListData() {
+    public Data(String name){
+        this.name = name;
+    }
+
+    public Data(String name, int imgId){
+        this.name = name;
+        this.imageId = imgId;
+    }
+
+    /*public static List<Item> getListData() {
         List<Item> data = new ArrayList<>();
 
         Item item_budget = new Item();
@@ -31,5 +42,5 @@ public class Data {
         data.add(item_type);
 
         return data;
-    }
+    }*/
 }
