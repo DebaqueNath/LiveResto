@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by --- on 03/01/2017.
  */
-
+/*
 public class Adapter extends RecyclerView.Adapter<Adapter.Holder>{
     private List<Item> listData;
     private LayoutInflater inflater;
@@ -58,7 +58,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder>{
 
     class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
-        ImageView icon_down;
         View container;
 
         public Holder(View itemView) {
@@ -79,4 +78,4 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder>{
             }
         }
     }
-}
+}*/
