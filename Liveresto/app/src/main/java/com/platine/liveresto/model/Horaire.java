@@ -47,4 +47,17 @@ public class Horaire {
     public void setSchedule(String schedule) {
         this.schedule = schedule;
     }
+
+    public String getDay(){
+        return this.schedule.substring(0,2);
+    }
+
+    public double getBeginHour(){
+
+        return Double.parseDouble(this.schedule.substring(3,8));
+    }
+
+    public double getEndHour(){
+        return Double.parseDouble(this.schedule.substring(9,14));
+    }
 }

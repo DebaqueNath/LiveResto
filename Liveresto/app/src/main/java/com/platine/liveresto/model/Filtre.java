@@ -1,6 +1,8 @@
 package com.platine.liveresto.model;
 
 
+import java.util.ArrayList;
+
 /**
  * Created by Nath on 17/01/2017.
  */
@@ -8,24 +10,21 @@ public class Filtre {
 
     //------- List of filters
     private double distanceMax;
-    //exemple : LU,MA,JE
-    private String days;
+
+    private ArrayList<String> days;
     private double hourBegin;
     private double hourEnd;
-    //exemple : pizzeria,halal,bio
-    private String type;
+    private ArrayList<String> type;
     private int startBudget;
     private int endBudget;
-    //exemple : espece,cheque
-    private String payment;
-    //exemple : musical,chic,spectacle
-    private String atmosphere;
+    private ArrayList<String> payment;
+    private ArrayList<String> atmosphere;
     private int places;
     private int waitingTime;
     private boolean terrace;
     private boolean airConditionner;
 
-    public Filtre(double distanceMax, String days, double hourBegin, double hourEnd, String type, int startBudget, int endBudget, String payment, String atmosphere, int places, int waitingTime, boolean terrace, boolean airConditionner) {
+    public Filtre(double distanceMax, ArrayList<String> days, double hourBegin, double hourEnd, ArrayList<String> type, int startBudget, int endBudget, ArrayList<String> payment, ArrayList<String> atmosphere, int places, int waitingTime, boolean terrace, boolean airConditionner) {
         this.distanceMax = distanceMax;
         this.days = days;
         this.hourBegin = hourBegin;
@@ -49,11 +48,11 @@ public class Filtre {
         this.distanceMax = distanceMax;
     }
 
-    public String getDays() {
+    public ArrayList<String> getDays() {
         return days;
     }
 
-    public void setDays(String days) {
+    public void setDays(ArrayList<String> days) {
         this.days = days;
     }
 
@@ -73,11 +72,11 @@ public class Filtre {
         this.hourEnd = hourEnd;
     }
 
-    public String getType() {
+    public ArrayList<String> getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ArrayList<String> type) {
         this.type = type;
     }
 
@@ -97,19 +96,19 @@ public class Filtre {
         this.endBudget = endBudget;
     }
 
-    public String getPayment() {
+    public ArrayList<String> getPayment() {
         return payment;
     }
 
-    public void setPayment(String payment) {
+    public void setPayment(ArrayList<String> payment) {
         this.payment = payment;
     }
 
-    public String getAtmosphere() {
+    public ArrayList<String> getAtmosphere() {
         return atmosphere;
     }
 
-    public void setAtmosphere(String atmosphere) {
+    public void setAtmosphere(ArrayList<String> atmosphere) {
         this.atmosphere = atmosphere;
     }
 
@@ -143,5 +142,106 @@ public class Filtre {
 
     public void setAirConditionner(boolean airConditionner) {
         this.airConditionner = airConditionner;
+    }
+
+    //Get restaurant with filter
+    public ArrayList<Restaurant> getRestaurantsFilter(ArrayList<Restaurant> restaurants){
+        ArrayList<Restaurant> restaurantsResult = new ArrayList<>();
+
+        for (Restaurant r : restaurants) {
+            /*Calcul de la distance du restaurant par rapport à la position de l'utilisateur
+            getPosX de l'user
+            getPosY de l'user
+            ....
+            x user + distanceMax > latitude du restaurant
+            y user + distanceMax > longitude du restaurant
+
+            Pour calculer la distance entre 2 coordonnées
+            https://developers.google.com/maps/documentation/distance-matrix/intro?hl=fr
+
+            Si distance < distanceMax, on garde le restaurant
+            */
+
+            //Horaires du restaurant
+            ArrayList<Horaire> schedule = r.getShedule();
+            boolean flag = false;
+            for (Horaire h : schedule) {
+                String day = h.getDay();
+                double begin = h.getBeginHour();
+                double end = h.getEndHour();
+                if(days.contains(day)){
+                    if((begin >= this.hourBegin && begin <= this.hourEnd)||(end >= this.hourBegin && end <= this.hourEnd)||(begin < this.hourBegin && end > this.hourEnd)){
+                        flag = true;
+                    }
+                }
+            }
+            if(!flag){continue;}
+
+            //Type du restaurant
+            String type = r.getType();
+            String[] split = type.split(",");
+            flag = false;
+            for (String s : split) {
+                if(getType().contains(s)){
+                    flag = true;
+                }
+            }
+            if(!flag){continue;}
+
+            //Budget
+            if((r.getStartBudget() >= this.startBudget && r.getStartBudget() <= this.endBudget)||(r.getEndBudget() >= this.startBudget && r.getEndBudget() <= this.endBudget)||(r.getStartBudget() < this.startBudget && r.getEndBudget() > this.endBudget)){
+                //OKAY
+            } else {
+                continue;
+            }
+
+            //Payment
+            String payment = r.getPayment();
+            String[] split2 = payment.split(",");
+            flag = false;
+            for (String s : split2) {
+                if(getPayment().contains(s)){
+                    flag = true;
+                }
+            }
+            if(!flag){continue;}
+
+            //Atmosphere
+            String atmosphere = r.getAtmosphere();
+            String[] split3 = atmosphere.split(",");
+            flag = false;
+            for (String s : split3) {
+                if(getAtmosphere().contains(s)){
+                    flag = true;
+                }
+            }
+            if(!flag){continue;}
+
+            //Places
+            if(r.getPlaces() < this.places) {
+                continue;
+            }
+
+
+            //WaitingTime
+            if(r.getWaitingTime() > this.waitingTime){
+                continue;
+            }
+
+            //Terrace
+            if(this.terrace && !r.isTerrace()){
+                continue;
+            }
+
+            //AirConditionner
+            if(this.airConditionner && !r.isAirConditionner()){
+                continue;
+            }
+
+            //Si on arrive ici, le restaurant correspond aux filtres
+            restaurantsResult.add(r);
+        }
+
+        return restaurantsResult;
     }
 }

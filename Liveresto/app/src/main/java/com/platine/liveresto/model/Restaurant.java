@@ -1,8 +1,6 @@
 package com.platine.liveresto.model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Nathanael on 04/01/2017.
@@ -30,6 +28,8 @@ public class Restaurant {
     private int waitingTime;
     private boolean terrace;
     private boolean airConditionner;
+    //liste des horaires du restaurant
+    private ArrayList<Horaire> shedule;
 
 
     public Restaurant(int id, String name, String adress, String phoneNumber, String website, String picture, double longitude, double latitude, boolean favorite, boolean historic, String type, String atmosphere, int startBudget, int endBudget, String payment, int places, int waitingTime, boolean terrace, boolean airConditionner) {
@@ -230,5 +230,13 @@ public class Restaurant {
 
     public void setAirConditionner(boolean airConditionner) {
         this.airConditionner = airConditionner;
+    }
+
+    public ArrayList<Horaire> getShedule() {
+        return shedule;
+    }
+
+    public void setShedule(ArrayList<Horaire> shedule) {
+        this.shedule = shedule;
     }
 }

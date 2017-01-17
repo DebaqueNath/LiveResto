@@ -37,19 +37,10 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //fixtures();
+        fixtures();
 
-        //TEST AFFICHAGE LISTE DES RESTAURANTS A FAIRE ICI
-        RestaurantDAO restaurantDao = new RestaurantDAO(getApplicationContext());
-        ArrayList<Restaurant> liste = restaurantDao.getRestaurants();
 
-        HoraireDAO horaireDao = new HoraireDAO(getApplicationContext());
-        ArrayList<Horaire> liste2 = horaireDao.getSchedule(liste.get(0));
-        ArrayList<Horaire> liste3 = horaireDao.getSchedule(liste.get(1));
 
-        System.out.println("Liste des restaurants :"+ liste.toString());
-        System.out.println("Horaires du restaurant 1 : "+liste2.toString());
-        System.out.println("Horaires du restaurant 2 : "+liste3.toString());
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -183,9 +174,9 @@ public class MainActivity extends AppCompatActivity implements Adapter.ItemClick
 
         //Schedule
         HoraireDAO horaireDao = new HoraireDAO(getApplicationContext());
-        Horaire h1 = new Horaire(1,"LU 8,30 14,30");
+        Horaire h1 = new Horaire(1,"LU 08,30 14,30");
         Horaire h2 = new Horaire(1,"LU 19,30 22,30");
-        Horaire h3 = new Horaire(2,"MA 8,30 14,30");
+        Horaire h3 = new Horaire(2,"MA 08,30 14,30");
         Horaire h4 = new Horaire(2,"MA 19,30 22,30");
         //Add schedule
         horaireDao.putHoraire(h1);
