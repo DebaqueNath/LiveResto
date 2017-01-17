@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.platine.liveresto.ui.RestaurantActivity">
+
+    <android.support.v7.widget.Toolbar android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/background_actionbar"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:textColor="@android:color/background_light">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/back_arrow"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="left"
+            android:src="@drawable/ic_action_arrow_left"
+            android:clickable="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/toolbar_title"
+            android:textColor="@color/background_recyclerview"
+            android:textSize="30dp"/>
+
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ImageView
+        android:id="@+id/image_restaurant"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:scaleType="fitXY"
+        android:layout_below="@+id/my_toolbar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/type_resto"
+        android:layout_below="@+id/image_restaurant"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:textSize="25dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/distance_resto"
+        android:layout_below="@+id/image_restaurant"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:textSize="15dp"
+        android:layout_marginTop="5dp"/>
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/img_avis_1"
+        android:layout_below="@+id/type_resto"
+        android:src="@drawable/ic_action_star_10"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin2" />
+
+    <ImageView
+    android:layout_width="25dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/img_avis_2"
+    android:src="@drawable/ic_action_star_10"
+    android:layout_alignTop="@+id/img_avis_1"
+    android:layout_toRightOf="@+id/img_avis_1"
+    android:layout_toEndOf="@+id/img_avis_1" />
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/img_avis_3"
+        android:src="@drawable/ic_action_star_10"
+        android:layout_alignTop="@+id/img_avis_2"
+        android:layout_toRightOf="@+id/img_avis_2"
+        android:layout_toEndOf="@+id/img_avis_2" />
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/img_avis_4"
+        android:src="@drawable/ic_action_star_10"
+        android:layout_alignTop="@+id/img_avis_3"
+        android:layout_toRightOf="@+id/img_avis_3"
+        android:layout_toEndOf="@+id/img_avis_3" />
+
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/img_avis_5"
+        android:src="@drawable/ic_action_star_0"
+        android:layout_alignTop="@+id/img_avis_4"
+        android:layout_toRightOf="@+id/img_avis_4"
+        android:layout_toEndOf="@+id/img_avis_4" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/avis"
+        android:text="117 avis"
+        android:layout_alignBottom="@+id/img_avis_5"
+        android:layout_toRightOf="@+id/img_avis_5"
+        android:layout_toEndOf="@+id/img_avis_5"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Ouvert"
+        android:id="@+id/ouvert_resto"
+        android:layout_below="@+id/img_avis_1"
+        android:layout_alignLeft="@+id/type_resto"
+        android:layout_alignStart="@+id/type_resto"
+        android:textSize="15dp"
+        android:textColor="@android:color/holo_green_dark"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/ouvert_resto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/view"
+        android:layout_marginTop="5dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/horaire_logo"
+        android:layout_below="@+id/view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_action_clock"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin2"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="dimanche"
+        android:id="@+id/dimancheLabel"
+        android:layout_alignTop="@+id/horaire_logo"
+        android:layout_toRightOf="@+id/ouvert_resto"
+        android:layout_toEndOf="@+id/ouvert_resto"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Fermé"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/dimanche"
+        android:layout_alignTop="@+id/dimancheLabel"
+        android:layout_toRightOf="@+id/internet_site"
+        android:layout_toEndOf="@+id/internet_site" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="lundi"
+        android:id="@+id/lundiLabel"
+        android:layout_below="@+id/dimancheLabel"
+        android:layout_alignLeft="@+id/dimancheLabel"
+        android:layout_alignStart="@+id/dimancheLabel"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Fermé"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/lundi"
+        android:layout_alignTop="@+id/lundiLabel"
+        android:layout_alignLeft="@+id/dimanche"
+        android:layout_alignStart="@+id/dimanche" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="mardi"
+        android:id="@+id/mardiLabel"
+        android:layout_below="@+id/lundiLabel"
+        android:layout_alignLeft="@+id/lundiLabel"
+        android:layout_alignStart="@+id/lundiLabel"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Fermé"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/mardi"
+        android:layout_alignTop="@+id/mardiLabel"
+        android:layout_alignLeft="@+id/lundi"
+        android:layout_alignStart="@+id/lundi" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/mercrediLabel"
+        android:text="mercredi"
+        android:layout_below="@+id/mardiLabel"
+        android:layout_alignLeft="@+id/mardiLabel"
+        android:layout_alignStart="@+id/mardiLabel"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Fermé"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/mercredi"
+        android:layout_alignTop="@+id/mercrediLabel"
+        android:layout_alignLeft="@+id/mardi"
+        android:layout_alignStart="@+id/mardi" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/jeudiLabel"
+        android:text="jeudi"
+        android:layout_below="@+id/mercrediLabel"
+        android:layout_alignLeft="@+id/mercrediLabel"
+        android:layout_alignStart="@+id/mercrediLabel"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Fermé"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/jeudi"
+        android:layout_alignTop="@+id/jeudiLabel"
+        android:layout_alignLeft="@+id/mercredi"
+        android:layout_alignStart="@+id/mercredi" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/vendrediLabel"
+        android:text="vendredi"
+        android:layout_below="@+id/jeudiLabel"
+        android:layout_alignLeft="@+id/jeudiLabel"
+        android:layout_alignStart="@+id/jeudiLabel"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Fermé"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/vendredi"
+        android:layout_alignTop="@+id/vendrediLabel"
+        android:layout_alignLeft="@+id/jeudi"
+        android:layout_alignStart="@+id/jeudi" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/samediLabel"
+        android:text="samedi"
+        android:layout_below="@+id/vendrediLabel"
+        android:layout_alignLeft="@+id/vendrediLabel"
+        android:layout_alignStart="@+id/vendrediLabel"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Fermé"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/samedi"
+        android:layout_alignTop="@+id/samediLabel"
+        android:layout_alignLeft="@+id/vendredi"
+        android:layout_alignStart="@+id/vendredi" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/adresse_img"
+        android:src="@drawable/ic_action_location"
+        android:layout_below="@+id/samediLabel"
+        android:layout_marginLeft="11dp"
+        android:layout_marginTop="6dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="4 Rue du Maréchal de Rantzau, 59193 Erquinghem-Lys"
+        android:id="@+id/adresse_resto"
+        android:layout_below="@+id/samediLabel"
+        android:layout_alignLeft="@+id/samediLabel"
+        android:layout_alignStart="@+id/samediLabel"
+        android:layout_marginTop="11dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/internet_resto"
+        android:layout_below="@+id/adresse_img"
+        android:layout_marginLeft="11dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_action_globe"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="pizzabelart.fr"
+        android:id="@+id/internet_site"
+        android:layout_alignTop="@+id/internet_resto"
+        android:layout_toRightOf="@+id/ouvert_resto"
+        android:layout_toEndOf="@+id/ouvert_resto"
+        android:layout_marginTop="7dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/phone_resto"
+        android:layout_below="@+id/internet_resto"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="11dp"
+        android:src="@drawable/ic_action_phone_start" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="03 20 03 33 58"
+        android:id="@+id/phone_text"
+        android:layout_alignTop="@+id/phone_resto"
+        android:layout_toRightOf="@+id/ouvert_resto"
+        android:layout_toEndOf="@+id/ouvert_resto"
+        android:layout_marginTop="8dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/phone_resto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/view2"
+        android:layout_marginTop="5dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/itineraire_img"
+        android:layout_below="@+id/view2"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="11dp"
+        android:src="@drawable/ic_action_location_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Obtenir un itinéraire"
+        android:id="@+id/itineraire_text"
+        android:layout_alignTop="@+id/itineraire_img"
+        android:layout_alignLeft="@+id/phone_text"
+        android:layout_alignStart="@+id/phone_text"
+        android:layout_marginTop="6dp"
+        android:textStyle="bold"/>
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/fleche_itineraire"
+        android:src="@drawable/ic_action_arrow_right"
+        android:layout_alignTop="@+id/itineraire_img"
+        android:layout_toLeftOf="@+id/distance_resto"
+        android:layout_toStartOf="@+id/distance_resto" />
+
+
+</RelativeLayout>
