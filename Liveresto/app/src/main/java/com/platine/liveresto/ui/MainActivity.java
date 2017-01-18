@@ -1,5 +1,6 @@
 package com.platine.liveresto.ui;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -221,14 +222,6 @@ public class MainActivity extends AppCompatActivity  {
         recyclerViewOther.setLayoutManager(gridLayoutManagerOther);
         recyclerViewOther.setAdapter(new ElementsAdapter(otherList));
         recyclerViewOther.setVisibility(View.GONE);
-        recyclerViewOther.addOnItemTouchListener(
-                new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        view.setBackgroundResource(R.drawable.card_border);
-                    }
-                })
-        );
     }
 
     /**
@@ -357,16 +350,30 @@ public class MainActivity extends AppCompatActivity  {
         private static final int VIEW_NORMAL = 1;
         private List<Data> contactList;
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
             protected TextView vName;
             protected ImageView vImage;
             public View textView;
+            public boolean isSelected;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 textView = itemView;
                 vName =  (TextView) itemView.findViewById(R.id.title);
+                itemView.setOnClickListener(this);
                 vImage =  (ImageView) itemView.findViewById(R.id.image);
+                isSelected = false;
+            }
+
+            @Override
+            public void onClick(View view) {
+                if(!this.isSelected){
+                    view.setBackgroundResource(R.drawable.card_border);
+                    this.isSelected = true;
+                }else{
+                    view.setBackgroundColor(Color.WHITE);
+                    this.isSelected = false;
+                }
             }
         }
 
@@ -391,7 +398,6 @@ public class MainActivity extends AppCompatActivity  {
             Data ci = contactList.get(position);
             viewHolder.vName.setText(ci.name);
             viewHolder.vImage.setImageResource(ci.imageId);
-            //if (position == 0) return;
         }
 
         @Override
