@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background_recyclerview"
     android:orientation="vertical"
-    tools:context="com.platine.liveresto.ui.MainActivity"
+    tools:context="com.platine.liveresto.ui.FiltreActivity"
     android:scrollbars="vertical">
 
 

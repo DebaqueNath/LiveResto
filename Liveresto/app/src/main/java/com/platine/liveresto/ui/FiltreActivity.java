@@ -23,7 +23,7 @@ import com.platine.liveresto.model.RestaurantDAO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity  {
+public class FiltreActivity extends AppCompatActivity  {
     private Button buttonDistance;
     private Button buttonSchedule;
     private Button buttonType;
@@ -58,10 +58,10 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_filtre);
 
         // ******************** DB  ********************
-        //fixtures();
+        fixtures();
 
         backArrowFilter = (ImageView) findViewById(R.id.back_arrow_filter);
         backArrowFilter.setOnClickListener(new View.OnClickListener() {

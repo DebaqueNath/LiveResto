@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".ui.DetailActivity"></activity>
         <activity android:name=".ui.RestaurantActivity"></activity>
+        <activity android:name=".ui.FiltreActivity"></activity>
     </application>
 
 </manifest>
