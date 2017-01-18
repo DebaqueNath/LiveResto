@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity  {
     private List<Data> waitingTimeList;
     private List<Data> otherList;
     private ImageView backArrowFilter;
+    private TextView title_toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
         // ******************** DB  ********************
-        fixtures();
+        //fixtures();
 
         backArrowFilter = (ImageView) findViewById(R.id.back_arrow_filter);
         backArrowFilter.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +103,11 @@ public class MainActivity extends AppCompatActivity  {
      *
      */
     public void initToolbar(){
-        myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar = (Toolbar) findViewById(R.id.toolbar_filter);
         setSupportActionBar(myToolbar);
-        setTitle("Filtres");
+        setTitle("");
+        this.title_toolbar = (TextView) findViewById(R.id.toolbar_title_filter);
+        this.title_toolbar.setText("Filtres");
     }
 
     /**

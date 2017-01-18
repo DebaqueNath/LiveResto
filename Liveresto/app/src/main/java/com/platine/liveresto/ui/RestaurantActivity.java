@@ -32,7 +32,7 @@ public class RestaurantActivity extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant);
 
         //Init views
-        this.title = (TextView) findViewById(R.id.toolbar_title);
+        this.title = (TextView) findViewById(R.id.toolbar_title_resto);
         this.imgResto = (ImageView) findViewById(R.id.image_restaurant);
         this.type = (TextView) findViewById(R.id.type_resto);
         this.distance = (TextView) findViewById(R.id.distance_resto);
@@ -186,7 +186,7 @@ public class RestaurantActivity extends AppCompatActivity {
         }
 
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar_resto);
         setSupportActionBar(myToolbar);
         setTitle("");
 

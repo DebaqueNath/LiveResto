@@ -29,6 +29,14 @@
             android:src="@drawable/ic_action_arrow_left"
             android:clickable="true"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/toolbar_title_filter"
+            android:textColor="@color/background_recyclerview"
+            android:textSize="30dp"/>
+
 
     </android.support.v7.widget.Toolbar>
 
