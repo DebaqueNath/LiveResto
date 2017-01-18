@@ -15,18 +15,18 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/country_photo"
+            android:id="@+id/image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/bio"
             android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/country_name"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:text="test"
+            android:text="title"
             android:gravity="center"
             android:paddingTop="8dp"
             android:layout_alignParentBottom="true" />
