@@ -61,7 +61,7 @@ public class FiltreActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_filtre);
 
         // ******************** DB  ********************
-        fixtures();
+        //fixtures();
 
         backArrowFilter = (ImageView) findViewById(R.id.back_arrow_filter);
         backArrowFilter.setOnClickListener(new View.OnClickListener() {
