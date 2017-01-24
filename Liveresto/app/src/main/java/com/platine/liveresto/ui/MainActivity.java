@@ -16,6 +16,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.platine.liveresto.R;
+import com.platine.liveresto.model.Horaire;
+import com.platine.liveresto.model.HoraireDAO;
+import com.platine.liveresto.model.Restaurant;
+import com.platine.liveresto.model.RestaurantDAO;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -26,6 +30,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // ******************** DB  ********************
+        fixtures();
+
+        //TEST requête BDD par rapport aux filtres
+       /* RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
+
+        ArrayList<String> days = new ArrayList<>();
+        ArrayList<String> type = new ArrayList<>();
+        ArrayList<String> payment = new ArrayList<>();
+        ArrayList<String> atmosphere = new ArrayList<>();
+        Filtre filtreTest = new Filtre(20,days,0.0, 0.0, type, 0, 0, payment, atmosphere, 0, 10, false, false);
+
+        ArrayList<Restaurant> liste = filtreTest.getRestaurantsFilter(rdao.getRestaurants());
+
+        for (Restaurant r : liste) {
+            System.out.println("RESTAURANT");
+            System.out.println(r);
+        }*/
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -71,5 +95,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+
+    /**
+     * Add restaurant to database
+     */
+    public void fixtures() {
+
+        // Restaurant
+        RestaurantDAO restaurantDao = new RestaurantDAO(getApplicationContext());
+
+        //Si la base est vide on la remplit
+        if(restaurantDao.getRestaurants().isEmpty()) {
+            Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.121059, 50.616862, false, false, "Fast-Food", "Musical", 2, 11, "cartebancaire,especes,cheque", 10, 10, true, true);
+            Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.071162, 50.636491, false, false, "Fast-Food", "Jeune", 2, 12, "cartebancaire,especes,cheque,ticketsrestaurant", 5, 15, false, true);
+            //Add restaurant
+            restaurantDao.putRestaurant(r1);
+            restaurantDao.putRestaurant(r2);
+
+            // Schedule
+            HoraireDAO horaireDao = new HoraireDAO(getApplicationContext());
+
+            Horaire h1 = new Horaire(1, "LU 08.30 14.30");
+            Horaire h2 = new Horaire(1, "LU 19.30 22.30");
+            Horaire h3 = new Horaire(2, "MA 08.30 14.30");
+            Horaire h4 = new Horaire(2, "MA 17.30 19.30");
+            //Add schedule
+
+            horaireDao.putHoraire(h1);
+            horaireDao.putHoraire(h2);
+            horaireDao.putHoraire(h3);
+            horaireDao.putHoraire(h4);
+        }
     }
 }
