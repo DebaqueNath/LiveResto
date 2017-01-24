@@ -16,6 +16,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.platine.liveresto.R;
+import com.platine.liveresto.model.Restaurant;
+import com.platine.liveresto.model.RestaurantDAO;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -67,9 +71,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+        ArrayList<Restaurant> allRestos = restosDAO.getRestaurants();
+
+        LatLng firstRestaurantPosition = new LatLng(allRestos.get(0).getLatitude(), allRestos.get(0).getLongitude());
+        mMap.addMarker(new MarkerOptions().position(firstRestaurantPosition).title(allRestos.get(0).getName()));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(firstRestaurantPosition));
+        allRestos.remove(0);
+
+        for(Restaurant resto : allRestos) {
+            LatLng position = new LatLng(resto.getLatitude(), resto.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(position).title(resto.getName()));
+        }
     }
 }
