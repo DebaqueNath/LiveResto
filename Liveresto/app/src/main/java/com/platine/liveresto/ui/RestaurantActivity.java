@@ -49,9 +49,10 @@ public class RestaurantActivity extends AppCompatActivity {
         this.phoneNum = (TextView) findViewById(R.id.phone_text);
 
 
-        //TEST AVEC UN RESTAURANT
+        //----------- TEST AVEC UN RESTAURANT EN DUR -------------------
         RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
-        Restaurant r  = rdao.getRestaurants().get(1);
+        Restaurant r  = rdao.getRestaurants().get(0);
+        //--------------------------------------------------------------
 
         String name = r.getName();
         String adress = r.getAdress();
