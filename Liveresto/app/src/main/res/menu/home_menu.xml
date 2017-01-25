@@ -4,5 +4,6 @@
     <item
         android:id="@+id/filtres"
         app:showAsAction="ifRoom"
-        android:title="Filtres"/>
+        android:title="Filtres"
+        android:textColor="@color/background_recyclerview"/>
 </menu>

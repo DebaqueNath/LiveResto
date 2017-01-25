@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitle("");
         setSupportActionBar(myToolbar);
     }
 
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         LatLng firstRestaurantPosition = new LatLng(allRestos.get(0).getLatitude(), allRestos.get(0).getLongitude());
         mMap.addMarker(new MarkerOptions().position(firstRestaurantPosition).title(allRestos.get(0).getName()));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(firstRestaurantPosition));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstRestaurantPosition,(float) 8));
         allRestos.remove(0);
 
         for(Restaurant resto : allRestos) {
