@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,16 @@ import android.widget.TextView;
 
 import com.platine.liveresto.R;
 import com.platine.liveresto.model.Data;
+import com.platine.liveresto.model.Filtre;
+import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FiltreActivity extends AppCompatActivity  {
+import static com.platine.liveresto.ui.MainActivity.filterGlobal;
+
+public class FiltreActivity extends AppCompatActivity {
     private Button buttonDistance;
     private Button buttonSchedule;
     private Button buttonType;
@@ -40,7 +46,6 @@ public class FiltreActivity extends AppCompatActivity  {
     private RecyclerView recyclerViewNumber;
     private RecyclerView recyclerViewOther;
     private Toolbar myToolbar;
-    private List<Data> distanceList;
     private List<Data> scheduleList;
     private List<Data> typeList;
     private List<Data> budgetList;
@@ -51,12 +56,20 @@ public class FiltreActivity extends AppCompatActivity  {
     private List<Data> otherList;
     private ImageView backArrowFilter;
     private TextView title_toolbar;
+    private RangeSeekBar rangeSeekBarDistance;
+    private RangeSeekBar rangeSeekBarSchedule;
+    private RangeSeekBar rangeSeekBarPlaces;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filtre);
 
+        /*
+        //On récupère l'intent et les données
+        Intent i = getIntent();
+        filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter",0.0),i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
+*/
 
         backArrowFilter = (ImageView) findViewById(R.id.back_arrow_filter);
         backArrowFilter.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +90,25 @@ public class FiltreActivity extends AppCompatActivity  {
         addListenerOnButton();
     }
 
+    protected void onStop() {
+        super.onStop();
+        /*Intent i = getIntent();
+        i.putExtra("distanceFilter", filterGlobal.getDistanceMax());
+        i.putExtra("daysFilter", filterGlobal.getDays());
+        i.putExtra("hourBeginFilter", filterGlobal.getHourBegin());
+        i.putExtra("hourEndFilter", filterGlobal.getHourEnd());
+        i.putExtra("typeFilter", filterGlobal.getType());
+        i.putExtra("startBudgetFilter", filterGlobal.getStartBudget());
+        i.putExtra("endBudgetFilter", filterGlobal.getEndBudget());
+        i.putExtra("paymentFilter", filterGlobal.getPayment());
+        i.putExtra("atmosphereFilter", filterGlobal.getAtmosphere());
+        i.putExtra("placesFilter", filterGlobal.getPlaces());
+        i.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
+        i.putExtra("terraceFilter", filterGlobal.isTerrace());
+        i.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
+        setResult(RESULT_OK, i);*/
+    }
+
     /**
      *
      */
@@ -92,30 +124,25 @@ public class FiltreActivity extends AppCompatActivity  {
      *
      */
     public void initFilters(){
-        distanceList = new ArrayList<>();
-        distanceList.add(new Data("<1km"));
-        distanceList.add(new Data("<5km"));
-        distanceList.add(new Data("<10km"));
-
         scheduleList = new ArrayList<>();
-        scheduleList.add(new Data("L"));
-        scheduleList.add(new Data("M"));
-        scheduleList.add(new Data("M"));
-        scheduleList.add(new Data("J"));
-        scheduleList.add(new Data("V"));
-        scheduleList.add(new Data("S"));
-        scheduleList.add(new Data("D"));
+        scheduleList.add(new Data("Lundi",R.drawable.icon_monday));
+        scheduleList.add(new Data("Mardi",R.drawable.icon_tuesday));
+        scheduleList.add(new Data("Mercredi", R.drawable.icon_wednesday));
+        scheduleList.add(new Data("Jeudi",R.drawable.icon_thursday));
+        scheduleList.add(new Data("Vendredi",R.drawable.icon_friday));
+        scheduleList.add(new Data("Samedi",R.drawable.icon_saturday));
+        scheduleList.add(new Data("Dimanche",R.drawable.icon_sunday));
 
         typeList = new ArrayList<>();
         typeList.add(new Data("Pizzeria", R.drawable.pizzeria));
-        typeList.add(new Data("halal", R.drawable.halal));
+        typeList.add(new Data("Halal", R.drawable.halal));
         typeList.add(new Data("Brasserie", R.drawable.brasserie));
         typeList.add(new Data("Végétarien", R.drawable.vegetarien));
         typeList.add(new Data("Gastronomique", R.drawable.gastronomique));
         typeList.add(new Data("Bio", R.drawable.bio));
-        typeList.add(new Data("Fast food", R.drawable.fastfood));
+        typeList.add(new Data("Fast-food", R.drawable.fastfood));
         typeList.add(new Data("Casher", R.drawable.casher));
-        typeList.add(new Data("italien", R.drawable.italien));
+        typeList.add(new Data("Italien", R.drawable.italien));
         typeList.add(new Data("Chinois", R.drawable.chinois));
 
         budgetList = new ArrayList<>();
@@ -155,12 +182,33 @@ public class FiltreActivity extends AppCompatActivity  {
      *
      */
     public void initRecyclerView(){
-        recyclerViewDistance = (RecyclerView) findViewById(R.id.recycler_view_distance);
-        recyclerViewDistance.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
-        recyclerViewDistance.setLayoutManager(gridLayoutManager);
-        recyclerViewDistance.setAdapter(new ElementsAdapter(distanceList));
-        recyclerViewDistance.setVisibility(View.GONE);
+        //On initialise tous les éléments
+        rangeSeekBarDistance = (RangeSeekBar) findViewById(R.id.rangeseekbardistance);
+        rangeSeekBarDistance.setLabel("km");
+        rangeSeekBarDistance.setRangeValues(0,50);
+        rangeSeekBarDistance.setSelectedMaxValue(0);
+        rangeSeekBarDistance.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Number minValue, Number maxValue) {
+                filterGlobal.setDistanceMax(Double.parseDouble(maxValue.toString()));
+            }
+        });
+        rangeSeekBarDistance.setVisibility(View.GONE);
+
+        rangeSeekBarSchedule = (RangeSeekBar) findViewById(R.id.rangeseekbarschedule);
+        rangeSeekBarSchedule.setLabel("h");
+        rangeSeekBarSchedule.setRangeValues(0,24);
+        rangeSeekBarSchedule.setSelectedMinValue(0);
+        rangeSeekBarSchedule.setSelectedMaxValue(24);
+        rangeSeekBarSchedule.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Number minValue, Number maxValue) {
+                filterGlobal.setHourBegin(Double.parseDouble(minValue.toString()));
+                filterGlobal.setHourEnd(Double.parseDouble(maxValue.toString()));
+            }
+        });
+        rangeSeekBarSchedule.setVisibility(View.GONE);
+
 
         recyclerViewSchedule = (RecyclerView) findViewById(R.id.recycler_view_schedule);
         recyclerViewSchedule.setHasFixedSize(true);
@@ -197,12 +245,17 @@ public class FiltreActivity extends AppCompatActivity  {
         recyclerViewAtmosphere.setAdapter(new ElementsAdapter(atmosphereList));
         recyclerViewAtmosphere.setVisibility(View.GONE);
 
-        recyclerViewNumber = (RecyclerView) findViewById(R.id.recycler_view_number);
-        recyclerViewNumber.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerNumber = new GridLayoutManager(this, 3);
-        recyclerViewNumber.setLayoutManager(gridLayoutManagerNumber);
-        recyclerViewNumber.setAdapter(new ElementsAdapter(numberList));
-        recyclerViewNumber.setVisibility(View.GONE);
+        rangeSeekBarPlaces= (RangeSeekBar) findViewById(R.id.rangeseekbarplaces);
+        rangeSeekBarPlaces.setLabel(" personnes");
+        rangeSeekBarPlaces.setRangeValues(0,10);
+        rangeSeekBarPlaces.setSelectedMaxValue(0);
+        rangeSeekBarPlaces.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Number minValue, Number maxValue) {
+                System.out.println("VALEUR   MAX : "+maxValue);
+            }
+        });
+        rangeSeekBarPlaces.setVisibility(View.GONE);
 
         recyclerViewWaitingTime = (RecyclerView) findViewById(R.id.recycler_view_waitingtime);
         recyclerViewWaitingTime.setHasFixedSize(true);
@@ -228,10 +281,10 @@ public class FiltreActivity extends AppCompatActivity  {
 
             @Override
             public void onClick(View arg0) {
-                if(recyclerViewDistance.getVisibility() == View.GONE){
-                    recyclerViewDistance.setVisibility(View.VISIBLE);
+                if(rangeSeekBarDistance.getVisibility() == View.GONE){
+                    rangeSeekBarDistance.setVisibility(View.VISIBLE);
                 }else{
-                    recyclerViewDistance.setVisibility(View.GONE);
+                    rangeSeekBarDistance.setVisibility(View.GONE);
                 }
             }
         });
@@ -241,10 +294,15 @@ public class FiltreActivity extends AppCompatActivity  {
 
             @Override
             public void onClick(View arg0) {
-                if(recyclerViewSchedule.getVisibility() == View.GONE){
+                if(recyclerViewSchedule.getVisibility() == View.GONE ){
                     recyclerViewSchedule.setVisibility(View.VISIBLE);
                 }else{
                     recyclerViewSchedule.setVisibility(View.GONE);
+                }
+                if(rangeSeekBarSchedule.getVisibility() == View.GONE){
+                    rangeSeekBarSchedule.setVisibility(View.VISIBLE);
+                }else{
+                    rangeSeekBarSchedule.setVisibility(View.GONE);
                 }
             }
         });
@@ -306,10 +364,10 @@ public class FiltreActivity extends AppCompatActivity  {
 
             @Override
             public void onClick(View arg0) {
-                if(recyclerViewNumber.getVisibility() == View.GONE){
-                    recyclerViewNumber.setVisibility(View.VISIBLE);
+                if(rangeSeekBarPlaces.getVisibility() == View.GONE){
+                    rangeSeekBarPlaces.setVisibility(View.VISIBLE);
                 }else{
-                    recyclerViewNumber.setVisibility(View.GONE);
+                    rangeSeekBarPlaces.setVisibility(View.GONE);
                 }
             }
         });

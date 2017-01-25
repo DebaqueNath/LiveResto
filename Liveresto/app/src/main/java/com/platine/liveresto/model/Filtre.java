@@ -39,6 +39,10 @@ public class Filtre {
         this.airConditionner = airConditionner;
     }
 
+    public Filtre(){
+
+    }
+
     public double getDistanceMax() {
         return distanceMax;
     }

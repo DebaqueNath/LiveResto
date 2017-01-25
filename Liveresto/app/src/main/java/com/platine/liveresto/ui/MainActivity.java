@@ -22,13 +22,14 @@ import com.platine.liveresto.model.Horaire;
 import com.platine.liveresto.model.HoraireDAO;
 import com.platine.liveresto.model.Restaurant;
 import com.platine.liveresto.model.RestaurantDAO;
+import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     //Objet filtre global correspondant aux filtres courant
-    Filtre filterGlobal;
+    public static Filtre filterGlobal;
     SharedPreferences sharedPrefs;
     public static final String PREFS_FILTER = "FilterPrefs";
     public static final int FILTRESCODE = 42;
@@ -66,8 +67,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         for (String s : split) {
             atmosphere.add(s);
         }
-        this.filterGlobal = new Filtre(sharedPrefs.getFloat("distance",(float)50.0),days,sharedPrefs.getFloat("hourBegin",(float)0.0),sharedPrefs.getFloat("hourEnd",(float)0.0),type,sharedPrefs.getInt("startBudget",0),sharedPrefs.getInt("endBudget",0),payment,atmosphere,sharedPrefs.getInt("places",0),sharedPrefs.getInt("waitingTime",0),sharedPrefs.getBoolean("terrace",false),sharedPrefs.getBoolean("airConditionner",false));
+        filterGlobal = new Filtre(sharedPrefs.getFloat("distance",(float)0.0),days,sharedPrefs.getFloat("hourBegin",(float)0.0),sharedPrefs.getFloat("hourEnd",(float)0.0),type,sharedPrefs.getInt("startBudget",0),sharedPrefs.getInt("endBudget",0),payment,atmosphere,sharedPrefs.getInt("places",0),sharedPrefs.getInt("waitingTime",0),sharedPrefs.getBoolean("terrace",false),sharedPrefs.getBoolean("airConditionner",false));
 
+        System.out.println("AFFICHAGE DES FILTRES : "+ filterGlobal);
 
         // ******************** DB  ********************
         fixtures();
@@ -155,7 +157,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()) {
             case R.id.filtres:
                 Intent filtres = new Intent(context, FiltreActivity.class);
-                startActivityForResult(filtres, FILTRESCODE);
+                /*filtres.putExtra("distanceFilter", filterGlobal.getDistanceMax());
+                filtres.putExtra("daysFilter", filterGlobal.getDays());
+                filtres.putExtra("hourBeginFilter", filterGlobal.getHourBegin());
+                filtres.putExtra("hourEndFilter", filterGlobal.getHourEnd());
+                filtres.putExtra("typeFilter", filterGlobal.getType());
+                filtres.putExtra("startBudgetFilter", filterGlobal.getStartBudget());
+                filtres.putExtra("endBudgetFilter", filterGlobal.getEndBudget());
+                filtres.putExtra("paymentFilter", filterGlobal.getPayment());
+                filtres.putExtra("atmosphereFilter", filterGlobal.getAtmosphere());
+                filtres.putExtra("placesFilter", filterGlobal.getPlaces());
+                filtres.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
+                filtres.putExtra("terraceFilter", filterGlobal.isTerrace());
+                filtres.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());*/
+                startActivity(filtres);
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
