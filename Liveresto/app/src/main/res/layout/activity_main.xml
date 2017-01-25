@@ -11,10 +11,22 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/background_actionbar"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:textColor="@android:color/background_light">
+
+        <TextView
+            android:text="LiveResto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/toolbar_title_filter"
+            android:textColor="@color/background_recyclerview"
+            android:textSize="30dp"/>
+
+    </android.support.v7.widget.Toolbar>
 
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,6 +37,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.platine.liveresto.HomeActivity" />
+
+
+
 
 </RelativeLayout>
 
