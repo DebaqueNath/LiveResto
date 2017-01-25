@@ -143,6 +143,25 @@ public class Filtre {
         this.airConditionner = airConditionner;
     }
 
+    @Override
+    public String toString() {
+        return "Filtre{" +
+                "distanceMax=" + distanceMax +
+                ", days=" + days +
+                ", hourBegin=" + hourBegin +
+                ", hourEnd=" + hourEnd +
+                ", type=" + type +
+                ", startBudget=" + startBudget +
+                ", endBudget=" + endBudget +
+                ", payment=" + payment +
+                ", atmosphere=" + atmosphere +
+                ", places=" + places +
+                ", waitingTime=" + waitingTime +
+                ", terrace=" + terrace +
+                ", airConditionner=" + airConditionner +
+                '}';
+    }
+
     //Get restaurant with filter
     public ArrayList<Restaurant> getRestaurantsFilter(ArrayList<Restaurant> restaurants){
         ArrayList<Restaurant> restaurantsResult = new ArrayList<>();
