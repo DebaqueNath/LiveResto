@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -124,7 +125,26 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
 
 
     private void updateFilter(){
+        //Distance
         rangeSeekBarDistance.setSelectedMaxValue(filterGlobal.getDistanceMax());
+
+        //Schedule
+        if(filterGlobal.getDays().contains("LU")){
+            recyclerViewSchedule.findViewHolderForAdapterPosition(0).itemView.setBackgroundResource(R.drawable.card_border);
+        } else if(filterGlobal.getDays().contains("MA")) {
+            recyclerViewSchedule.findViewHolderForAdapterPosition(1).itemView.setBackgroundResource(R.drawable.card_border);
+        } else if(filterGlobal.getDays().contains("ME")) {
+            recyclerViewSchedule.findViewHolderForAdapterPosition(2).itemView.setBackgroundResource(R.drawable.card_border);
+        } else if(filterGlobal.getDays().contains("JE")) {
+            recyclerViewSchedule.findViewHolderForAdapterPosition(3).itemView.setBackgroundResource(R.drawable.card_border);
+        } else if(filterGlobal.getDays().contains("VE")) {
+            recyclerViewSchedule.findViewHolderForAdapterPosition(4).itemView.setBackgroundResource(R.drawable.card_border);
+        } else if(filterGlobal.getDays().contains("SA")) {
+            recyclerViewSchedule.findViewHolderForAdapterPosition(5).itemView.setBackgroundResource(R.drawable.card_border);
+        } else if(filterGlobal.getDays().contains("DI")) {
+            recyclerViewSchedule.findViewHolderForAdapterPosition(6).itemView.setBackgroundResource(R.drawable.card_border);
+        }
+
 
     }
 
@@ -488,36 +508,42 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
                     if(!this.isSelected){
                         view.setBackgroundResource(R.drawable.card_border);
                         this.isSelected = true;
-                        if(vName.getText()=="Lundi"){
-                            filterGlobal.addDay("LU");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Mardi"){
-                            filterGlobal.addDay("MA");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Mercredi"){
-                            filterGlobal.addDay("ME");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Jeudi"){
-                            filterGlobal.addDay("JE");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Vendredi"){
-                            filterGlobal.addDay("VE");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Samedi"){
-                            filterGlobal.addDay("SA");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Dimanche"){
-                            filterGlobal.addDay("DI");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="TOUS"){
-                            filterGlobal.removeAllDay();
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
+                        Drawable viewColor = view.getBackground();
+                        if(viewColor instanceof GradientDrawable) {
+                            view.setBackgroundColor(Color.WHITE);
+                            this.isSelected = false;
+                        } else {
+                            if (vName.getText() == "Lundi") {
+                                filterGlobal.addDay("LU");
+                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
+                            } else if (vName.getText() == "Mardi") {
+                                filterGlobal.addDay("MA");
+                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
+                            } else if (vName.getText() == "Mercredi") {
+                                filterGlobal.addDay("ME");
+                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
+                            } else if (vName.getText() == "Jeudi") {
+                                filterGlobal.addDay("JE");
+                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
+                            } else if (vName.getText() == "Vendredi") {
+                                filterGlobal.addDay("VE");
+                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
+                            } else if (vName.getText() == "Samedi") {
+                                filterGlobal.addDay("SA");
+                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
+                            } else if (vName.getText() == "Dimanche") {
+                                filterGlobal.addDay("DI");
+                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
+                            } else if (vName.getText() == "TOUS") {
+                                filterGlobal.removeAllDay();
+                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
+                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
+                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
+                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
+                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
+                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
+                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
+                            }
                         }
                     }else{
                         Drawable viewColor = view.getBackground();
