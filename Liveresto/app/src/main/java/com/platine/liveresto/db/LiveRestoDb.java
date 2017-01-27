@@ -1,4 +1,4 @@
-package com.platine.liveresto.model;
+package com.platine.liveresto.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

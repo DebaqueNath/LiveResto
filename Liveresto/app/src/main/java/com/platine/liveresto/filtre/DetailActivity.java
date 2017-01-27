@@ -1,4 +1,4 @@
-package com.platine.liveresto.ui;
+package com.platine.liveresto.filtre;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

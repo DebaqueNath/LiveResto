@@ -1,4 +1,4 @@
-package com.platine.liveresto.ui;
+package com.platine.liveresto.filtre;
 
 
 import android.support.v7.widget.RecyclerView;

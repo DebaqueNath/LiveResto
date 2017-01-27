@@ -1,4 +1,4 @@
-package com.platine.liveresto.ui;
+package com.platine.liveresto.restaurant;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -11,10 +11,8 @@ import android.widget.TextView;
 import com.platine.liveresto.R;
 import com.platine.liveresto.model.Horaire;
 import com.platine.liveresto.model.Restaurant;
-import com.platine.liveresto.model.RestaurantDAO;
-import com.platine.liveresto.rangeseekbar.RangeSeekBar;
+import com.platine.liveresto.db.RestaurantDAO;
 
-import java.awt.font.NumericShaper;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

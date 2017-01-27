@@ -40,7 +40,6 @@ public class Filtre {
     }
 
     public Filtre(){
-
     }
 
     public double getDistanceMax() {
@@ -145,6 +144,54 @@ public class Filtre {
 
     public void setAirConditionner(boolean airConditionner) {
         this.airConditionner = airConditionner;
+    }
+
+    public void addDay(String day){
+        this.days.add(day);
+    }
+
+    public void removeDay(String day){
+        this.days.remove(day);
+    }
+
+    public void removeAllDay(){
+        this.days.clear();
+    }
+
+    public void addType(String type){
+        this.type.add(type);
+    }
+
+    public void removeType(String type){
+        this.type.remove(type);
+    }
+
+    public void removeAllType(){
+        this.type.clear();
+    }
+
+    public void addPayment(String p){
+        this.payment.add(p);
+    }
+
+    public void removePayment(String p){
+        this.payment.remove(p);
+    }
+
+    public void removeAllPayment(){
+        this.payment.clear();
+    }
+
+    public void addAtmosphere(String a){
+        this.atmosphere.add(a);
+    }
+
+    public void removeAtmosphere(String a){
+        this.atmosphere.remove(a);
+    }
+
+    public void removeAllAtmosphere(){
+        this.atmosphere.clear();
     }
 
     @Override

@@ -1,14 +1,15 @@
-package com.platine.liveresto.ui;
+package com.platine.liveresto.main;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,19 +18,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.platine.liveresto.R;
+import com.platine.liveresto.db.HoraireDAO;
+import com.platine.liveresto.db.RestaurantDAO;
+import com.platine.liveresto.filtre.FiltreActivity;
 import com.platine.liveresto.model.Filtre;
 import com.platine.liveresto.model.Horaire;
-import com.platine.liveresto.model.HoraireDAO;
 import com.platine.liveresto.model.Restaurant;
-import com.platine.liveresto.model.RestaurantDAO;
-import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     //Objet filtre global correspondant aux filtres courant
-    public static Filtre filterGlobal;
+    private Filtre filterGlobal;
     SharedPreferences sharedPrefs;
     public static final String PREFS_FILTER = "FilterPrefs";
     public static final int FILTRESCODE = 42;
@@ -145,6 +146,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         editor.commit();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FILTRESCODE) {
+            if (resultCode == RESULT_OK) {
+                Intent i = data;
+                filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter",0.0),i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
+                Toast.makeText(getApplicationContext(),filterGlobal.toString(),Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.home_menu, menu);
@@ -157,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()) {
             case R.id.filtres:
                 Intent filtres = new Intent(context, FiltreActivity.class);
-                /*filtres.putExtra("distanceFilter", filterGlobal.getDistanceMax());
+                filtres.putExtra("distanceFilter", filterGlobal.getDistanceMax());
                 filtres.putExtra("daysFilter", filterGlobal.getDays());
                 filtres.putExtra("hourBeginFilter", filterGlobal.getHourBegin());
                 filtres.putExtra("hourEndFilter", filterGlobal.getHourEnd());
@@ -169,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 filtres.putExtra("placesFilter", filterGlobal.getPlaces());
                 filtres.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
                 filtres.putExtra("terraceFilter", filterGlobal.isTerrace());
-                filtres.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());*/
-                startActivity(filtres);
+                filtres.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
+                startActivityForResult(filtres,FILTRESCODE);
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
@@ -215,8 +227,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //Si la base est vide on la remplit
         if(restaurantDao.getRestaurants().isEmpty()) {
-            Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.121059, 50.616862, false, false, "Fast-Food", "Musical", 2, 11, "cartebancaire,especes,cheque", 10, 10, true, true);
-            Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.071162, 50.636491, false, false, "Fast-Food", "Jeune", 2, 12, "cartebancaire,especes,cheque,ticketsrestaurant", 5, 15, false, true);
+            Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.121059, 50.616862, false, false, "fast-food", "musical", 2, 11, "cartebancaire,espece,cheque", 10, 10, true, true);
+            Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.071162, 50.636491, false, false, "fast-food", "jeune", 2, 12, "cartebancaire,espece,cheque,ticketrestaurant", 5, 15, false, true);
             //Add restaurant
             restaurantDao.putRestaurant(r1);
             restaurantDao.putRestaurant(r2);

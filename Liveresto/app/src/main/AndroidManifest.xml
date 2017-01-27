@@ -15,7 +15,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,9 +23,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.DetailActivity"></activity>
-        <activity android:name=".ui.RestaurantActivity"></activity>
-        <activity android:name=".ui.FiltreActivity"></activity>
+        <activity android:name=".filtre.DetailActivity"></activity>
+        <activity android:name=".restaurant.RestaurantActivity"></activity>
+        <activity android:name=".filtre.FiltreActivity"></activity>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
