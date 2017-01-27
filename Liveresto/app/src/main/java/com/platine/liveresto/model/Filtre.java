@@ -39,6 +39,10 @@ public class Filtre {
         this.airConditionner = airConditionner;
     }
 
+    public Filtre(){
+
+    }
+
     public double getDistanceMax() {
         return distanceMax;
     }
@@ -141,6 +145,25 @@ public class Filtre {
 
     public void setAirConditionner(boolean airConditionner) {
         this.airConditionner = airConditionner;
+    }
+
+    @Override
+    public String toString() {
+        return "Filtre{" +
+                "distanceMax=" + distanceMax +
+                ", days=" + days +
+                ", hourBegin=" + hourBegin +
+                ", hourEnd=" + hourEnd +
+                ", type=" + type +
+                ", startBudget=" + startBudget +
+                ", endBudget=" + endBudget +
+                ", payment=" + payment +
+                ", atmosphere=" + atmosphere +
+                ", places=" + places +
+                ", waitingTime=" + waitingTime +
+                ", terrace=" + terrace +
+                ", airConditionner=" + airConditionner +
+                '}';
     }
 
     //Get restaurant with filter

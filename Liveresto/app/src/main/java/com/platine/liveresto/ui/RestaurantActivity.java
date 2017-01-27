@@ -12,7 +12,9 @@ import com.platine.liveresto.R;
 import com.platine.liveresto.model.Horaire;
 import com.platine.liveresto.model.Restaurant;
 import com.platine.liveresto.model.RestaurantDAO;
+import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
+import java.awt.font.NumericShaper;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

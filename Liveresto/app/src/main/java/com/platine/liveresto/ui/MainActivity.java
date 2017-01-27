@@ -2,6 +2,7 @@ package com.platine.liveresto.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,15 +17,21 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.platine.liveresto.R;
+import com.platine.liveresto.model.Filtre;
 import com.platine.liveresto.model.Horaire;
 import com.platine.liveresto.model.HoraireDAO;
 import com.platine.liveresto.model.Restaurant;
 import com.platine.liveresto.model.RestaurantDAO;
+import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    //Objet filtre global correspondant aux filtres courant
+    public static Filtre filterGlobal;
+    SharedPreferences sharedPrefs;
+    public static final String PREFS_FILTER = "FilterPrefs";
     public static final int FILTRESCODE = 42;
     private GoogleMap mMap;
 
@@ -33,6 +40,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Récupération des SharedPreferences
+        this.sharedPrefs = getSharedPreferences(PREFS_FILTER, 0);
+        SharedPreferences.Editor editor = this.sharedPrefs.edit();
+        ArrayList<String> days = new ArrayList<>();
+        String tmp = this.sharedPrefs.getString("days","");
+        String[] split = tmp.split(" ");
+        for (String s : split) {
+            days.add(s);
+        }
+        ArrayList<String> type = new ArrayList<>();
+        tmp = this.sharedPrefs.getString("type","");
+        split = tmp.split(" ");
+        for (String s : split) {
+            type.add(s);
+        }
+        ArrayList<String> payment = new ArrayList<>();
+        tmp = this.sharedPrefs.getString("payment","");
+        split = tmp.split(" ");
+        for (String s : split) {
+            payment.add(s);
+        }
+        ArrayList<String> atmosphere = new ArrayList<>();
+        tmp = this.sharedPrefs.getString("atmosphere","");
+        split = tmp.split(" ");
+        for (String s : split) {
+            atmosphere.add(s);
+        }
+        filterGlobal = new Filtre(sharedPrefs.getFloat("distance",(float)0.0),days,sharedPrefs.getFloat("hourBegin",(float)0.0),sharedPrefs.getFloat("hourEnd",(float)0.0),type,sharedPrefs.getInt("startBudget",0),sharedPrefs.getInt("endBudget",0),payment,atmosphere,sharedPrefs.getInt("places",0),sharedPrefs.getInt("waitingTime",0),sharedPrefs.getBoolean("terrace",false),sharedPrefs.getBoolean("airConditionner",false));
+
+        System.out.println("AFFICHAGE DES FILTRES : "+ filterGlobal);
 
         // ******************** DB  ********************
         fixtures();
@@ -61,6 +98,53 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(myToolbar);
     }
 
+
+    protected void onStop(){
+        super.onStop();
+
+        //Sauvegarde des sharedPreferences
+        SharedPreferences.Editor editor = this.sharedPrefs.edit();
+        float distance = (float)this.filterGlobal.getDistanceMax();
+        String days="";
+        for (String d: this.filterGlobal.getDays()) {
+            days+=d+" ";
+        }
+        float hourBegin = (float)this.filterGlobal.getHourBegin();
+        float hourEnd = (float) this.filterGlobal.getHourEnd();
+        String type="";
+        for (String d: this.filterGlobal.getType()) {
+            type+=d+" ";
+        }
+        int startBudget = this.filterGlobal.getStartBudget();
+        int endBudget = this.filterGlobal.getEndBudget();
+        String payment="";
+        for (String d: this.filterGlobal.getPayment()) {
+            payment+=d+" ";
+        }
+        String atmosphere="";
+        for (String d: this.filterGlobal.getAtmosphere()) {
+            atmosphere+=d+" ";
+        }
+        int places = this.filterGlobal.getPlaces();
+        int waitingTime = this.filterGlobal.getWaitingTime();
+        boolean terrace = this.filterGlobal.isTerrace();
+        boolean airConditionner = this.filterGlobal.isAirConditionner();
+        editor.putFloat("distance",distance);
+        editor.putString("days",days);
+        editor.putFloat("hourBegin",hourBegin);
+        editor.putFloat("hourEnd",hourEnd);
+        editor.putString("type",type);
+        editor.putInt("startBudget",startBudget);
+        editor.putInt("endBudget",endBudget);
+        editor.putString("payment",payment);
+        editor.putString("atmosphere",atmosphere);
+        editor.putInt("places",places);
+        editor.putInt("waitingTime",waitingTime);
+        editor.putBoolean("terrace",terrace);
+        editor.putBoolean("airConditionner",airConditionner);
+        editor.commit();
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.home_menu, menu);
@@ -73,7 +157,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()) {
             case R.id.filtres:
                 Intent filtres = new Intent(context, FiltreActivity.class);
-                startActivityForResult(filtres, FILTRESCODE);
+                /*filtres.putExtra("distanceFilter", filterGlobal.getDistanceMax());
+                filtres.putExtra("daysFilter", filterGlobal.getDays());
+                filtres.putExtra("hourBeginFilter", filterGlobal.getHourBegin());
+                filtres.putExtra("hourEndFilter", filterGlobal.getHourEnd());
+                filtres.putExtra("typeFilter", filterGlobal.getType());
+                filtres.putExtra("startBudgetFilter", filterGlobal.getStartBudget());
+                filtres.putExtra("endBudgetFilter", filterGlobal.getEndBudget());
+                filtres.putExtra("paymentFilter", filterGlobal.getPayment());
+                filtres.putExtra("atmosphereFilter", filterGlobal.getAtmosphere());
+                filtres.putExtra("placesFilter", filterGlobal.getPlaces());
+                filtres.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
+                filtres.putExtra("terraceFilter", filterGlobal.isTerrace());
+                filtres.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());*/
+                startActivity(filtres);
                 return true;
             default :
                 return super.onOptionsItemSelected(item);

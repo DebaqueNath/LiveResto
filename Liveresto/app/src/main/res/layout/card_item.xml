@@ -24,28 +24,31 @@
             android:background="#FFFFFF">-->
 
 
+
+
+            <ImageView
+            android:id="@+id/im_icon_flower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fleche"
+            android:layout_marginRight="1dp"
+            android:layout_gravity="right"
+            android:clickable="true"
+            />
+
             <TextView
                 android:id="@+id/lbl_item_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
                 android:textColor="#F62222"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:text="Distance"
                 android:layout_centerHorizontal="true"
                 android:background="@android:color/white"
                 android:maxLines="1" />
 
-            <ImageView
-                android:id="@+id/im_icon_flower"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:src="@drawable/fleche"
-                android:layout_marginRight="1dp"
-                android:layout_gravity="right"
-                android:clickable="true"
-                />
+
 
 
     </android.support.v7.widget.CardView>
