@@ -1,10 +1,5 @@
 package com.platine.liveresto.model;
 
-import com.platine.liveresto.model.Item;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by --- on 03/01/2017.
  */
@@ -13,14 +8,16 @@ public class Data {
     //private static final String[] titles  = {"Budget", "Place(s)", "Type de restaurant"} ;
     public String name;
     public int imageId;
+    public boolean isSelected;
 
     public Data(String name){
         this.name = name;
     }
 
-    public Data(String name, int imgId){
+    public Data(String name, int imgId, boolean isSelected){
         this.name = name;
         this.imageId = imgId;
+        this.isSelected = isSelected;
     }
 
     /*public static List<Item> getListData() {
@@ -43,4 +40,28 @@ public class Data {
 
         return data;
     }*/
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 }

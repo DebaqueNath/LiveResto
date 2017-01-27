@@ -1,18 +1,12 @@
 package com.platine.liveresto.filtre;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -21,13 +15,15 @@ import android.widget.TextView;
 
 import com.platine.liveresto.R;
 import com.platine.liveresto.model.Data;
+import com.platine.liveresto.model.ElementsAdapter;
+import com.platine.liveresto.model.ElementsAdapterSimple;
 import com.platine.liveresto.model.Filtre;
 import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.OnRangeSeekBarChangeListener<Number>, CompoundButton.OnCheckedChangeListener{
+public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.OnRangeSeekBarChangeListener<Number>, CompoundButton.OnCheckedChangeListener, ElementsAdapterSimple.Listener{
 
     private Button buttonDistance;
     private Button buttonSchedule;
@@ -90,13 +86,20 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
 
         initRecyclerView();
 
+        //Distance
+        rangeSeekBarDistance.setSelectedMaxValue(filterGlobal.getDistanceMax());
+
         addListenerOnButton();
 
-        //On appelle méthode qui met à jour les filtres en fonction des filtres reçus
-        /* ------------- A FAIRE -------------------------------------------- */
-        updateFilter();
     }
 
+    @Override
+    public void onCardViewClick(Data d) {
+        if(d.getName()=="Distance"){
+
+        }
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -123,30 +126,6 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         finish();
     }
 
-
-    private void updateFilter(){
-        //Distance
-        rangeSeekBarDistance.setSelectedMaxValue(filterGlobal.getDistanceMax());
-
-        //Schedule
-        if(filterGlobal.getDays().contains("LU")){
-            recyclerViewSchedule.findViewHolderForAdapterPosition(0).itemView.setBackgroundResource(R.drawable.card_border);
-        } else if(filterGlobal.getDays().contains("MA")) {
-            recyclerViewSchedule.findViewHolderForAdapterPosition(1).itemView.setBackgroundResource(R.drawable.card_border);
-        } else if(filterGlobal.getDays().contains("ME")) {
-            recyclerViewSchedule.findViewHolderForAdapterPosition(2).itemView.setBackgroundResource(R.drawable.card_border);
-        } else if(filterGlobal.getDays().contains("JE")) {
-            recyclerViewSchedule.findViewHolderForAdapterPosition(3).itemView.setBackgroundResource(R.drawable.card_border);
-        } else if(filterGlobal.getDays().contains("VE")) {
-            recyclerViewSchedule.findViewHolderForAdapterPosition(4).itemView.setBackgroundResource(R.drawable.card_border);
-        } else if(filterGlobal.getDays().contains("SA")) {
-            recyclerViewSchedule.findViewHolderForAdapterPosition(5).itemView.setBackgroundResource(R.drawable.card_border);
-        } else if(filterGlobal.getDays().contains("DI")) {
-            recyclerViewSchedule.findViewHolderForAdapterPosition(6).itemView.setBackgroundResource(R.drawable.card_border);
-        }
-
-
-    }
 
 
     public void onRangeSeekBarValuesChanged(RangeSeekBar<Number> bar, Number minValue, Number maxValue){
@@ -202,63 +181,66 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
      *
      */
     public void initFilters(){
+
+
+        //Schedule
         scheduleList = new ArrayList<>();
-        scheduleList.add(new Data("Lundi",R.drawable.icon_monday));
-        scheduleList.add(new Data("Mardi",R.drawable.icon_tuesday));
-        scheduleList.add(new Data("Mercredi", R.drawable.icon_wednesday));
-        scheduleList.add(new Data("Jeudi",R.drawable.icon_thursday));
-        scheduleList.add(new Data("Vendredi",R.drawable.icon_friday));
-        scheduleList.add(new Data("Samedi",R.drawable.icon_saturday));
-        scheduleList.add(new Data("Dimanche",R.drawable.icon_sunday));
-        scheduleList.add(new Data("TOUS"));
+        scheduleList.add(new Data("Lundi",R.drawable.icon_monday,filterGlobal.getDays().contains("LU")));
+        scheduleList.add(new Data("Mardi",R.drawable.icon_tuesday,filterGlobal.getDays().contains("MA")));
+        scheduleList.add(new Data("Mercredi", R.drawable.icon_wednesday,filterGlobal.getDays().contains("ME")));
+        scheduleList.add(new Data("Jeudi",R.drawable.icon_thursday,filterGlobal.getDays().contains("JE")));
+        scheduleList.add(new Data("Vendredi",R.drawable.icon_friday,filterGlobal.getDays().contains("VE")));
+        scheduleList.add(new Data("Samedi",R.drawable.icon_saturday,filterGlobal.getDays().contains("SA")));
+        scheduleList.add(new Data("Dimanche",R.drawable.icon_sunday,filterGlobal.getDays().contains("DI")));
+        scheduleList.add(new Data("TOUS",R.drawable.icon_ticket,filterGlobal.getDays().isEmpty()));
 
         typeList = new ArrayList<>();
-        typeList.add(new Data("Pizzeria", R.drawable.pizzeria));
-        typeList.add(new Data("Halal", R.drawable.halal));
-        typeList.add(new Data("Brasserie", R.drawable.brasserie));
-        typeList.add(new Data("Végétarien", R.drawable.vegetarien));
-        typeList.add(new Data("Gastronomique", R.drawable.gastronomique));
-        typeList.add(new Data("Bio", R.drawable.bio));
-        typeList.add(new Data("Fast-food", R.drawable.fastfood));
-        typeList.add(new Data("Casher", R.drawable.casher));
-        typeList.add(new Data("Italien", R.drawable.italien));
-        typeList.add(new Data("Chinois", R.drawable.chinois));
-        typeList.add(new Data("TOUS"));
+        typeList.add(new Data("Pizzeria", R.drawable.pizzeria,false));
+        typeList.add(new Data("Halal", R.drawable.halal,false));
+        typeList.add(new Data("Brasserie", R.drawable.brasserie,false));
+        typeList.add(new Data("Végétarien", R.drawable.vegetarien,false));
+        typeList.add(new Data("Gastronomique", R.drawable.gastronomique,false));
+        typeList.add(new Data("Bio", R.drawable.bio,false));
+        typeList.add(new Data("Fast-food", R.drawable.fastfood,false));
+        typeList.add(new Data("Casher", R.drawable.casher,false));
+        typeList.add(new Data("Italien", R.drawable.italien,false));
+        typeList.add(new Data("Chinois", R.drawable.chinois,false));
+        typeList.add(new Data("TOUS",R.drawable.icon_ticket,false));
 
         budgetList = new ArrayList<>();
-        budgetList.add(new Data("<20",R.drawable.icon_inf_20));
-        budgetList.add(new Data("20 à 39",R.drawable.icon_from_20_to_39));
-        budgetList.add(new Data("40 à 59",R.drawable.icon_from_40_to_59));
-        budgetList.add(new Data("60 à 79",R.drawable.icon_from_60_to_79));
-        budgetList.add(new Data(">80",R.drawable.icon_sup_80));
-        budgetList.add(new Data("TOUS"));
+        budgetList.add(new Data("<20",R.drawable.icon_inf_20,false));
+        budgetList.add(new Data("20 à 39",R.drawable.icon_from_20_to_39,false));
+        budgetList.add(new Data("40 à 59",R.drawable.icon_from_40_to_59,false));
+        budgetList.add(new Data("60 à 79",R.drawable.icon_from_60_to_79,false));
+        budgetList.add(new Data(">80",R.drawable.icon_sup_80,false));
+        budgetList.add(new Data("TOUS",R.drawable.icon_ticket,false));
 
         paymentList = new ArrayList<>();
-        paymentList.add(new Data("Carte bancaire",R.drawable.icon_cb));
-        paymentList.add(new Data("Cheque",R.drawable.icon_cheque));
-        paymentList.add(new Data("Cheque vacances",R.drawable.icon_vac));
-        paymentList.add(new Data("Espece",R.drawable.icon_money));
-        paymentList.add(new Data("Ticket restaurant",R.drawable.icon_ticket));
-        paymentList.add(new Data("TOUS"));
+        paymentList.add(new Data("Carte bancaire",R.drawable.icon_cb,false));
+        paymentList.add(new Data("Cheque",R.drawable.icon_cheque,false));
+        paymentList.add(new Data("Cheque vacances",R.drawable.icon_vac,false));
+        paymentList.add(new Data("Espece",R.drawable.icon_money,false));
+        paymentList.add(new Data("Ticket restaurant",R.drawable.icon_ticket,false));
+        paymentList.add(new Data("TOUS",R.drawable.icon_ticket,false));
 
         atmosphereList = new ArrayList<>();
-        atmosphereList.add(new Data("Retro"));
-        atmosphereList.add(new Data("Musical"));
-        atmosphereList.add(new Data("Jeune"));
-        atmosphereList.add(new Data("Chic"));
-        atmosphereList.add(new Data("Romantique"));
-        atmosphereList.add(new Data("Historique"));
-        atmosphereList.add(new Data("Spectacle"));
-        atmosphereList.add(new Data("TOUS"));
+        atmosphereList.add(new Data("Retro",R.drawable.icon_ticket,false));
+        atmosphereList.add(new Data("Musical",R.drawable.icon_ticket,false));
+        atmosphereList.add(new Data("Jeune",R.drawable.icon_ticket,false));
+        atmosphereList.add(new Data("Chic",R.drawable.icon_ticket,false));
+        atmosphereList.add(new Data("Romantique",R.drawable.icon_ticket,false));
+        atmosphereList.add(new Data("Historique",R.drawable.icon_ticket,false));
+        atmosphereList.add(new Data("Spectacle",R.drawable.icon_ticket,false));
+        atmosphereList.add(new Data("TOUS",R.drawable.icon_ticket,false));
 
         waitingTimeList = new ArrayList<>();
-        waitingTimeList.add(new Data("<5min"));
-        waitingTimeList.add(new Data("<10min"));
-        waitingTimeList.add(new Data("<15min"));
-        waitingTimeList.add(new Data("<30min"));
-        waitingTimeList.add(new Data("<45min"));
-        waitingTimeList.add(new Data("<60min"));
-        waitingTimeList.add(new Data("TOUS"));
+        waitingTimeList.add(new Data("<5min",R.drawable.icon_ticket,false));
+        waitingTimeList.add(new Data("<10min",R.drawable.icon_ticket,false));
+        waitingTimeList.add(new Data("<15min",R.drawable.icon_ticket,false));
+        waitingTimeList.add(new Data("<30min",R.drawable.icon_ticket,false));
+        waitingTimeList.add(new Data("<45min",R.drawable.icon_ticket,false));
+        waitingTimeList.add(new Data("<60min",R.drawable.icon_ticket,false));
+        waitingTimeList.add(new Data("TOUS",R.drawable.icon_ticket,false));
 
     }
 
@@ -288,7 +270,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         recyclerViewSchedule.setHasFixedSize(true);
         GridLayoutManager gridLayoutManagerSchedule = new GridLayoutManager(this, 3);
         recyclerViewSchedule.setLayoutManager(gridLayoutManagerSchedule);
-        recyclerViewSchedule.setAdapter(new ElementsAdapter(scheduleList));
+        recyclerViewSchedule.setAdapter(new ElementsAdapterSimple(scheduleList,this));
         recyclerViewSchedule.setVisibility(View.GONE);
 
         recyclerViewType = (RecyclerView) findViewById(R.id.recycler_view_type);
@@ -476,695 +458,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         });
     }
 
-    public class ElementsAdapter extends RecyclerView.Adapter<ElementsAdapter.ViewHolder> {
-        private static final int VIEW_NORMAL = 1;
-        private List<Data> contactList;
 
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-            protected TextView vName;
-            protected ImageView vImage;
-            public View textView;
-            public boolean isSelected;
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-                textView = itemView;
-                vName =  (TextView) itemView.findViewById(R.id.title);
-                itemView.setOnClickListener(this);
-                vImage =  (ImageView) itemView.findViewById(R.id.image);
-                isSelected = false;
-            }
-
-            @Override
-            //Gestion de choix de l'utilisateur
-            public void onClick(View view) {
-
-                RecyclerView r = (RecyclerView)view.getParent();
-                View v = r.findViewHolderForAdapterPosition(0).itemView;
-                TextView name =  (TextView) v.findViewById(R.id.title);
-                String category = (String)name.getText();
-
-                if(category.equals("Lundi")){
-                    if(!this.isSelected){
-                        view.setBackgroundResource(R.drawable.card_border);
-                        this.isSelected = true;
-                        Drawable viewColor = view.getBackground();
-                        if(viewColor instanceof GradientDrawable) {
-                            view.setBackgroundColor(Color.WHITE);
-                            this.isSelected = false;
-                        } else {
-                            if (vName.getText() == "Lundi") {
-                                filterGlobal.addDay("LU");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if (vName.getText() == "Mardi") {
-                                filterGlobal.addDay("MA");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if (vName.getText() == "Mercredi") {
-                                filterGlobal.addDay("ME");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if (vName.getText() == "Jeudi") {
-                                filterGlobal.addDay("JE");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if (vName.getText() == "Vendredi") {
-                                filterGlobal.addDay("VE");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if (vName.getText() == "Samedi") {
-                                filterGlobal.addDay("SA");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if (vName.getText() == "Dimanche") {
-                                filterGlobal.addDay("DI");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if (vName.getText() == "TOUS") {
-                                filterGlobal.removeAllDay();
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            }
-                        }
-                    }else{
-                        Drawable viewColor = view.getBackground();
-                        if(viewColor instanceof ColorDrawable) {
-                            if(vName.getText()=="Lundi"){
-                                filterGlobal.addDay("LU");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Mardi"){
-                                filterGlobal.addDay("MA");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Mercredi"){
-                                filterGlobal.addDay("ME");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Jeudi"){
-                                filterGlobal.addDay("JE");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Vendredi"){
-                                filterGlobal.addDay("VE");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Samedi"){
-                                filterGlobal.addDay("SA");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Dimanche"){
-                                filterGlobal.addDay("DI");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="TOUS"){
-                                filterGlobal.removeAllDay();
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            }
-                            this.isSelected = true;
-                            view.setBackgroundResource(R.drawable.card_border);
-                        } else {
-                            view.setBackgroundColor(Color.WHITE);
-                            this.isSelected = false;
-                            if (vName.getText() == "Lundi") {
-                                filterGlobal.removeDay("LU");
-                            } else if (vName.getText() == "Mardi") {
-                                filterGlobal.removeDay("MA");
-                            } else if (vName.getText() == "Mercredi") {
-                                filterGlobal.removeDay("ME");
-                            } else if (vName.getText() == "Jeudi") {
-                                filterGlobal.removeDay("JE");
-                            } else if (vName.getText() == "Vendredi") {
-                                filterGlobal.removeDay("VE");
-                            } else if (vName.getText() == "Samedi") {
-                                filterGlobal.removeDay("SA");
-                            } else if (vName.getText() == "Dimanche") {
-                                filterGlobal.removeDay("DI");
-                            }
-                        }
-                    }
-                } else if(category.equals("Pizzeria")){
-                    if(!this.isSelected){
-                        view.setBackgroundResource(R.drawable.card_border);
-                        this.isSelected = true;
-                        if(vName.getText()=="Pizzeria"){
-                            filterGlobal.addType("pizzeria");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Halal"){
-                            filterGlobal.addType("halal");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Brasserie"){
-                            filterGlobal.addType("brasserie");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Végétarien"){
-                            filterGlobal.addType("vegetarien");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Gastronomique"){
-                            filterGlobal.addType("gastronomique");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Bio"){
-                            filterGlobal.addType("bio");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Fast-food"){
-                            filterGlobal.addType("fast-food");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Casher"){
-                            filterGlobal.addType("casher");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Italien"){
-                            filterGlobal.addType("italien");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Chinois"){
-                            filterGlobal.addType("chinois");
-                            r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="TOUS"){
-                            filterGlobal.removeAllType();
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(8).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(9).itemView.setBackgroundColor(Color.WHITE);
-                        }
-                    }else{
-                        Drawable viewColor = view.getBackground();
-                        if(viewColor instanceof ColorDrawable) {
-                            view.setBackgroundResource(R.drawable.card_border);
-                            this.isSelected = true;
-                            if(vName.getText()=="Pizzeria"){
-                                filterGlobal.addType("pizzeria");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Halal"){
-                                filterGlobal.addType("halal");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Brasserie"){
-                                filterGlobal.addType("brasserie");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Végétarien"){
-                                filterGlobal.addType("vegetarien");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Gastronomique"){
-                                filterGlobal.addType("gastronomique");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Bio"){
-                                filterGlobal.addType("bio");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Fast-food"){
-                                filterGlobal.addType("fast-food");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Casher"){
-                                filterGlobal.addType("casher");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Italien"){
-                                filterGlobal.addType("italien");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Chinois"){
-                                filterGlobal.addType("chinois");
-                                r.findViewHolderForAdapterPosition(10).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="TOUS"){
-                                filterGlobal.removeAllType();
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(8).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(9).itemView.setBackgroundColor(Color.WHITE);
-                            }
-                        } else {
-                            view.setBackgroundColor(Color.WHITE);
-                            this.isSelected = false;
-                            if (vName.getText() == "Pizzeria") {
-                                filterGlobal.removeType("pizzeria");
-                            } else if (vName.getText() == "Halal") {
-                                filterGlobal.removeType("halal");
-                            } else if (vName.getText() == "Brasserie") {
-                                filterGlobal.removeType("brasserie");
-                            } else if (vName.getText() == "Végétarien") {
-                                filterGlobal.removeType("vegetarien");
-                            } else if (vName.getText() == "Gastronomique") {
-                                filterGlobal.removeType("gastronomique");
-                            } else if (vName.getText() == "Bio") {
-                                filterGlobal.removeType("bio");
-                            } else if (vName.getText() == "Fast-food") {
-                                filterGlobal.removeType("fast-food");
-                            } else if (vName.getText() == "Casher") {
-                                filterGlobal.removeType("casher");
-                            } else if (vName.getText() == "Italien") {
-                                filterGlobal.removeType("italien");
-                            } else if (vName.getText() == "Chinois") {
-                                filterGlobal.removeType("chinois");
-                            }
-                        }
-                    }
-                } else if(category.equals("<20")){
-                    //Choix unique
-                    if(!this.isSelected) {
-                        view.setBackgroundResource(R.drawable.card_border);
-                        this.isSelected = true;
-                        if(vName.getText()=="<20"){
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setStartBudget(0);
-                            filterGlobal.setEndBudget(19);
-                        } else if(vName.getText()=="20 à 39"){
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setStartBudget(20);
-                            filterGlobal.setEndBudget(39);
-                        } else if(vName.getText()=="40 à 59"){
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setStartBudget(40);
-                            filterGlobal.setEndBudget(59);
-                        } else if(vName.getText()=="60 à 79"){
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setStartBudget(60);
-                            filterGlobal.setEndBudget(79);
-                        } else if(vName.getText()==">80"){
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setStartBudget(80);
-                            filterGlobal.setEndBudget(1000);
-                        } else if(vName.getText()=="TOUS") {
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setStartBudget(0);
-                            filterGlobal.setEndBudget(0);
-                        }
-                    } else {
-                        Drawable viewColor = view.getBackground();
-                        if(viewColor instanceof ColorDrawable) {
-                            if(vName.getText()=="<20"){
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setStartBudget(0);
-                                filterGlobal.setEndBudget(19);
-                            } else if(vName.getText()=="20 à 39"){
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setStartBudget(20);
-                                filterGlobal.setEndBudget(39);
-                            } else if(vName.getText()=="40 à 59"){
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setStartBudget(40);
-                                filterGlobal.setEndBudget(59);
-                            } else if(vName.getText()=="60 à 79"){
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setStartBudget(60);
-                                filterGlobal.setEndBudget(79);
-                            } else if(vName.getText()==">80"){
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setStartBudget(80);
-                                filterGlobal.setEndBudget(1000);
-                            } else if(vName.getText()=="TOUS") {
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setStartBudget(0);
-                                filterGlobal.setEndBudget(0);
-                            }
-                            this.isSelected = true;
-                            view.setBackgroundResource(R.drawable.card_border);
-                        } else {
-                            view.setBackgroundColor(Color.WHITE);
-                            this.isSelected = false;
-                            filterGlobal.setStartBudget(0);
-                            filterGlobal.setEndBudget(0);
-                        }
-
-                    }
-                } else if(category.equals("Carte bancaire")){
-                    if(!this.isSelected){
-                        view.setBackgroundResource(R.drawable.card_border);
-                        this.isSelected = true;
-                        if(vName.getText()=="Carte bancaire"){
-                            filterGlobal.addPayment("cartebancaire");
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Cheque"){
-                            filterGlobal.addPayment("cheque");
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Cheque vacances"){
-                            filterGlobal.addPayment("chequevacance");
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Espece"){
-                            filterGlobal.addPayment("espece");
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Ticket restaurant"){
-                            filterGlobal.addPayment("ticketrestaurant");
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                        }  else if(vName.getText()=="TOUS") {
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.removeAllPayment();
-                        }
-                    }else{
-                        Drawable viewColor = view.getBackground();
-                        if(viewColor instanceof ColorDrawable) {
-                            view.setBackgroundResource(R.drawable.card_border);
-                            this.isSelected = true;
-                            if(vName.getText()=="Carte bancaire"){
-                                filterGlobal.addPayment("cartebancaire");
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Cheque"){
-                                filterGlobal.addPayment("cheque");
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Cheque vacances"){
-                                filterGlobal.addPayment("chequevacance");
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Espece"){
-                                filterGlobal.addPayment("espece");
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Ticket restaurant"){
-                                filterGlobal.addPayment("ticketrestaurant");
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            }  else if(vName.getText()=="TOUS") {
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.removeAllPayment();
-                            }
-
-                        } else {
-                            view.setBackgroundColor(Color.WHITE);
-                            this.isSelected = false;
-                            if (vName.getText() == "Carte bancaire") {
-                                filterGlobal.removePayment("cartebancaire");
-                            } else if (vName.getText() == "Cheque") {
-                                filterGlobal.removePayment("cheque");
-                            } else if (vName.getText() == "Cheque vacances") {
-                                filterGlobal.removePayment("chequevacance");
-                            } else if (vName.getText() == "Espece") {
-                                filterGlobal.removePayment("espece");
-                            } else if (vName.getText() == "Ticket restaurant") {
-                                filterGlobal.removePayment("ticketrestaurant");
-                            }
-                        }
-                    }
-                } else if(category.equals("Retro")){
-                    if(!this.isSelected){
-                        view.setBackgroundResource(R.drawable.card_border);
-                        this.isSelected = true;
-                        if(vName.getText()=="Retro"){
-                            filterGlobal.addAtmosphere("retro");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Musical"){
-                            filterGlobal.addAtmosphere("musical");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Jeune"){
-                            filterGlobal.addAtmosphere("jeune");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Chic"){
-                            filterGlobal.addAtmosphere("chic");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Romantique"){
-                            filterGlobal.addAtmosphere("romantique");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Historique"){
-                            filterGlobal.addAtmosphere("historique");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        } else if(vName.getText()=="Spectacle"){
-                            filterGlobal.addAtmosphere("spectacle");
-                            r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                        }  else if(vName.getText()=="TOUS") {
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.removeAllAtmosphere();
-                        }
-                    }else{
-                        Drawable viewColor = view.getBackground();
-                        if(viewColor instanceof ColorDrawable) {
-                            if(vName.getText()=="Retro"){
-                                view.setBackgroundResource(R.drawable.card_border);
-                                this.isSelected = true;
-                                filterGlobal.addAtmosphere("retro");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Musical"){
-                                filterGlobal.addAtmosphere("musical");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Jeune"){
-                                filterGlobal.addAtmosphere("jeune");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Chic"){
-                                filterGlobal.addAtmosphere("chic");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Romantique"){
-                                filterGlobal.addAtmosphere("romantique");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Historique"){
-                                filterGlobal.addAtmosphere("historique");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            } else if(vName.getText()=="Spectacle"){
-                                filterGlobal.addAtmosphere("spectacle");
-                                r.findViewHolderForAdapterPosition(7).itemView.setBackgroundColor(Color.WHITE);
-                            }  else if(vName.getText()=="TOUS") {
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.removeAllAtmosphere();
-                            }
-                        } else {
-                            view.setBackgroundColor(Color.WHITE);
-                            this.isSelected = false;
-                            if (vName.getText() == "Retro") {
-                                filterGlobal.removeAtmosphere("retro");
-                            } else if (vName.getText() == "Musical") {
-                                filterGlobal.removeAtmosphere("musical");
-                            } else if (vName.getText() == "Jeune") {
-                                filterGlobal.removeAtmosphere("jeune");
-                            } else if (vName.getText() == "Chic") {
-                                filterGlobal.removeAtmosphere("chic");
-                            } else if (vName.getText() == "Romantique") {
-                                filterGlobal.removeAtmosphere("romantique");
-                            } else if (vName.getText() == "Historique") {
-                                filterGlobal.removeAtmosphere("historique");
-                            } else if (vName.getText() == "Spectacle") {
-                                filterGlobal.removeAtmosphere("spectacle");
-                            }
-                        }
-                    }
-                } else if(category.equals("<5min")){
-//Choix unique
-                    if(!this.isSelected) {
-                        view.setBackgroundResource(R.drawable.card_border);
-                        this.isSelected = true;
-                        if(vName.getText()=="<5min"){
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setWaitingTime(5);
-                        } else if(vName.getText()=="<10min"){
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setWaitingTime(10);
-                        } else if(vName.getText()=="<15min"){
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setWaitingTime(15);
-                        } else if(vName.getText()=="<30min"){
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setWaitingTime(30);
-                        } else if(vName.getText()=="<45min"){
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setWaitingTime(45);
-                        } else if(vName.getText()=="<60min") {
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setWaitingTime(60);
-                        }  else if(vName.getText()=="TOUS") {
-                            r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                            r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                            filterGlobal.setWaitingTime(0);
-                        }
-                    } else {
-                        Drawable viewColor = view.getBackground();
-                        if(viewColor instanceof ColorDrawable) {
-                            if(vName.getText()=="<5min"){
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setWaitingTime(5);
-                            } else if(vName.getText()=="<10min"){
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setWaitingTime(10);
-                            } else if(vName.getText()=="<15min"){
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setWaitingTime(15);
-                            } else if(vName.getText()=="<30min"){
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setWaitingTime(30);
-                            } else if(vName.getText()=="<45min"){
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setWaitingTime(45);
-                            } else if(vName.getText()=="<60min") {
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(6).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setWaitingTime(60);
-                            }  else if(vName.getText()=="TOUS") {
-                                r.findViewHolderForAdapterPosition(1).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(2).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(3).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(4).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(5).itemView.setBackgroundColor(Color.WHITE);
-                                r.findViewHolderForAdapterPosition(0).itemView.setBackgroundColor(Color.WHITE);
-                                filterGlobal.setWaitingTime(0);
-                            }
-                            this.isSelected = true;
-                            view.setBackgroundResource(R.drawable.card_border);
-                        } else {
-                            view.setBackgroundColor(Color.WHITE);
-                            this.isSelected = false;
-                            filterGlobal.setWaitingTime(0);
-                        }
-
-                    }
-                }
-            }
-        }
-
-
-        public ElementsAdapter(List<Data> contactList) {
-            this.contactList = contactList;
-        }
-
-
-        @Override
-        public int getItemViewType(int position) {
-            return VIEW_NORMAL;
-        }
-
-        @Override
-        public int getItemCount() {
-            return this.contactList.size() ;
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder viewHolder, int position) {
-            Data ci = contactList.get(position);
-            viewHolder.vName.setText(ci.name);
-            viewHolder.vImage.setImageResource(ci.imageId);
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View textView = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_element, parent, false);
-            return new ViewHolder(textView);
-        }
-    }
 
 
 }
