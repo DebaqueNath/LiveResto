@@ -286,7 +286,8 @@ public class Filtre {
                     }
                 }
             }
-            if(!flag){continue;}
+            if(!flag){
+                continue;}
 
             //Type du restaurant
             String type = r.getType();
@@ -298,7 +299,9 @@ public class Filtre {
                     break;
                 }
             }
-            if(!flag){continue;}
+            if(!flag){
+                System.out.println("CONTINUE TYPE");
+                continue;}
 
             //Budget
             if((r.getStartBudget() >= this.startBudget && r.getStartBudget() < this.endBudget)||(r.getEndBudget() > this.startBudget && r.getEndBudget() <= this.endBudget)||(r.getStartBudget() < this.startBudget && r.getEndBudget() > this.endBudget) || (this.startBudget==0 && this.endBudget==0)){
@@ -317,7 +320,8 @@ public class Filtre {
                     break;
                 }
             }
-            if(!flag){continue;}
+            if(!flag){
+                continue;}
 
             //Atmosphere
             String atmosphere = r.getAtmosphere();
@@ -329,7 +333,8 @@ public class Filtre {
                     break;
                 }
             }
-            if(!flag){continue;}
+            if(!flag){
+                continue;}
 
             //Places
             if(this.places != 0) {

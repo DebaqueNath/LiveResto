@@ -10,12 +10,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.platine.liveresto.R;
 import com.platine.liveresto.db.HoraireDAO;
 import com.platine.liveresto.db.RestaurantDAO;
@@ -46,28 +43,43 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences.Editor editor = this.sharedPrefs.edit();
         ArrayList<String> days = new ArrayList<>();
         String tmp = this.sharedPrefs.getString("days","");
-        String[] split = tmp.split(" ");
-        for (String s : split) {
-            days.add(s);
+        if(tmp!="") {
+            String[] split = tmp.split(",");
+            for (String s : split) {
+                if (!s.equals(" ")) {
+                    days.add(s);
+                }
+            }
         }
         ArrayList<String> type = new ArrayList<>();
         tmp = this.sharedPrefs.getString("type","");
-        split = tmp.split(" ");
-        for (String s : split) {
-            type.add(s);
+        if(tmp!="") {
+            String[] split = tmp.split(",");
+            for (String s : split) {
+                type.add(s);
+            }
         }
         ArrayList<String> payment = new ArrayList<>();
         tmp = this.sharedPrefs.getString("payment","");
-        split = tmp.split(" ");
-        for (String s : split) {
-            payment.add(s);
+        if(tmp!="") {
+            String[] split = tmp.split(",");
+            for (String s : split) {
+                if (!s.equals(" ")) {
+                    payment.add(s);
+                }
+            }
         }
         ArrayList<String> atmosphere = new ArrayList<>();
         tmp = this.sharedPrefs.getString("atmosphere","");
-        split = tmp.split(" ");
-        for (String s : split) {
-            atmosphere.add(s);
+        if(tmp!="") {
+            String[] split = tmp.split(",");
+            for (String s : split) {
+                if (!s.equals(" ")) {
+                    atmosphere.add(s);
+                }
+            }
         }
+
         filterGlobal = new Filtre(sharedPrefs.getFloat("distance",(float)0.0),days,sharedPrefs.getFloat("hourBegin",(float)0.0),sharedPrefs.getFloat("hourEnd",(float)0.0),type,sharedPrefs.getInt("startBudget",0),sharedPrefs.getInt("endBudget",0),payment,atmosphere,sharedPrefs.getInt("places",0),sharedPrefs.getInt("waitingTime",0),sharedPrefs.getBoolean("terrace",false),sharedPrefs.getBoolean("airConditionner",false));
 
         System.out.println("AFFICHAGE DES FILTRES : "+ filterGlobal);
@@ -82,6 +94,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         for (Restaurant r : liste) {
             System.out.println(r);
         }*/
+
+        System.out.println("RESTAURANTS ----------------------------------------------------------------------------------------------------------------------");
+        //Affichage des restau correspondant aux filtres
+        RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
+        ArrayList<Restaurant> liste2 = filterGlobal.getRestaurantsFilter(rdao.getRestaurants());
+        for (Restaurant r : liste2) {
+            System.out.println(r);
+        }
 
         //TEST requête BDD par rapport aux filtres
        /* RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
@@ -98,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             System.out.println("RESTAURANT");
             System.out.println(r);
         }*/
+
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -116,23 +138,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         float distance = (float)this.filterGlobal.getDistanceMax();
         String days="";
         for (String d: this.filterGlobal.getDays()) {
-            days+=d+" ";
+                days += d + ",";
         }
         float hourBegin = (float)this.filterGlobal.getHourBegin();
         float hourEnd = (float) this.filterGlobal.getHourEnd();
         String type="";
         for (String d: this.filterGlobal.getType()) {
-            type+=d+" ";
+                type += d + ",";
         }
         int startBudget = this.filterGlobal.getStartBudget();
         int endBudget = this.filterGlobal.getEndBudget();
         String payment="";
         for (String d: this.filterGlobal.getPayment()) {
-            payment+=d+" ";
+                payment += d + ",";
+
         }
         String atmosphere="";
         for (String d: this.filterGlobal.getAtmosphere()) {
-            atmosphere+=d+" ";
+                atmosphere += d + ",";
         }
         int places = this.filterGlobal.getPlaces();
         int waitingTime = this.filterGlobal.getWaitingTime();
@@ -142,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         editor.putString("days",days);
         editor.putFloat("hourBegin",hourBegin);
         editor.putFloat("hourEnd",hourEnd);
+        System.out.println("TYPE: "+type);
         editor.putString("type",type);
         editor.putInt("startBudget",startBudget);
         editor.putInt("endBudget",endBudget);
@@ -211,17 +235,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
 
-        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
+       /* ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
+        System.out.println(allRestos);
 
-        LatLng firstRestaurantPosition = new LatLng(allRestos.get(0).getLatitude(), allRestos.get(0).getLongitude());
-        mMap.addMarker(new MarkerOptions().position(firstRestaurantPosition).title(allRestos.get(0).getName()));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(firstRestaurantPosition));
-        allRestos.remove(0);
-
-        for(Restaurant resto : allRestos) {
-            LatLng position = new LatLng(resto.getLatitude(), resto.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(position).title(resto.getName()));
-        }
+        if(!allRestos.isEmpty()) {
+            LatLng firstRestaurantPosition = new LatLng(allRestos.get(0).getLatitude(), allRestos.get(0).getLongitude());
+            mMap.addMarker(new MarkerOptions().position(firstRestaurantPosition).title(allRestos.get(0).getName()));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(firstRestaurantPosition));
+            allRestos.remove(0);
+            for (Restaurant resto : allRestos) {
+                LatLng position = new LatLng(resto.getLatitude(), resto.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(position).title(resto.getName()));
+            }
+        }*/
     }
 
 
