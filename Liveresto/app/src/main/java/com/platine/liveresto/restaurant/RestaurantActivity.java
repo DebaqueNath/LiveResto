@@ -1,17 +1,19 @@
 package com.platine.liveresto.restaurant;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.platine.liveresto.R;
+import com.platine.liveresto.db.RestaurantDAO;
 import com.platine.liveresto.model.Horaire;
 import com.platine.liveresto.model.Restaurant;
-import com.platine.liveresto.db.RestaurantDAO;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,8 +25,9 @@ import java.util.Date;
  */
 public class RestaurantActivity extends AppCompatActivity {
 
-    private TextView title,type,distance,ouvert,di,lu,ma,me,je,ve,sa,adresse,internet,phoneNum;
+    private TextView title,type,ouvert,di,lu,ma,me,je,ve,sa,adresse,internet,phoneNum;
     private ImageView imgResto;
+    private ImageView backArrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,6 @@ public class RestaurantActivity extends AppCompatActivity {
         this.title = (TextView) findViewById(R.id.toolbar_title_resto);
         this.imgResto = (ImageView) findViewById(R.id.image_restaurant);
         this.type = (TextView) findViewById(R.id.type_resto);
-        this.distance = (TextView) findViewById(R.id.distance_resto);
         this.ouvert = (TextView) findViewById(R.id.ouvert_resto);
         this.di = (TextView) findViewById(R.id.dimanche);
         this.lu = (TextView) findViewById(R.id.lundi);
@@ -49,9 +51,12 @@ public class RestaurantActivity extends AppCompatActivity {
         this.phoneNum = (TextView) findViewById(R.id.phone_text);
 
 
-        //----------- TEST AVEC UN RESTAURANT EN DUR -------------------
+        //----------- Récupération du restaurant -------------------
+        Intent i = getIntent();
+        String title = i.getStringExtra("title");
         RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
-        Restaurant r  = rdao.getRestaurants().get(0);
+        Restaurant r  = rdao.getRestaurantByName(title);
+
         //--------------------------------------------------------------
 
         String name = r.getName();
@@ -191,13 +196,57 @@ public class RestaurantActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         setTitle("");
 
+        //Listener Toolbar
+        backArrow = (ImageView) findViewById(R.id.back_arrow);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         //Implement views
         this.title.setText(name);
         this.imgResto.setImageResource(getResources().getIdentifier(img, "drawable", getPackageName()));
         String type = r.getType();
-        type = type.replace(',',' ');
-        this.type.setText(type);
-        this.distance.setText("300M");
+        String[] split = type.split(",");
+        String typeFinal="";
+        for(String t : split){
+            switch(t){
+                case "fastfood" :
+                    t="Fast-Food";
+                    break;
+                case "pizzeria" :
+                    t= "Pizzeria";
+                    break;
+                case "halal" :
+                    t= "Halal";
+                    break;
+                case "brasserie" :
+                    t= "Brasserie";
+                    break;
+                case "vegetarien" :
+                    t= "Végétarien";
+                    break;
+                case "gastronomique" :
+                    t= "Gastronomique";
+                    break;
+                case "bio" :
+                    t= "Bio";
+                    break;
+                case "casher" :
+                    t= "Casher";
+                    break;
+                case "italien" :
+                    t= "Italien";
+                    break;
+                case "chinois" :
+                    t= "Chinois";
+                    break;
+            }
+            typeFinal+=t+" ";
+        }
+        this.type.setText(typeFinal);
         if(flag) {
             this.ouvert.setText("Ouvert");
         } else {
@@ -207,7 +256,11 @@ public class RestaurantActivity extends AppCompatActivity {
         this.adresse.setText(adress);
         this.internet.setText(website);
         this.phoneNum.setText(phone);
-
-
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 }

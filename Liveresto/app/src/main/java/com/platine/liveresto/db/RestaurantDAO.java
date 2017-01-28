@@ -123,4 +123,20 @@ public class RestaurantDAO {
     }
 
 
+    public Restaurant getRestaurantByName(String name){
+        SQLiteDatabase db = this.liveRestoDb.getReadableDatabase();
+        Restaurant restaurant;
+
+        Cursor cursor = db.rawQuery("select * from "+TABLE_NAME+" where Name = ?",new String[] {name});
+        //Un seul restaurant possible car le nom est unique
+        cursor.moveToFirst();
+        restaurant = new Restaurant(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getDouble(6),cursor.getDouble(7),(cursor.getInt(8)==1)?true:false,(cursor.getInt(9)==1)?true:false,cursor.getString(10),cursor.getString(11),cursor.getInt(12),cursor.getInt(13),cursor.getString(14),cursor.getInt(15),cursor.getInt(16),(cursor.getInt(17)==1)?true:false,(cursor.getInt(18)==1)?true:false);
+        HoraireDAO horaireDao = new HoraireDAO(this.context);
+        restaurant.setShedule(horaireDao.getSchedule(restaurant));
+
+        db.close();
+        return restaurant;
+    }
+
+
 }

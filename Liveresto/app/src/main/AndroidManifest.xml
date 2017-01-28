@@ -10,14 +10,11 @@
     <permission android:name="edu.bloomu.huskies.tsc71523.skatelogger.MAPS_RECEIVE"
         android:protectionLevel="signature"/>
     <permission android:name="android.permisssion.ACCESS_FINE_LOCATION"></permission>
-    <permission android:name="android.permisssion.ACCESS_COARSE_LOCATION"></permission>
 
     <uses-permission android:name="edu.bloomu.huskies.tsc71523.skatelogger.MAPS_RECEIVE"/>
     <uses-permission android:name="com.google.android.providers.gsf.permisson.READ_GSERVICES"/>
-    <uses-permission android:name="android.permisssion.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permisssion.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permisssion.WRITE_EXTERNAL_STORAGE"/>
-
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 

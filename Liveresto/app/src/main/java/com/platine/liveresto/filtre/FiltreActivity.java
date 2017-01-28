@@ -73,8 +73,6 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         backArrowFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent i = new Intent(getApplicationContext(),RestaurantActivity.class);
-                startActivity(i);*/
                 returnToMap();
             }
         });
