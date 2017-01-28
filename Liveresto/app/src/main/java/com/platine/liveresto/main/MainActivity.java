@@ -3,16 +3,22 @@ package com.platine.liveresto.main;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.platine.liveresto.Manifest;
 import com.platine.liveresto.R;
 import com.platine.liveresto.db.HoraireDAO;
 import com.platine.liveresto.db.RestaurantDAO;
@@ -138,24 +144,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         float distance = (float)this.filterGlobal.getDistanceMax();
         String days="";
         for (String d: this.filterGlobal.getDays()) {
-                days += d + ",";
+            days += d + ",";
         }
         float hourBegin = (float)this.filterGlobal.getHourBegin();
         float hourEnd = (float) this.filterGlobal.getHourEnd();
         String type="";
         for (String d: this.filterGlobal.getType()) {
-                type += d + ",";
+            type += d + ",";
         }
         int startBudget = this.filterGlobal.getStartBudget();
         int endBudget = this.filterGlobal.getEndBudget();
         String payment="";
         for (String d: this.filterGlobal.getPayment()) {
-                payment += d + ",";
+            payment += d + ",";
 
         }
         String atmosphere="";
         for (String d: this.filterGlobal.getAtmosphere()) {
-                atmosphere += d + ",";
+            atmosphere += d + ",";
         }
         int places = this.filterGlobal.getPlaces();
         int waitingTime = this.filterGlobal.getWaitingTime();
@@ -165,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         editor.putString("days",days);
         editor.putFloat("hourBegin",hourBegin);
         editor.putFloat("hourEnd",hourEnd);
-        System.out.println("TYPE: "+type);
         editor.putString("type",type);
         editor.putInt("startBudget",startBudget);
         editor.putInt("endBudget",endBudget);
@@ -184,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 Intent i = data;
                 filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter",0.0),i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
+                updateMarkerOnMap();
             }
         }
     }
@@ -233,22 +239,69 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-       /* ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
-        System.out.println(allRestos);
+
+        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
 
         if(!allRestos.isEmpty()) {
             LatLng firstRestaurantPosition = new LatLng(allRestos.get(0).getLatitude(), allRestos.get(0).getLongitude());
             mMap.addMarker(new MarkerOptions().position(firstRestaurantPosition).title(allRestos.get(0).getName()));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(firstRestaurantPosition));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
             allRestos.remove(0);
             for (Restaurant resto : allRestos) {
                 LatLng position = new LatLng(resto.getLatitude(), resto.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(position).title(resto.getName()));
             }
-        }*/
+        }
     }
+
+    public void updateMarkerOnMap(){
+        mMap.clear();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
+
+        if(!allRestos.isEmpty()) {
+            LatLng firstRestaurantPosition = new LatLng(allRestos.get(0).getLatitude(), allRestos.get(0).getLongitude());
+            mMap.addMarker(new MarkerOptions().position(firstRestaurantPosition).title(allRestos.get(0).getName()));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(firstRestaurantPosition));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
+
+            allRestos.remove(0);
+            for (Restaurant resto : allRestos) {
+                LatLng position = new LatLng(resto.getLatitude(), resto.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(position).title(resto.getName()));
+            }
+        }
+    }
+
 
 
     /**
