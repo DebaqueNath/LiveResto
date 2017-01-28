@@ -227,8 +227,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //Si la base est vide on la remplit
         if(restaurantDao.getRestaurants().isEmpty()) {
-            Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.121059, 50.616862, false, false, "fast-food", "musical", 2, 11, "cartebancaire,espece,cheque", 10, 10, true, true);
-            Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.071162, 50.636491, false, false, "fast-food", "jeune", 2, 12, "cartebancaire,espece,cheque,ticketrestaurant", 5, 15, false, true);
+            Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.121059, 50.616862, false, false, "fastfood", "musical", 2, 11, "cartebancaire,espece,cheque", 10, 10, true, true);
+            Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.071162, 50.636491, false, false, "fastfood", "jeune", 2, 12, "cartebancaire,espece,cheque,ticketrestaurant", 5, 15, false, true);
             //Add restaurant
             restaurantDao.putRestaurant(r1);
             restaurantDao.putRestaurant(r2);

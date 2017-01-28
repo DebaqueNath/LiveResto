@@ -15,15 +15,15 @@ import android.widget.TextView;
 
 import com.platine.liveresto.R;
 import com.platine.liveresto.model.Data;
-import com.platine.liveresto.model.ElementsAdapter;
-import com.platine.liveresto.model.ElementsAdapterSimple;
+import com.platine.liveresto.filtre.Adapter.ElementsAdapter;
+import com.platine.liveresto.filtre.Adapter.ElementsAdapterSimple;
 import com.platine.liveresto.model.Filtre;
 import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.OnRangeSeekBarChangeListener<Number>, CompoundButton.OnCheckedChangeListener, ElementsAdapterSimple.Listener{
+public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.OnRangeSeekBarChangeListener<Number>, CompoundButton.OnCheckedChangeListener, ElementsAdapterSimple.Listener, ElementsAdapter.Listener{
 
     private Button buttonDistance;
     private Button buttonSchedule;
@@ -84,21 +84,167 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
 
         initFilters();
 
-        initRecyclerView();
+        initElementsView();
 
-        //Distance
-        rangeSeekBarDistance.setSelectedMaxValue(filterGlobal.getDistanceMax());
+        initData();
 
         addListenerOnButton();
 
     }
 
+    //Save filters
     @Override
     public void onCardViewClick(Data d) {
-        if(d.getName()=="Distance"){
-
+        //Days
+        if(d.getName()=="Lundi"){
+            if(filterGlobal.getDays().contains("LU")) {filterGlobal.removeDay("LU"); } else { filterGlobal.addDay("LU");}
+        }
+        if(d.getName()=="Mardi"){
+            if(filterGlobal.getDays().contains("MA")) {filterGlobal.removeDay("MA"); } else { filterGlobal.addDay("MA");}
+        }
+        if(d.getName()=="Mercredi"){
+            if(filterGlobal.getDays().contains("ME")) {filterGlobal.removeDay("ME"); } else { filterGlobal.addDay("ME");}
+        }
+        if(d.getName()=="Jeudi"){
+            if(filterGlobal.getDays().contains("JE")) {filterGlobal.removeDay("JE"); } else { filterGlobal.addDay("JE");}
+        }
+        if(d.getName()=="Vendredi"){
+            if(filterGlobal.getDays().contains("VE")) {filterGlobal.removeDay("VE"); } else { filterGlobal.addDay("VE");}
+        }
+        if(d.getName()=="Samedi"){
+            if(filterGlobal.getDays().contains("SA")) {filterGlobal.removeDay("SA"); } else { filterGlobal.addDay("SA");}
+        }
+        if(d.getName()=="Dimanche"){
+            if(filterGlobal.getDays().contains("DI")) {filterGlobal.removeDay("DI"); } else { filterGlobal.addDay("DI");}
+        }
+        if(d.getName()=="TOUSDAY"){
+            filterGlobal.removeAllDay();
         }
 
+        //Type
+        if(d.getName()=="Pizzeria"){
+            if(filterGlobal.getType().contains("pizzeria")) {filterGlobal.removeType("pizzeria"); } else { filterGlobal.addType("pizzeria");}
+        }
+        if(d.getName()=="Halal"){
+            if(filterGlobal.getType().contains("halal")) {filterGlobal.removeType("halal"); } else { filterGlobal.addType("halal");}
+        }
+        if(d.getName()=="Brasserie"){
+            if(filterGlobal.getType().contains("brasserie")) {filterGlobal.removeType("brasserie"); } else { filterGlobal.addType("brasserie");}
+        }
+        if(d.getName()=="Végétarien"){
+            if(filterGlobal.getType().contains("vegetarien")) {filterGlobal.removeType("vegetarien"); } else { filterGlobal.addType("vegetarien");}
+        }
+        if(d.getName()=="Gastronomique"){
+            if(filterGlobal.getType().contains("gastronomique")) {filterGlobal.removeType("gastronomique"); } else { filterGlobal.addType("gastronomique");}
+        }
+        if(d.getName()=="Bio"){
+            if(filterGlobal.getType().contains("bio")) {filterGlobal.removeType("bio"); } else { filterGlobal.addType("bio");}
+        }
+        if(d.getName()=="Fast-food"){
+            if(filterGlobal.getType().contains("fastfood")) {filterGlobal.removeType("fastfood"); } else { filterGlobal.addType("fastfood");}
+        }
+        if(d.getName()=="Casher"){
+            if(filterGlobal.getType().contains("casher")) {filterGlobal.removeType("casher"); } else { filterGlobal.addType("casher");}
+        }
+        if(d.getName()=="Italien"){
+            if(filterGlobal.getType().contains("italien")) {filterGlobal.removeType("italien"); } else { filterGlobal.addType("italien");}
+        }
+        if(d.getName()=="Chinois"){
+            if(filterGlobal.getType().contains("chinois")) {filterGlobal.removeType("chinois"); } else { filterGlobal.addType("chinois");}
+        }
+        if(d.getName()=="TOUSTYPE"){
+            filterGlobal.removeAllType();
+        }
+
+        //Budget
+        if(d.getName()=="<20"){
+            if(filterGlobal.getStartBudget()==0 && filterGlobal.getEndBudget()==19) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(19);}
+        }
+        if(d.getName()=="20 à 39"){
+            if(filterGlobal.getStartBudget()==20 && filterGlobal.getEndBudget()==39) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(20);filterGlobal.setEndBudget(39);}
+        }
+        if(d.getName()=="40 à 59"){
+            if(filterGlobal.getStartBudget()==40 && filterGlobal.getEndBudget()==59) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(40);filterGlobal.setEndBudget(59);}
+        }
+        if(d.getName()=="60 à 79"){
+            if(filterGlobal.getStartBudget()==60 && filterGlobal.getEndBudget()==79) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(60);filterGlobal.setEndBudget(79);}
+        }
+        if(d.getName()==">80"){
+            if(filterGlobal.getStartBudget()==80 && filterGlobal.getEndBudget()==1000) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(80);filterGlobal.setEndBudget(1000);}
+        }
+        if(d.getName()=="TOUSBUDGET"){
+            filterGlobal.setStartBudget(0);
+            filterGlobal.setEndBudget(0);
+        }
+
+        //Payment
+        if(d.getName()=="Carte bancaire"){
+            if(filterGlobal.getPayment().contains("cartebancaire")) {filterGlobal.removePayment("cartebancaire"); } else { filterGlobal.addPayment("cartebancaire");}
+        }
+        if(d.getName()=="Cheque"){
+            if(filterGlobal.getPayment().contains("cheque")) {filterGlobal.removePayment("cheque"); } else { filterGlobal.addPayment("cheque");}
+        }
+        if(d.getName()=="Cheque vacances"){
+            if(filterGlobal.getPayment().contains("chequevac")) {filterGlobal.removePayment("chequevac"); } else { filterGlobal.addPayment("chequevac");}
+        }
+        if(d.getName()=="Espece"){
+            if(filterGlobal.getPayment().contains("espece")) {filterGlobal.removePayment("espece"); } else { filterGlobal.addPayment("espece");}
+        }
+        if(d.getName()=="Ticket restaurant"){
+            if(filterGlobal.getPayment().contains("ticketrestaurant")) {filterGlobal.removePayment("ticketrestaurant"); } else { filterGlobal.addPayment("ticketrestaurant");}
+        }
+        if(d.getName()=="TOUSPAYMENT"){
+            filterGlobal.removeAllPayment();
+        }
+
+        //Atmosphere
+        if(d.getName()=="Retro"){
+            if(filterGlobal.getAtmosphere().contains("retro")) {filterGlobal.removeAtmosphere("retro"); } else { filterGlobal.addAtmosphere("retro");}
+        }
+        if(d.getName()=="Musical"){
+            if(filterGlobal.getAtmosphere().contains("musical")) {filterGlobal.removeAtmosphere("musical"); } else { filterGlobal.addAtmosphere("musical");}
+        }
+        if(d.getName()=="Jeune"){
+            if(filterGlobal.getAtmosphere().contains("jeune")) {filterGlobal.removeAtmosphere("jeune"); } else { filterGlobal.addAtmosphere("jeune");}
+        }
+        if(d.getName()=="Chic"){
+            if(filterGlobal.getAtmosphere().contains("chic")) {filterGlobal.removeAtmosphere("chic"); } else { filterGlobal.addAtmosphere("chic");}
+        }
+        if(d.getName()=="Romantique"){
+            if(filterGlobal.getAtmosphere().contains("romantique")) {filterGlobal.removeAtmosphere("romantique"); } else { filterGlobal.addAtmosphere("romantique");}
+        }
+        if(d.getName()=="Historique"){
+            if(filterGlobal.getAtmosphere().contains("historique")) {filterGlobal.removeAtmosphere("historique"); } else { filterGlobal.addAtmosphere("historique");}
+        }
+        if(d.getName()=="Spectacle"){
+            if(filterGlobal.getAtmosphere().contains("spectacle")) {filterGlobal.removeAtmosphere("spectacle"); } else { filterGlobal.addAtmosphere("spectacle");}
+        }
+        if(d.getName()=="TOUSATMOSPHERE"){
+            filterGlobal.removeAllAtmosphere();
+        }
+
+        //WaitingTime
+        if(d.getName()=="<5min"){
+            if(filterGlobal.getWaitingTime()==5) {filterGlobal.setWaitingTime(0); } else { filterGlobal.setWaitingTime(5);}
+        }
+        if(d.getName()=="<10min"){
+            if(filterGlobal.getWaitingTime()==10) {filterGlobal.setWaitingTime(0); } else { filterGlobal.setWaitingTime(10);}
+        }
+        if(d.getName()=="<15min"){
+            if(filterGlobal.getWaitingTime()==15) {filterGlobal.setWaitingTime(0); } else { filterGlobal.setWaitingTime(15);}
+        }
+        if(d.getName()=="<30min"){
+            if(filterGlobal.getWaitingTime()==30) {filterGlobal.setWaitingTime(0); } else { filterGlobal.setWaitingTime(30);}
+        }
+        if(d.getName()=="<45min"){
+            if(filterGlobal.getWaitingTime()==45) {filterGlobal.setWaitingTime(0); } else { filterGlobal.setWaitingTime(45);}
+        }
+        if(d.getName()=="<60min"){
+            if(filterGlobal.getWaitingTime()==60) {filterGlobal.setWaitingTime(0); } else { filterGlobal.setWaitingTime(60);}
+        }
+        if(d.getName()=="TOUSWAITING"){
+            filterGlobal.setWaitingTime(0);
+        }
     }
 
     @Override
@@ -151,13 +297,13 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     }
 
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(buttonView.getText() == "Terrasse"){
+        if(buttonView.getText().equals("Terrasse")){
             if(isChecked){
                 filterGlobal.setTerrace(true);
             } else {
                 filterGlobal.setTerrace(false);
             }
-        } else if(buttonView.getText() == "Climatisation"){
+        } else if(buttonView.getText().equals("Climatisation")){
             if(isChecked){
                 filterGlobal.setAirConditionner(true);
             } else {
@@ -192,55 +338,55 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         scheduleList.add(new Data("Vendredi",R.drawable.icon_friday,filterGlobal.getDays().contains("VE")));
         scheduleList.add(new Data("Samedi",R.drawable.icon_saturday,filterGlobal.getDays().contains("SA")));
         scheduleList.add(new Data("Dimanche",R.drawable.icon_sunday,filterGlobal.getDays().contains("DI")));
-        scheduleList.add(new Data("TOUS",R.drawable.icon_ticket,filterGlobal.getDays().isEmpty()));
+        scheduleList.add(new Data("TOUSDAY",R.drawable.icon_ticket,filterGlobal.getDays().isEmpty()));
 
         typeList = new ArrayList<>();
-        typeList.add(new Data("Pizzeria", R.drawable.pizzeria,false));
-        typeList.add(new Data("Halal", R.drawable.halal,false));
-        typeList.add(new Data("Brasserie", R.drawable.brasserie,false));
-        typeList.add(new Data("Végétarien", R.drawable.vegetarien,false));
-        typeList.add(new Data("Gastronomique", R.drawable.gastronomique,false));
-        typeList.add(new Data("Bio", R.drawable.bio,false));
-        typeList.add(new Data("Fast-food", R.drawable.fastfood,false));
-        typeList.add(new Data("Casher", R.drawable.casher,false));
-        typeList.add(new Data("Italien", R.drawable.italien,false));
-        typeList.add(new Data("Chinois", R.drawable.chinois,false));
-        typeList.add(new Data("TOUS",R.drawable.icon_ticket,false));
+        typeList.add(new Data("Pizzeria", R.drawable.pizzeria,filterGlobal.getType().contains("pizzeria")));
+        typeList.add(new Data("Halal", R.drawable.halal,filterGlobal.getType().contains("halal")));
+        typeList.add(new Data("Brasserie", R.drawable.brasserie,filterGlobal.getType().contains("brasserie")));
+        typeList.add(new Data("Végétarien", R.drawable.vegetarien,filterGlobal.getType().contains("vegetarien")));
+        typeList.add(new Data("Gastronomique", R.drawable.gastronomique,filterGlobal.getType().contains("gastronomique")));
+        typeList.add(new Data("Bio", R.drawable.bio,filterGlobal.getType().contains("bio")));
+        typeList.add(new Data("Fast-food", R.drawable.fastfood,filterGlobal.getType().contains("fastfood")));
+        typeList.add(new Data("Casher", R.drawable.casher,filterGlobal.getType().contains("casher")));
+        typeList.add(new Data("Italien", R.drawable.italien,filterGlobal.getType().contains("italien")));
+        typeList.add(new Data("Chinois", R.drawable.chinois,filterGlobal.getType().contains("chinois")));
+        typeList.add(new Data("TOUSTYPE",R.drawable.icon_ticket,filterGlobal.getType().isEmpty()));
 
         budgetList = new ArrayList<>();
-        budgetList.add(new Data("<20",R.drawable.icon_inf_20,false));
-        budgetList.add(new Data("20 à 39",R.drawable.icon_from_20_to_39,false));
-        budgetList.add(new Data("40 à 59",R.drawable.icon_from_40_to_59,false));
-        budgetList.add(new Data("60 à 79",R.drawable.icon_from_60_to_79,false));
-        budgetList.add(new Data(">80",R.drawable.icon_sup_80,false));
-        budgetList.add(new Data("TOUS",R.drawable.icon_ticket,false));
+        budgetList.add(new Data("<20",R.drawable.icon_inf_20,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==19)) ? true : false));
+        budgetList.add(new Data("20 à 39",R.drawable.icon_from_20_to_39,((filterGlobal.getStartBudget()==20) && (filterGlobal.getEndBudget()==39)) ? true : false));
+        budgetList.add(new Data("40 à 59",R.drawable.icon_from_40_to_59,((filterGlobal.getStartBudget()==40) && (filterGlobal.getEndBudget()==59)) ? true : false));
+        budgetList.add(new Data("60 à 79",R.drawable.icon_from_60_to_79,((filterGlobal.getStartBudget()==60) && (filterGlobal.getEndBudget()==79)) ? true : false));
+        budgetList.add(new Data(">80",R.drawable.icon_sup_80,((filterGlobal.getStartBudget()==80) && (filterGlobal.getEndBudget()==1000)) ? true : false));
+        budgetList.add(new Data("TOUSBUDGET",R.drawable.icon_ticket,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==0)) ? true : false));
 
         paymentList = new ArrayList<>();
-        paymentList.add(new Data("Carte bancaire",R.drawable.icon_cb,false));
-        paymentList.add(new Data("Cheque",R.drawable.icon_cheque,false));
-        paymentList.add(new Data("Cheque vacances",R.drawable.icon_vac,false));
-        paymentList.add(new Data("Espece",R.drawable.icon_money,false));
-        paymentList.add(new Data("Ticket restaurant",R.drawable.icon_ticket,false));
-        paymentList.add(new Data("TOUS",R.drawable.icon_ticket,false));
+        paymentList.add(new Data("Carte bancaire",R.drawable.icon_cb,filterGlobal.getPayment().contains("cartebancaire")));
+        paymentList.add(new Data("Cheque",R.drawable.icon_cheque,filterGlobal.getPayment().contains("cheque")));
+        paymentList.add(new Data("Cheque vacances",R.drawable.icon_vac,filterGlobal.getPayment().contains("chequevac")));
+        paymentList.add(new Data("Espece",R.drawable.icon_money,filterGlobal.getPayment().contains("espece")));
+        paymentList.add(new Data("Ticket restaurant",R.drawable.icon_ticket,filterGlobal.getPayment().contains("ticketrestaurant")));
+        paymentList.add(new Data("TOUSPAYMENT",R.drawable.icon_ticket,filterGlobal.getPayment().isEmpty()));
 
         atmosphereList = new ArrayList<>();
-        atmosphereList.add(new Data("Retro",R.drawable.icon_ticket,false));
-        atmosphereList.add(new Data("Musical",R.drawable.icon_ticket,false));
-        atmosphereList.add(new Data("Jeune",R.drawable.icon_ticket,false));
-        atmosphereList.add(new Data("Chic",R.drawable.icon_ticket,false));
-        atmosphereList.add(new Data("Romantique",R.drawable.icon_ticket,false));
-        atmosphereList.add(new Data("Historique",R.drawable.icon_ticket,false));
-        atmosphereList.add(new Data("Spectacle",R.drawable.icon_ticket,false));
-        atmosphereList.add(new Data("TOUS",R.drawable.icon_ticket,false));
+        atmosphereList.add(new Data("Retro",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("retro")));
+        atmosphereList.add(new Data("Musical",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("musical")));
+        atmosphereList.add(new Data("Jeune",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("jeune")));
+        atmosphereList.add(new Data("Chic",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("chic")));
+        atmosphereList.add(new Data("Romantique",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("romantique")));
+        atmosphereList.add(new Data("Historique",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("historique")));
+        atmosphereList.add(new Data("Spectacle",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("spectacle")));
+        atmosphereList.add(new Data("TOUSATMOSPHERE",R.drawable.icon_ticket,filterGlobal.getAtmosphere().isEmpty()));
 
         waitingTimeList = new ArrayList<>();
-        waitingTimeList.add(new Data("<5min",R.drawable.icon_ticket,false));
-        waitingTimeList.add(new Data("<10min",R.drawable.icon_ticket,false));
-        waitingTimeList.add(new Data("<15min",R.drawable.icon_ticket,false));
-        waitingTimeList.add(new Data("<30min",R.drawable.icon_ticket,false));
-        waitingTimeList.add(new Data("<45min",R.drawable.icon_ticket,false));
-        waitingTimeList.add(new Data("<60min",R.drawable.icon_ticket,false));
-        waitingTimeList.add(new Data("TOUS",R.drawable.icon_ticket,false));
+        waitingTimeList.add(new Data("<5min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==5)? true : false));
+        waitingTimeList.add(new Data("<10min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==10)? true : false));
+        waitingTimeList.add(new Data("<15min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==15)? true : false));
+        waitingTimeList.add(new Data("<30min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==30)? true : false));
+        waitingTimeList.add(new Data("<45min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==45)? true : false));
+        waitingTimeList.add(new Data("<60min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==60)? true : false));
+        waitingTimeList.add(new Data("TOUSWAITING",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==0)? true : false));
 
     }
 
@@ -248,8 +394,8 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     /**
      *
      */
-    public void initRecyclerView(){
-        //On initialise tous les éléments
+    public void initElementsView(){
+        //Initialize RangeSeekBar
         rangeSeekBarDistance = (RangeSeekBar) findViewById(R.id.rangeseekbardistance);
         rangeSeekBarDistance.setLabel("km");
         rangeSeekBarDistance.setRangeValues(0,50);
@@ -265,42 +411,6 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         rangeSeekBarSchedule.setOnRangeSeekBarChangeListener(this);
         rangeSeekBarSchedule.setVisibility(View.GONE);
 
-
-        recyclerViewSchedule = (RecyclerView) findViewById(R.id.recycler_view_schedule);
-        recyclerViewSchedule.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerSchedule = new GridLayoutManager(this, 3);
-        recyclerViewSchedule.setLayoutManager(gridLayoutManagerSchedule);
-        recyclerViewSchedule.setAdapter(new ElementsAdapterSimple(scheduleList,this));
-        recyclerViewSchedule.setVisibility(View.GONE);
-
-        recyclerViewType = (RecyclerView) findViewById(R.id.recycler_view_type);
-        recyclerViewType.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerType = new GridLayoutManager(this, 3);
-        recyclerViewType.setLayoutManager(gridLayoutManagerType);
-        recyclerViewType.setAdapter(new ElementsAdapter(typeList));
-        recyclerViewType.setVisibility(View.GONE);
-
-        recyclerViewBudget = (RecyclerView) findViewById(R.id.recycler_view_budget);
-        recyclerViewBudget.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerBudget = new GridLayoutManager(this, 3);
-        recyclerViewBudget.setLayoutManager(gridLayoutManagerBudget);
-        recyclerViewBudget.setAdapter(new ElementsAdapter(budgetList));
-        recyclerViewBudget.setVisibility(View.GONE);
-
-        recyclerViewPayment = (RecyclerView) findViewById(R.id.recycler_view_payment);
-        recyclerViewPayment.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerPayment = new GridLayoutManager(this, 3);
-        recyclerViewPayment.setLayoutManager(gridLayoutManagerPayment);
-        recyclerViewPayment.setAdapter(new ElementsAdapter(paymentList));
-        recyclerViewPayment.setVisibility(View.GONE);
-
-        recyclerViewAtmosphere = (RecyclerView) findViewById(R.id.recycler_view_atmosphere);
-        recyclerViewAtmosphere.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerAtmosphere = new GridLayoutManager(this, 3);
-        recyclerViewAtmosphere.setLayoutManager(gridLayoutManagerAtmosphere);
-        recyclerViewAtmosphere.setAdapter(new ElementsAdapter(atmosphereList));
-        recyclerViewAtmosphere.setVisibility(View.GONE);
-
         rangeSeekBarPlaces= (RangeSeekBar) findViewById(R.id.rangeseekbarplaces);
         rangeSeekBarPlaces.setLabel(" personnes");
         rangeSeekBarPlaces.setRangeValues(0,10);
@@ -308,13 +418,51 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         rangeSeekBarPlaces.setOnRangeSeekBarChangeListener(this);
         rangeSeekBarPlaces.setVisibility(View.GONE);
 
+        //Initialize Recycler
+        recyclerViewSchedule = (RecyclerView) findViewById(R.id.recycler_view_schedule);
+        recyclerViewSchedule.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerSchedule = new GridLayoutManager(this, 3);
+        recyclerViewSchedule.setLayoutManager(gridLayoutManagerSchedule);
+        recyclerViewSchedule.setAdapter(new ElementsAdapter(scheduleList,this));
+        recyclerViewSchedule.setVisibility(View.GONE);
+
+        recyclerViewType = (RecyclerView) findViewById(R.id.recycler_view_type);
+        recyclerViewType.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerType = new GridLayoutManager(this, 3);
+        recyclerViewType.setLayoutManager(gridLayoutManagerType);
+        recyclerViewType.setAdapter(new ElementsAdapter(typeList,this));
+        recyclerViewType.setVisibility(View.GONE);
+
+        recyclerViewBudget = (RecyclerView) findViewById(R.id.recycler_view_budget);
+        recyclerViewBudget.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerBudget = new GridLayoutManager(this, 3);
+        recyclerViewBudget.setLayoutManager(gridLayoutManagerBudget);
+        recyclerViewBudget.setAdapter(new ElementsAdapterSimple(budgetList,this));
+        recyclerViewBudget.setVisibility(View.GONE);
+
+        recyclerViewPayment = (RecyclerView) findViewById(R.id.recycler_view_payment);
+        recyclerViewPayment.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerPayment = new GridLayoutManager(this, 3);
+        recyclerViewPayment.setLayoutManager(gridLayoutManagerPayment);
+        recyclerViewPayment.setAdapter(new ElementsAdapter(paymentList,this));
+        recyclerViewPayment.setVisibility(View.GONE);
+
+        recyclerViewAtmosphere = (RecyclerView) findViewById(R.id.recycler_view_atmosphere);
+        recyclerViewAtmosphere.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerAtmosphere = new GridLayoutManager(this, 3);
+        recyclerViewAtmosphere.setLayoutManager(gridLayoutManagerAtmosphere);
+        recyclerViewAtmosphere.setAdapter(new ElementsAdapter(atmosphereList,this));
+        recyclerViewAtmosphere.setVisibility(View.GONE);
+
+
         recyclerViewWaitingTime = (RecyclerView) findViewById(R.id.recycler_view_waitingtime);
         recyclerViewWaitingTime.setHasFixedSize(true);
         GridLayoutManager gridLayoutManagerWaitingTime = new GridLayoutManager(this, 3);
         recyclerViewWaitingTime.setLayoutManager(gridLayoutManagerWaitingTime);
-        recyclerViewWaitingTime.setAdapter(new ElementsAdapter(waitingTimeList));
+        recyclerViewWaitingTime.setAdapter(new ElementsAdapterSimple(waitingTimeList,this));
         recyclerViewWaitingTime.setVisibility(View.GONE);
 
+        //Initialize Switch
         switchTerrace = (Switch)findViewById(R.id.switchTerrace);
         switchTerrace.setChecked(false);
         switchTerrace.setOnCheckedChangeListener(this);
@@ -325,6 +473,25 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         switchAirConditionner.setOnCheckedChangeListener(this);
         switchAirConditionner.setVisibility(View.GONE);
     }
+
+    public void initData(){
+        //Distance
+        rangeSeekBarDistance.setSelectedMaxValue(filterGlobal.getDistanceMax());
+
+        //Schedule Hours
+        rangeSeekBarSchedule.setSelectedMinValue(filterGlobal.getHourBegin());
+        rangeSeekBarSchedule.setSelectedMaxValue(filterGlobal.getHourEnd());
+
+        //Number places
+        rangeSeekBarPlaces.setSelectedMaxValue(filterGlobal.getPlaces());
+
+        //Terrace
+        switchTerrace.setChecked(filterGlobal.isTerrace());
+
+        //AirConditionner
+        switchAirConditionner.setChecked(filterGlobal.isAirConditionner());
+    }
+
 
     /**
      *

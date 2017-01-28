@@ -150,6 +150,16 @@ public class Filtre {
         this.days.add(day);
     }
 
+    public void addAllDay(){
+        this.days.add("LU");
+        this.days.add("MA");
+        this.days.add("ME");
+        this.days.add("JE");
+        this.days.add("VE");
+        this.days.add("SA");
+        this.days.add("DI");
+    }
+
     public void removeDay(String day){
         this.days.remove(day);
     }
@@ -160,6 +170,19 @@ public class Filtre {
 
     public void addType(String type){
         this.type.add(type);
+    }
+
+    public void addAllType(){
+        this.type.add("pizzeria");
+        this.type.add("halal");
+        this.type.add("brasserie");
+        this.type.add("vegetarien");
+        this.type.add("gastronomique");
+        this.type.add("bio");
+        this.type.add("fastfood");
+        this.type.add("casher");
+        this.type.add("italien");
+        this.type.add("chinois");
     }
 
     public void removeType(String type){
@@ -174,6 +197,14 @@ public class Filtre {
         this.payment.add(p);
     }
 
+    public void addAllPayment(){
+        this.payment.add("espece");
+        this.payment.add("cheque");
+        this.payment.add("chequevac");
+        this.payment.add("cartebancaire");
+        this.payment.add("ticketrestaurant");
+    }
+
     public void removePayment(String p){
         this.payment.remove(p);
     }
@@ -184,6 +215,16 @@ public class Filtre {
 
     public void addAtmosphere(String a){
         this.atmosphere.add(a);
+    }
+
+    public void addAllAtmosphere(){
+        this.atmosphere.add("retro");
+        this.atmosphere.add("musical");
+        this.atmosphere.add("jeune");
+        this.atmosphere.add("chic");
+        this.atmosphere.add("romantique");
+        this.atmosphere.add("historique");
+        this.atmosphere.add("spectacle");
     }
 
     public void removeAtmosphere(String a){

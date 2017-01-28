@@ -1,4 +1,4 @@
-package com.platine.liveresto.model;
+package com.platine.liveresto.filtre.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.platine.liveresto.R;
+import com.platine.liveresto.filtre.Holder.MyViewHolder;
+import com.platine.liveresto.model.Data;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -13,20 +15,30 @@ import java.util.List;
 /**
  * Created by Nath on 27/01/2017.
  */
-public class ElementsAdapterSimple extends RecyclerView.Adapter<MyViewHolder> implements MyViewHolder.Listener{
+public class ElementsAdapter extends RecyclerView.Adapter<MyViewHolder> implements MyViewHolder.Listener{
     private static final int VIEW_NORMAL = 1;
     private List<Data> contactList;
     private WeakReference<Listener> mListener;
 
 
-    public ElementsAdapterSimple(List<Data> contactList, Listener listener) {
+    public ElementsAdapter(List<Data> contactList, Listener listener) {
         this.contactList = contactList;
         setListener(listener);
     }
 
 
     public void onCardViewClick(int position){
-        for (Data d : contactList) {
+        //Cas où on appuie sur TOUS
+        if(position == contactList.size()-1){
+            Data d;
+            for(int i = 0 ; i < contactList.size(); i++){
+                d = contactList.get(i);
+                if(position != i){
+                    d.setSelected(false);
+                }
+            }
+        } else {
+            Data d = contactList.get(contactList.size()-1);
             d.setSelected(false);
         }
         contactList.get(position).setSelected(!contactList.get(position).isSelected());
@@ -70,4 +82,7 @@ public class ElementsAdapterSimple extends RecyclerView.Adapter<MyViewHolder> im
     public interface Listener {
         void onCardViewClick(Data d);
     }
+
+
+
 }

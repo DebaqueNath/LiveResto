@@ -1,4 +1,4 @@
-package com.platine.liveresto.model;
+package com.platine.liveresto.filtre.Holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.platine.liveresto.R;
+import com.platine.liveresto.model.Data;
 
 import java.lang.ref.WeakReference;
 
@@ -31,7 +32,11 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindViewHolder(Data d){
-        this.vName.setText(d.name);
+        if(d.name.contains("TOUS")) {
+            this.vName.setText(d.name.substring(0,4));
+        } else {
+            this.vName.setText(d.name);
+        }
         this.vImage.setImageResource(d.imageId);
         if(d.isSelected){
             layoutCardGlobal.setBackgroundResource(R.drawable.card_border);
