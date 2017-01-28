@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,6 +25,7 @@ import com.platine.liveresto.model.Horaire;
 import com.platine.liveresto.model.Restaurant;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -74,6 +74,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // ******************** DB  ********************
         fixtures();
+
+        //Affichage des restaurants crées
+       /* System.out.println("Liste des restaurants : ");
+        RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
+        ArrayList<Restaurant> liste = rdao.getRestaurants();
+        for (Restaurant r : liste) {
+            System.out.println(r);
+        }*/
 
         //TEST requête BDD par rapport aux filtres
        /* RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
@@ -152,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 Intent i = data;
                 filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter",0.0),i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
-                Toast.makeText(getApplicationContext(),filterGlobal.toString(),Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -203,7 +210,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
 
         RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-        ArrayList<Restaurant> allRestos = restosDAO.getRestaurants();
+
+        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
 
         LatLng firstRestaurantPosition = new LatLng(allRestos.get(0).getLatitude(), allRestos.get(0).getLongitude());
         mMap.addMarker(new MarkerOptions().position(firstRestaurantPosition).title(allRestos.get(0).getName()));
@@ -227,6 +235,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //Si la base est vide on la remplit
         if(restaurantDao.getRestaurants().isEmpty()) {
+
+            //Les deux restaurants pour la vidéo
             Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.121059, 50.616862, false, false, "fastfood", "musical", 2, 11, "cartebancaire,espece,cheque", 10, 10, true, true);
             Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.071162, 50.636491, false, false, "fastfood", "jeune", 2, 12, "cartebancaire,espece,cheque,ticketrestaurant", 5, 15, false, true);
             //Add restaurant
@@ -246,6 +256,265 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             horaireDao.putHoraire(h2);
             horaireDao.putHoraire(h3);
             horaireDao.putHoraire(h4);
+
+
+            //Remplissage random de la BDD
+
+            //Listes d'éléments
+            ArrayList<String> adresses = new ArrayList<>();
+            adresses.add("marcel pagnol");
+            adresses.add("jean bleu");
+            adresses.add("michel rognon");
+            adresses.add("belle epine");
+            adresses.add("des acquets");
+            adresses.add("de la route");
+            adresses.add("des champs brisés");
+            adresses.add("maréchal pétain");
+            adresses.add("des os");
+            adresses.add("albert leroy");
+            adresses.add("platine du soleil");
+            adresses.add("des pavés");
+
+            ArrayList<String> villes = new ArrayList<>();
+            villes.add("59000 Lille");
+            villes.add("59850 Villeneuve d'Ascq");
+            villes.add("59120 Hellemmes");
+            villes.add("59165 Armentières");
+            villes.add("59125 Marquette");
+            villes.add("59658 Roubaix");
+            villes.add("59359 Tourcoing");
+            villes.add("59145 Lomme");
+            villes.add("59697 Lambersart");
+            villes.add("59694 Loos");
+            villes.add("59123 Wasquehal");
+            villes.add("59974 Lezennes");
+            villes.add("62000 Lens");
+
+            ArrayList<String> tels = new ArrayList<>();
+            tels.add("0625626548");
+            tels.add("0625656558");
+            tels.add("0698756523");
+            tels.add("0602659858");
+            tels.add("0698784212");
+            tels.add("0600152656");
+
+            ArrayList<String> types = new ArrayList<>();
+            types.add("pizzeria");
+            types.add("halal");
+            types.add("brasserie");
+            types.add("vegetarien");
+            types.add("gastronomique");
+            types.add("bio");
+            types.add("fastfood");
+            types.add("casher");
+            types.add("italien");
+            types.add("chinois");
+
+            ArrayList<String> atmospheres = new ArrayList<>();
+            atmospheres.add("retro");
+            atmospheres.add("musical");
+            atmospheres.add("jeune");
+            atmospheres.add("chic");
+            atmospheres.add("romantique");
+            atmospheres.add("historique");
+            atmospheres.add("spectacle");
+
+            ArrayList<String> payments = new ArrayList<>();
+            payments.add("espece");
+            payments.add("cheque");
+            payments.add("chequevac");
+            payments.add("cartebancaire");
+            payments.add("ticketrestaurant");
+
+            ArrayList<Integer> waiting = new ArrayList<>();
+            waiting.add(0);
+            waiting.add(5);
+            waiting.add(15);
+            waiting.add(30);
+            waiting.add(45);
+            waiting.add(60);
+
+            ArrayList<String> joursListe = new ArrayList<>();
+            joursListe.add("LU");
+            joursListe.add("MA");
+            joursListe.add("ME");
+            joursListe.add("JE");
+            joursListe.add("VE");
+            joursListe.add("SA");
+            joursListe.add("DI");
+
+            ArrayList<String> hours = new ArrayList<>();
+            hours.add("00.00");
+            hours.add("00.30");
+            hours.add("01.00");
+            hours.add("01.30");
+            hours.add("02.00");
+            hours.add("02.30");
+            hours.add("03.00");
+            hours.add("03.30");
+            hours.add("04.00");
+            hours.add("04.30");
+            hours.add("05.00");
+            hours.add("05.30");
+            hours.add("06.00");
+            hours.add("06.30");
+            hours.add("07.00");
+            hours.add("07.30");
+            hours.add("08.00");
+            hours.add("08.30");
+            hours.add("09.00");
+            hours.add("09.30");
+            hours.add("10.00");
+            hours.add("10.30");
+            hours.add("11.00");
+            hours.add("12.30");
+            hours.add("12.00");
+            hours.add("13.30");
+            hours.add("13.00");
+            hours.add("14.30");
+            hours.add("14.00");
+            hours.add("15.30");
+            hours.add("15.00");
+            hours.add("16.30");
+            hours.add("16.00");
+            hours.add("17.30");
+            hours.add("17.00");
+            hours.add("18.30");
+            hours.add("18.00");
+            hours.add("19.30");
+            hours.add("19.00");
+            hours.add("20.30");
+            hours.add("20.00");
+            hours.add("21.30");
+            hours.add("21.00");
+            hours.add("22.30");
+            hours.add("22.00");
+            hours.add("23.00");
+            hours.add("23.30");
+            hours.add("24.00");
+
+            //Champs
+            String nom;
+            String adresse;
+            String tel;
+            String site;
+            String image;
+            double latitude;
+            double longitude;
+            String type="";
+            ArrayList<String> typetmp;
+            String atmosphere="";
+            ArrayList<String> atmospheretmp;
+            String payment="";
+            ArrayList<String> paymenttmp;
+            int startBudget;
+            int endBudget;
+            int places;
+            int waitingTimg;
+            boolean terrace;
+            boolean airConditionner;
+            Restaurant r;
+
+            Horaire h;
+            String jour="";
+            String hourBegin="";
+            String hourEnd="";
+
+            //Utils
+            Random rand = new Random();
+            int rdm,rdm2,rdm5;
+            double rdm3,rdm4;
+
+            for(int id = 3; id < 101 ; id++){
+                type="";
+                atmosphere="";
+                payment="";
+                nom = "Restaurant "+id;
+                rdm = rand.nextInt(adresses.size());
+                rdm2 = rand.nextInt(villes.size());
+                adresse = id + " rue " + adresses.get(rdm) +" "+villes.get(rdm2);
+                rdm = rand.nextInt(tels.size());
+                tel = tels.get(rdm);
+                site = "www.restaurant"+id+".fr";
+                image = "r"+id;
+                longitude = 3.000000 + (4.000000 - 3.000000) * rand.nextDouble();
+                latitude= 50.000000 + (51.000000 - 50.000000) * rand.nextDouble();
+                //Types
+                rdm = rand.nextInt(10);
+                typetmp = new ArrayList<>();
+                for(int i = 0 ; i < rdm ; i++) {
+                    rdm2 = rand.nextInt(types.size());
+                    if(i==0){
+                        if(!typetmp.contains(types.get(rdm2))) {
+                            type += types.get(rdm2);
+                        }
+                    } else {
+                        if(!typetmp.contains(types.get(rdm2))) {
+                            type += "," + types.get(rdm2);
+                        }
+                    }
+                    typetmp.add(types.get(rdm2));
+                }
+                //Atmosphere
+                atmospheretmp = new ArrayList<>();
+                rdm = rand.nextInt(10);
+                for( int i = 0 ; i < rdm ; i++) {
+                    rdm2 = rand.nextInt(atmospheres.size());
+                    if(i==0){
+                        if(!atmospheretmp.contains(atmospheres.get(rdm2))) {
+                            atmosphere += atmospheres.get(rdm2);
+                        }
+                    } else {
+                        if(!atmospheretmp.contains(atmospheres.get(rdm2))) {
+                            atmosphere += "," + atmospheres.get(rdm2);
+                        }
+                    }
+                    atmospheretmp.add(atmospheres.get(rdm2));
+                }
+                //Payment
+                paymenttmp = new ArrayList<>();
+                rdm = rand.nextInt(10);
+                for( int i = 0 ; i < rdm ; i++) {
+                    rdm2 = rand.nextInt(payments.size());
+                    if(i==0) {
+                        if(!paymenttmp.contains(payments.get(rdm2))) {
+                            payment += payments.get(rdm2);
+                        }
+                    } else {
+                        if(!paymenttmp.contains(payments.get(rdm2))) {
+                            payment += "," + payments.get(rdm2);
+                        }
+                    }
+                    paymenttmp.add(payments.get(rdm2));
+                }
+                startBudget= rand.nextInt(91);
+                endBudget= rand.nextInt(91 - startBudget) + startBudget;
+                places = rand.nextInt(11);
+                waitingTimg = waiting.get(rand.nextInt(6));
+                terrace = rand.nextBoolean();
+                airConditionner = rand.nextBoolean();
+
+                //Ajout du restaurant
+                r = new Restaurant(nom, adresse, tel, site, image, longitude, latitude, false, false, type, atmosphere, startBudget, endBudget, payment, places, waitingTimg, terrace, airConditionner);
+                restaurantDao.putRestaurant(r);
+
+                //Horaires
+                rdm = rand.nextInt(16 - 1 + 1) + 1;
+                for( int j = 0 ; j < rdm ; j++) {
+                    //Jours
+                    rdm5 = rand.nextInt(joursListe.size());
+                    jour = joursListe.get(rdm5);
+                    //Heure début
+                    rdm5 = rand.nextInt(hours.size());
+                    hourBegin = hours.get(rdm5);
+                    //Heure fin
+                    hourEnd = hours.get(rand.nextInt(hours.size() - rdm5) + rdm5);
+                    //Ajout de l'horaire
+                    h = new Horaire(id,jour+" "+hourBegin+" "+hourEnd);
+                    horaireDao.putHoraire(h);
+                }
+            }
+
         }
     }
 }
