@@ -146,11 +146,11 @@ public class FiltreActivity extends AppCompatActivity {
         typeList.add(new Data("Chinois", R.drawable.chinois));
 
         budgetList = new ArrayList<>();
-        budgetList.add(new Data("<20"));
-        budgetList.add(new Data("20 à 39"));
-        budgetList.add(new Data("40 à 59"));
-        budgetList.add(new Data("60 à 79"));
-        budgetList.add(new Data(">80"));
+        budgetList.add(new Data("<20", R.drawable.icon_inf_20));
+        budgetList.add(new Data("20 à 39", R.drawable.icon_from_20_to_39));
+        budgetList.add(new Data("40 à 59", R.drawable.icon_from_40_to_59));
+        budgetList.add(new Data("60 à 79", R.drawable.icon_from_60_to_79));
+        budgetList.add(new Data(">80", R.drawable.icon_sup_80));
 
         paymentList = new ArrayList<>();
         paymentList.add(new Data("CB"));
