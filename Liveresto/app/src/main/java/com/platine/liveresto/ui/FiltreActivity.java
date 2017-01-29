@@ -146,27 +146,27 @@ public class FiltreActivity extends AppCompatActivity {
         typeList.add(new Data("Chinois", R.drawable.chinois));
 
         budgetList = new ArrayList<>();
-        budgetList.add(new Data("<20", R.drawable.icon_inf_20));
-        budgetList.add(new Data("20 à 39", R.drawable.icon_from_20_to_39));
-        budgetList.add(new Data("40 à 59", R.drawable.icon_from_40_to_59));
-        budgetList.add(new Data("60 à 79", R.drawable.icon_from_60_to_79));
-        budgetList.add(new Data(">80", R.drawable.icon_sup_80));
+        budgetList.add(new Data("Moins de 20", R.drawable.icon_inf_20));
+        budgetList.add(new Data("De 20 à 39€", R.drawable.icon_from_20));
+        budgetList.add(new Data("De 40 à 59€", R.drawable.icon_from_40));
+        budgetList.add(new Data("De 60 à 79€", R.drawable.icon_from_60));
+        budgetList.add(new Data("Plus de 80€", R.drawable.icon_sup_80));
 
         paymentList = new ArrayList<>();
-        paymentList.add(new Data("CB"));
-        paymentList.add(new Data("Cheque"));
-        paymentList.add(new Data("Cheque vac"));
-        paymentList.add(new Data("Espece"));
-        paymentList.add(new Data("Ticket resto"));
+        paymentList.add(new Data("Carte bancaire", R.drawable.icon_cb));
+        paymentList.add(new Data("Cheque", R.drawable.icon_cheque));
+        paymentList.add(new Data("Cheque vac", R.drawable.icon_cheque_vac));
+        paymentList.add(new Data("Espece", R.drawable.icon_espece));
+        paymentList.add(new Data("Ticket resto", R.drawable.icon_ticket));
 
         atmosphereList = new ArrayList<>();
-        atmosphereList.add(new Data("Retro"));
-        atmosphereList.add(new Data("Musical"));
-        atmosphereList.add(new Data("Jeune"));
-        atmosphereList.add(new Data("Chic"));
-        atmosphereList.add(new Data("Romantique"));
-        atmosphereList.add(new Data("Historique"));
-        atmosphereList.add(new Data("Spectacle"));
+        atmosphereList.add(new Data("Retro", R.drawable.icon_retro));
+        atmosphereList.add(new Data("Musical", R.drawable.icon_music));
+        atmosphereList.add(new Data("Jeune", R.drawable.icon_jeune));
+        atmosphereList.add(new Data("Chic", R.drawable.icon_chic));
+        atmosphereList.add(new Data("Romantique", R.drawable.icon_romantique));
+        atmosphereList.add(new Data("Historique", R.drawable.icon_historique));
+        atmosphereList.add(new Data("Spectacle", R.drawable.icon_spectacle));
 
         numberList = new ArrayList<>();
         numberList.add(new Data("TODO"));
