@@ -41,6 +41,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int FILTRESCODE = 42;
     private GoogleMap mMap;
 
+    private boolean distanceActived = false;
+    private boolean scheduleActived = false;
+    private boolean typeActived = false;
+    private boolean budgetActived = false;
+    private boolean paymentActived = false;
+    private boolean atmosphereActived = false;
+    private boolean placesActived = false;
+    private boolean waitingTimeActived = false;
+    private boolean otherActived = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,6 +199,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (requestCode == FILTRESCODE) {
             if (resultCode == RESULT_OK) {
                 Intent i = data;
+                distanceActived =  i.getBooleanExtra("distanceActived",false);
+                scheduleActived = i.getBooleanExtra("scheduleActived",false);
+                typeActived = i.getBooleanExtra("typeActived",false);
+                budgetActived = i.getBooleanExtra("budgetActived",false);
+                paymentActived = i.getBooleanExtra("paymentActived",false);
+                atmosphereActived = i.getBooleanExtra("atmosphereActived",false);
+                placesActived = i.getBooleanExtra("placesActived",false);
+                waitingTimeActived = i.getBooleanExtra("waitingTimeActived",false);
+                otherActived = i.getBooleanExtra("otherActived",false);
                 filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter", 0.0), i.getStringArrayListExtra("daysFilter"), i.getDoubleExtra("hourBeginFilter", 0.0), i.getDoubleExtra("hourEndFilter", 0.0), i.getStringArrayListExtra("typeFilter"), i.getIntExtra("startBudgetFilter", 0), i.getIntExtra("endBudgetFilter", 0), i.getStringArrayListExtra("paymentFilter"), i.getStringArrayListExtra("atmosphereFilter"), i.getIntExtra("placesFilter", 0), i.getIntExtra("waitingTimeFilter", 0), i.getBooleanExtra("terraceFilter", false), i.getBooleanExtra("airConditionnerFilter", false));
                 updateMarkerOnMap();
             }
@@ -220,6 +239,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 filtres.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
                 filtres.putExtra("terraceFilter", filterGlobal.isTerrace());
                 filtres.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
+                filtres.putExtra("distanceActived",distanceActived);
+                filtres.putExtra("scheduleActived",scheduleActived);
+                filtres.putExtra("typeActived",typeActived);
+                filtres.putExtra("budgetActived",budgetActived);
+                filtres.putExtra("paymentActived",paymentActived);
+                filtres.putExtra("atmosphereActived",atmosphereActived);
+                filtres.putExtra("placesActived",placesActived);
+                filtres.putExtra("waitingTimeActived",waitingTimeActived);
+                filtres.putExtra("otherActived",otherActived);
                 startActivityForResult(filtres, FILTRESCODE);
                 return true;
             default:
@@ -299,12 +327,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Intent intent = new Intent(getApplicationContext(), RestaurantActivity.class);
-
                 String title = marker.getTitle();
                 intent.putExtra("title", title);
                 startActivity(intent);
             }
         });
+
 
         RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
         ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());

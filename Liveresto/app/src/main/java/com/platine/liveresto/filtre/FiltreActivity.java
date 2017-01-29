@@ -58,6 +58,16 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     private Switch switchTerrace;
     private Switch switchAirConditionner;
 
+    private boolean distanceActived;
+    private boolean scheduleActived;
+    private boolean typeActived;
+    private boolean budgetActived;
+    private boolean paymentActived;
+    private boolean atmosphereActived;
+    private boolean placesActived;
+    private boolean waitingTimeActived;
+    private boolean otherActived;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +78,15 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         Intent i = getIntent();
         filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter",0.0),i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
 
+        distanceActived =  i.getBooleanExtra("distanceActived",false);
+        scheduleActived = i.getBooleanExtra("scheduleActived",false);
+        typeActived = i.getBooleanExtra("typeActived",false);
+        budgetActived = i.getBooleanExtra("budgetActived",false);
+        paymentActived = i.getBooleanExtra("paymentActived",false);
+        atmosphereActived = i.getBooleanExtra("atmosphereActived",false);
+        placesActived = i.getBooleanExtra("placesActived",false);
+        waitingTimeActived = i.getBooleanExtra("waitingTimeActived",false);
+        otherActived = i.getBooleanExtra("otherActived",false);
 
         backArrowFilter = (ImageView) findViewById(R.id.back_arrow_filter);
         backArrowFilter.setOnClickListener(new View.OnClickListener() {
@@ -266,6 +285,15 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         i.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
         i.putExtra("terraceFilter", filterGlobal.isTerrace());
         i.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
+        i.putExtra("distanceActived",distanceActived);
+        i.putExtra("scheduleActived",scheduleActived);
+        i.putExtra("typeActived",typeActived);
+        i.putExtra("budgetActived",budgetActived);
+        i.putExtra("paymentActived",paymentActived);
+        i.putExtra("atmosphereActived",atmosphereActived);
+        i.putExtra("placesActived",placesActived);
+        i.putExtra("waitingTimeActived",waitingTimeActived);
+        i.putExtra("otherActived",otherActived);
         setResult(RESULT_OK, i);
         finish();
     }
@@ -399,7 +427,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         rangeSeekBarDistance.setRangeValues(0,50);
         rangeSeekBarDistance.setSelectedMaxValue(0);
         rangeSeekBarDistance.setOnRangeSeekBarChangeListener(this);
-        rangeSeekBarDistance.setVisibility(View.GONE);
+        rangeSeekBarDistance.setVisibility(distanceActived?View.VISIBLE:View.GONE);
 
         rangeSeekBarSchedule = (RangeSeekBar) findViewById(R.id.rangeseekbarschedule);
         rangeSeekBarSchedule.setLabel("h");
@@ -407,14 +435,14 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         rangeSeekBarSchedule.setSelectedMinValue(0);
         rangeSeekBarSchedule.setSelectedMaxValue(24);
         rangeSeekBarSchedule.setOnRangeSeekBarChangeListener(this);
-        rangeSeekBarSchedule.setVisibility(View.GONE);
+        rangeSeekBarSchedule.setVisibility(scheduleActived?View.VISIBLE:View.GONE);
 
         rangeSeekBarPlaces= (RangeSeekBar) findViewById(R.id.rangeseekbarplaces);
         rangeSeekBarPlaces.setLabel(" personnes");
         rangeSeekBarPlaces.setRangeValues(0,10);
         rangeSeekBarPlaces.setSelectedMaxValue(0);
         rangeSeekBarPlaces.setOnRangeSeekBarChangeListener(this);
-        rangeSeekBarPlaces.setVisibility(View.GONE);
+        rangeSeekBarPlaces.setVisibility(placesActived?View.VISIBLE:View.GONE);
 
         //Initialize Recycler
         recyclerViewSchedule = (RecyclerView) findViewById(R.id.recycler_view_schedule);
@@ -422,35 +450,35 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         GridLayoutManager gridLayoutManagerSchedule = new GridLayoutManager(this, 3);
         recyclerViewSchedule.setLayoutManager(gridLayoutManagerSchedule);
         recyclerViewSchedule.setAdapter(new ElementsAdapter(scheduleList,this));
-        recyclerViewSchedule.setVisibility(View.GONE);
+        recyclerViewSchedule.setVisibility(scheduleActived?View.VISIBLE:View.GONE);
 
         recyclerViewType = (RecyclerView) findViewById(R.id.recycler_view_type);
         recyclerViewType.setHasFixedSize(true);
         GridLayoutManager gridLayoutManagerType = new GridLayoutManager(this, 3);
         recyclerViewType.setLayoutManager(gridLayoutManagerType);
         recyclerViewType.setAdapter(new ElementsAdapter(typeList,this));
-        recyclerViewType.setVisibility(View.GONE);
+        recyclerViewType.setVisibility(typeActived?View.VISIBLE:View.GONE);
 
         recyclerViewBudget = (RecyclerView) findViewById(R.id.recycler_view_budget);
         recyclerViewBudget.setHasFixedSize(true);
         GridLayoutManager gridLayoutManagerBudget = new GridLayoutManager(this, 3);
         recyclerViewBudget.setLayoutManager(gridLayoutManagerBudget);
         recyclerViewBudget.setAdapter(new ElementsAdapterSimple(budgetList,this));
-        recyclerViewBudget.setVisibility(View.GONE);
+        recyclerViewBudget.setVisibility(budgetActived?View.VISIBLE:View.GONE);
 
         recyclerViewPayment = (RecyclerView) findViewById(R.id.recycler_view_payment);
         recyclerViewPayment.setHasFixedSize(true);
         GridLayoutManager gridLayoutManagerPayment = new GridLayoutManager(this, 3);
         recyclerViewPayment.setLayoutManager(gridLayoutManagerPayment);
         recyclerViewPayment.setAdapter(new ElementsAdapter(paymentList,this));
-        recyclerViewPayment.setVisibility(View.GONE);
+        recyclerViewPayment.setVisibility(paymentActived?View.VISIBLE:View.GONE);
 
         recyclerViewAtmosphere = (RecyclerView) findViewById(R.id.recycler_view_atmosphere);
         recyclerViewAtmosphere.setHasFixedSize(true);
         GridLayoutManager gridLayoutManagerAtmosphere = new GridLayoutManager(this, 3);
         recyclerViewAtmosphere.setLayoutManager(gridLayoutManagerAtmosphere);
         recyclerViewAtmosphere.setAdapter(new ElementsAdapter(atmosphereList,this));
-        recyclerViewAtmosphere.setVisibility(View.GONE);
+        recyclerViewAtmosphere.setVisibility(atmosphereActived?View.VISIBLE:View.GONE);
 
 
         recyclerViewWaitingTime = (RecyclerView) findViewById(R.id.recycler_view_waitingtime);
@@ -458,18 +486,18 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         GridLayoutManager gridLayoutManagerWaitingTime = new GridLayoutManager(this, 3);
         recyclerViewWaitingTime.setLayoutManager(gridLayoutManagerWaitingTime);
         recyclerViewWaitingTime.setAdapter(new ElementsAdapterSimple(waitingTimeList,this));
-        recyclerViewWaitingTime.setVisibility(View.GONE);
+        recyclerViewWaitingTime.setVisibility(waitingTimeActived?View.VISIBLE:View.GONE);
 
         //Initialize Switch
         switchTerrace = (Switch)findViewById(R.id.switchTerrace);
         switchTerrace.setChecked(false);
         switchTerrace.setOnCheckedChangeListener(this);
-        switchTerrace.setVisibility(View.GONE);
+        switchTerrace.setVisibility(otherActived?View.VISIBLE:View.GONE);
 
         switchAirConditionner = (Switch)findViewById(R.id.switchAirConditionner);
         switchAirConditionner.setChecked(false);
         switchAirConditionner.setOnCheckedChangeListener(this);
-        switchAirConditionner.setVisibility(View.GONE);
+        switchAirConditionner.setVisibility(otherActived?View.VISIBLE:View.GONE);
     }
 
     public void initData(){
@@ -502,8 +530,10 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(rangeSeekBarDistance.getVisibility() == View.GONE){
                     rangeSeekBarDistance.setVisibility(View.VISIBLE);
+                    distanceActived = true;
                 }else{
                     rangeSeekBarDistance.setVisibility(View.GONE);
+                    distanceActived = false;
                 }
             }
         });
@@ -515,13 +545,17 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(recyclerViewSchedule.getVisibility() == View.GONE ){
                     recyclerViewSchedule.setVisibility(View.VISIBLE);
+                    scheduleActived = true;
                 }else{
                     recyclerViewSchedule.setVisibility(View.GONE);
+                    scheduleActived = false;
                 }
                 if(rangeSeekBarSchedule.getVisibility() == View.GONE){
                     rangeSeekBarSchedule.setVisibility(View.VISIBLE);
+                    scheduleActived = true;
                 }else{
                     rangeSeekBarSchedule.setVisibility(View.GONE);
+                    scheduleActived = false;
                 }
             }
         });
@@ -533,8 +567,10 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(recyclerViewType.getVisibility() == View.GONE){
                     recyclerViewType.setVisibility(View.VISIBLE);
+                    typeActived = true;
                 }else{
                     recyclerViewType.setVisibility(View.GONE);
+                    typeActived = false;
                 }
             }
         });
@@ -546,8 +582,10 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(recyclerViewBudget.getVisibility() == View.GONE){
                     recyclerViewBudget.setVisibility(View.VISIBLE);
+                    budgetActived = true;
                 }else{
                     recyclerViewBudget.setVisibility(View.GONE);
+                    budgetActived = false;
                 }
             }
         });
@@ -559,8 +597,10 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(recyclerViewPayment.getVisibility() == View.GONE){
                     recyclerViewPayment.setVisibility(View.VISIBLE);
+                    paymentActived = true;
                 }else{
                     recyclerViewPayment.setVisibility(View.GONE);
+                    paymentActived = false;
                 }
             }
         });
@@ -572,8 +612,10 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(recyclerViewAtmosphere.getVisibility() == View.GONE){
                     recyclerViewAtmosphere.setVisibility(View.VISIBLE);
+                    atmosphereActived = true;
                 }else{
                     recyclerViewAtmosphere.setVisibility(View.GONE);
+                    atmosphereActived = false;
                 }
             }
         });
@@ -585,8 +627,10 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(rangeSeekBarPlaces.getVisibility() == View.GONE){
                     rangeSeekBarPlaces.setVisibility(View.VISIBLE);
+                    placesActived = true;
                 }else{
                     rangeSeekBarPlaces.setVisibility(View.GONE);
+                    placesActived = false;
                 }
             }
         });
@@ -598,8 +642,10 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(recyclerViewWaitingTime.getVisibility() == View.GONE){
                     recyclerViewWaitingTime.setVisibility(View.VISIBLE);
+                    waitingTimeActived = true;
                 }else{
                     recyclerViewWaitingTime.setVisibility(View.GONE);
+                    waitingTimeActived = false;
                 }
             }
         });
@@ -611,13 +657,17 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(switchTerrace.getVisibility() == View.GONE){
                     switchTerrace.setVisibility(View.VISIBLE);
+                    otherActived = true;
                 }else{
                     switchTerrace.setVisibility(View.GONE);
+                    otherActived = false;
                 }
                 if(switchAirConditionner.getVisibility() == View.GONE){
                     switchAirConditionner.setVisibility(View.VISIBLE);
+                    otherActived = true;
                 }else{
                     switchAirConditionner.setVisibility(View.GONE);
+                    otherActived = false;
                 }
             }
         });
