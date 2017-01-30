@@ -53,6 +53,8 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     private RangeSeekBar rangeSeekBarDistance;
     private RangeSeekBar rangeSeekBarSchedule;
     private RangeSeekBar rangeSeekBarPlaces;
+    private ImageView imageTerrace;
+    private ImageView imageAirconditionner;
     private Filtre filterGlobal;
     public static final int FILTRESCODE = 42;
     private Switch switchTerrace;
@@ -364,55 +366,55 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         scheduleList.add(new Data("Vendredi",R.drawable.icon_friday,filterGlobal.getDays().contains("VE")));
         scheduleList.add(new Data("Samedi",R.drawable.icon_saturday,filterGlobal.getDays().contains("SA")));
         scheduleList.add(new Data("Dimanche",R.drawable.icon_sunday,filterGlobal.getDays().contains("DI")));
-        scheduleList.add(new Data("TOUSDAY",R.drawable.icon_ticket,filterGlobal.getDays().isEmpty()));
+        scheduleList.add(new Data("TOUSDAY",R.drawable.icon_all,filterGlobal.getDays().isEmpty()));
 
         typeList = new ArrayList<>();
         typeList.add(new Data("Pizzeria", R.drawable.pizzeria,filterGlobal.getType().contains("pizzeria")));
         typeList.add(new Data("Halal", R.drawable.halal,filterGlobal.getType().contains("halal")));
         typeList.add(new Data("Brasserie", R.drawable.brasserie,filterGlobal.getType().contains("brasserie")));
         typeList.add(new Data("Végétarien", R.drawable.vegetarien,filterGlobal.getType().contains("vegetarien")));
-        typeList.add(new Data("Gastronomique", R.drawable.gastronomique,filterGlobal.getType().contains("gastronomique")));
+        typeList.add(new Data("Etoilé", R.drawable.gastronomique,filterGlobal.getType().contains("gastronomique")));
         typeList.add(new Data("Bio", R.drawable.bio,filterGlobal.getType().contains("bio")));
         typeList.add(new Data("Fast-food", R.drawable.fastfood,filterGlobal.getType().contains("fastfood")));
         typeList.add(new Data("Casher", R.drawable.casher,filterGlobal.getType().contains("casher")));
         typeList.add(new Data("Italien", R.drawable.italien,filterGlobal.getType().contains("italien")));
         typeList.add(new Data("Chinois", R.drawable.chinois,filterGlobal.getType().contains("chinois")));
-        typeList.add(new Data("TOUSTYPE",R.drawable.icon_ticket,filterGlobal.getType().isEmpty()));
+        typeList.add(new Data("TOUSTYPE",R.drawable.icon_all,filterGlobal.getType().isEmpty()));
 
         budgetList = new ArrayList<>();
-        budgetList.add(new Data("<20",R.drawable.icon_inf_20,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==19)) ? true : false));
-        budgetList.add(new Data("20 à 39",R.drawable.icon_from_20_to_39,((filterGlobal.getStartBudget()==20) && (filterGlobal.getEndBudget()==39)) ? true : false));
-        budgetList.add(new Data("40 à 59",R.drawable.icon_from_40_to_59,((filterGlobal.getStartBudget()==40) && (filterGlobal.getEndBudget()==59)) ? true : false));
-        budgetList.add(new Data("60 à 79",R.drawable.icon_from_60_to_79,((filterGlobal.getStartBudget()==60) && (filterGlobal.getEndBudget()==79)) ? true : false));
-        budgetList.add(new Data(">80",R.drawable.icon_sup_80,((filterGlobal.getStartBudget()==80) && (filterGlobal.getEndBudget()==1000)) ? true : false));
-        budgetList.add(new Data("TOUSBUDGET",R.drawable.icon_ticket,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==0)) ? true : false));
+        budgetList.add(new Data("<20€",R.drawable.icon_inf_20,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==19)) ? true : false));
+        budgetList.add(new Data("20 à 39€",R.drawable.icon_from_20,((filterGlobal.getStartBudget()==20) && (filterGlobal.getEndBudget()==39)) ? true : false));
+        budgetList.add(new Data("40 à 59€",R.drawable.icon_from_40,((filterGlobal.getStartBudget()==40) && (filterGlobal.getEndBudget()==59)) ? true : false));
+        budgetList.add(new Data("60 à 79€",R.drawable.icon_from_60,((filterGlobal.getStartBudget()==60) && (filterGlobal.getEndBudget()==79)) ? true : false));
+        budgetList.add(new Data(">80€",R.drawable.icon_sup_80,((filterGlobal.getStartBudget()==80) && (filterGlobal.getEndBudget()==1000)) ? true : false));
+        budgetList.add(new Data("TOUSBUDGET",R.drawable.icon_all,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==0)) ? true : false));
 
         paymentList = new ArrayList<>();
         paymentList.add(new Data("Carte bancaire",R.drawable.icon_cb,filterGlobal.getPayment().contains("cartebancaire")));
         paymentList.add(new Data("Cheque",R.drawable.icon_cheque,filterGlobal.getPayment().contains("cheque")));
-        paymentList.add(new Data("Cheque vacances",R.drawable.icon_vac,filterGlobal.getPayment().contains("chequevac")));
-        paymentList.add(new Data("Espece",R.drawable.icon_money,filterGlobal.getPayment().contains("espece")));
+        paymentList.add(new Data("Cheque vacances",R.drawable.icon_cheque_vac,filterGlobal.getPayment().contains("chequevac")));
+        paymentList.add(new Data("Espece",R.drawable.icon_espece,filterGlobal.getPayment().contains("espece")));
         paymentList.add(new Data("Ticket restaurant",R.drawable.icon_ticket,filterGlobal.getPayment().contains("ticketrestaurant")));
-        paymentList.add(new Data("TOUSPAYMENT",R.drawable.icon_ticket,filterGlobal.getPayment().isEmpty()));
+        paymentList.add(new Data("TOUSPAYMENT",R.drawable.icon_all,filterGlobal.getPayment().isEmpty()));
 
         atmosphereList = new ArrayList<>();
-        atmosphereList.add(new Data("Retro",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("retro")));
-        atmosphereList.add(new Data("Musical",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("musical")));
-        atmosphereList.add(new Data("Jeune",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("jeune")));
-        atmosphereList.add(new Data("Chic",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("chic")));
-        atmosphereList.add(new Data("Romantique",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("romantique")));
-        atmosphereList.add(new Data("Historique",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("historique")));
-        atmosphereList.add(new Data("Spectacle",R.drawable.icon_ticket,filterGlobal.getAtmosphere().contains("spectacle")));
-        atmosphereList.add(new Data("TOUSATMOSPHERE",R.drawable.icon_ticket,filterGlobal.getAtmosphere().isEmpty()));
+        atmosphereList.add(new Data("Retro",R.drawable.icon_retro,filterGlobal.getAtmosphere().contains("retro")));
+        atmosphereList.add(new Data("Musical",R.drawable.icon_music,filterGlobal.getAtmosphere().contains("musical")));
+        atmosphereList.add(new Data("Jeune",R.drawable.icon_jeune,filterGlobal.getAtmosphere().contains("jeune")));
+        atmosphereList.add(new Data("Chic",R.drawable.icon_chic,filterGlobal.getAtmosphere().contains("chic")));
+        atmosphereList.add(new Data("Romance",R.drawable.icon_romantique,filterGlobal.getAtmosphere().contains("romantique")));
+        atmosphereList.add(new Data("Historique",R.drawable.icon_historique,filterGlobal.getAtmosphere().contains("historique")));
+        atmosphereList.add(new Data("Spectacle",R.drawable.icon_spectacle,filterGlobal.getAtmosphere().contains("spectacle")));
+        atmosphereList.add(new Data("TOUSATMOSPHERE",R.drawable.icon_all,filterGlobal.getAtmosphere().isEmpty()));
 
         waitingTimeList = new ArrayList<>();
-        waitingTimeList.add(new Data("<5min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==5)? true : false));
-        waitingTimeList.add(new Data("<10min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==10)? true : false));
-        waitingTimeList.add(new Data("<15min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==15)? true : false));
-        waitingTimeList.add(new Data("<30min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==30)? true : false));
-        waitingTimeList.add(new Data("<45min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==45)? true : false));
-        waitingTimeList.add(new Data("<60min",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==60)? true : false));
-        waitingTimeList.add(new Data("TOUSWAITING",R.drawable.icon_ticket,(filterGlobal.getWaitingTime()==0)? true : false));
+        waitingTimeList.add(new Data("<5min",R.drawable.icon_wait_inf_5,(filterGlobal.getWaitingTime()==5)? true : false));
+        waitingTimeList.add(new Data("<10min",R.drawable.icon_wait_inf_10,(filterGlobal.getWaitingTime()==10)? true : false));
+        waitingTimeList.add(new Data("<15min",R.drawable.icon_wait_inf_15,(filterGlobal.getWaitingTime()==15)? true : false));
+        waitingTimeList.add(new Data("<30min",R.drawable.icon_wait_inf_30,(filterGlobal.getWaitingTime()==30)? true : false));
+        waitingTimeList.add(new Data("<45min",R.drawable.icon_wait_inf_45,(filterGlobal.getWaitingTime()==45)? true : false));
+        waitingTimeList.add(new Data("<60min",R.drawable.icon_wait_inf_60,(filterGlobal.getWaitingTime()==60)? true : false));
+        waitingTimeList.add(new Data("TOUSWAITING",R.drawable.icon_all,(filterGlobal.getWaitingTime()==0)? true : false));
 
     }
 
@@ -489,6 +491,12 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         recyclerViewWaitingTime.setVisibility(waitingTimeActived?View.VISIBLE:View.GONE);
 
         //Initialize Switch
+        imageTerrace = (ImageView) findViewById(R.id.iconTerrace);
+        imageTerrace.setVisibility(otherActived?View.VISIBLE:View.GONE);
+
+        imageAirconditionner = (ImageView) findViewById(R.id.iconAirConditionner);
+        imageAirconditionner.setVisibility(otherActived?View.VISIBLE:View.GONE);
+
         switchTerrace = (Switch)findViewById(R.id.switchTerrace);
         switchTerrace.setChecked(false);
         switchTerrace.setOnCheckedChangeListener(this);
@@ -657,16 +665,20 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             public void onClick(View arg0) {
                 if(switchTerrace.getVisibility() == View.GONE){
                     switchTerrace.setVisibility(View.VISIBLE);
+                    imageTerrace.setVisibility(View.VISIBLE);
                     otherActived = true;
                 }else{
                     switchTerrace.setVisibility(View.GONE);
+                    imageTerrace.setVisibility(View.GONE);
                     otherActived = false;
                 }
                 if(switchAirConditionner.getVisibility() == View.GONE){
                     switchAirConditionner.setVisibility(View.VISIBLE);
+                    imageAirconditionner.setVisibility(View.VISIBLE);
                     otherActived = true;
                 }else{
                     switchAirConditionner.setVisibility(View.GONE);
+                    imageAirconditionner.setVisibility(View.GONE);
                     otherActived = false;
                 }
             }

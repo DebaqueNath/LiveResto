@@ -6,5 +6,5 @@
         app:showAsAction="ifRoom"
         android:title="Filtres"
         android:textColor="@color/background_recyclerview"
-        android:icon="@drawable/bio"/>
+        android:icon="@drawable/icon_filter"/>
 </menu>

@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="background_actionbar">#B00000</color>
+    <color name="pink">#C00000</color>
     <color name="background_recyclerview">#e8eaf6</color>
+
 </resources>

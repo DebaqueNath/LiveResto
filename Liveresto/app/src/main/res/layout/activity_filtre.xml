@@ -41,12 +41,15 @@
     </android.support.v7.widget.Toolbar>
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
+
             <Button
                 android:id="@+id/button_distance"
                 android:layout_width="match_parent"
@@ -56,6 +59,7 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/distance_name"
                 />
 
@@ -78,6 +82,7 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/horaires_name" />
 
             <android.support.v7.widget.RecyclerView
@@ -103,6 +108,7 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/type_name" />
 
             <android.support.v7.widget.RecyclerView
@@ -120,6 +126,7 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/budget_name" />
 
             <android.support.v7.widget.RecyclerView
@@ -137,6 +144,7 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/payment_name" />
 
             <android.support.v7.widget.RecyclerView
@@ -154,6 +162,7 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/atmosphere_name" />
 
             <android.support.v7.widget.RecyclerView
@@ -171,6 +180,7 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/number_name" />
 
             <com.platine.liveresto.rangeseekbar.RangeSeekBar
@@ -191,6 +201,7 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/waitingtime_name" />
 
             <android.support.v7.widget.RecyclerView
@@ -208,19 +219,63 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
+                android:layout_gravity="center"
                 android:text="@string/other_name" />
 
-            <Switch
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/iconTerrace"
+                    android:src="@drawable/icon_terrace"
+                    android:clickable="true"/>
+
+                <Switch
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Terrasse"
-                android:id="@+id/switchTerrace" />
+                android:id="@+id/switchTerrace"
+                android:layout_marginLeft="8dp"
+                android:textSize="18dp"
+                android:layout_gravity="center"
+                android:theme="@style/MySwitch" />
 
-            <Switch
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Climatisation"
-                android:id="@+id/switchAirConditionner" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/iconAirConditionner"
+                    android:src="@drawable/icon_airconditionner"
+                    android:clickable="true"/>
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Climatisation"
+                    android:id="@+id/switchAirConditionner"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="18dp"
+                    android:layout_gravity="center"
+                    android:theme="@style/MySwitch"/>
+
+
+            </LinearLayout>
+
+
 
 
         </LinearLayout>

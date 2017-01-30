@@ -1,11 +1,14 @@
 package com.platine.liveresto.main;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -201,15 +204,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (requestCode == FILTRESCODE) {
             if (resultCode == RESULT_OK) {
                 Intent i = data;
-                distanceActived =  i.getBooleanExtra("distanceActived",false);
-                scheduleActived = i.getBooleanExtra("scheduleActived",false);
-                typeActived = i.getBooleanExtra("typeActived",false);
-                budgetActived = i.getBooleanExtra("budgetActived",false);
-                paymentActived = i.getBooleanExtra("paymentActived",false);
-                atmosphereActived = i.getBooleanExtra("atmosphereActived",false);
-                placesActived = i.getBooleanExtra("placesActived",false);
-                waitingTimeActived = i.getBooleanExtra("waitingTimeActived",false);
-                otherActived = i.getBooleanExtra("otherActived",false);
+                distanceActived = i.getBooleanExtra("distanceActived", false);
+                scheduleActived = i.getBooleanExtra("scheduleActived", false);
+                typeActived = i.getBooleanExtra("typeActived", false);
+                budgetActived = i.getBooleanExtra("budgetActived", false);
+                paymentActived = i.getBooleanExtra("paymentActived", false);
+                atmosphereActived = i.getBooleanExtra("atmosphereActived", false);
+                placesActived = i.getBooleanExtra("placesActived", false);
+                waitingTimeActived = i.getBooleanExtra("waitingTimeActived", false);
+                otherActived = i.getBooleanExtra("otherActived", false);
                 filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter", 0.0), i.getStringArrayListExtra("daysFilter"), i.getDoubleExtra("hourBeginFilter", 0.0), i.getDoubleExtra("hourEndFilter", 0.0), i.getStringArrayListExtra("typeFilter"), i.getIntExtra("startBudgetFilter", 0), i.getIntExtra("endBudgetFilter", 0), i.getStringArrayListExtra("paymentFilter"), i.getStringArrayListExtra("atmosphereFilter"), i.getIntExtra("placesFilter", 0), i.getIntExtra("waitingTimeFilter", 0), i.getBooleanExtra("terraceFilter", false), i.getBooleanExtra("airConditionnerFilter", false));
                 updateMarkerOnMap();
             }
@@ -241,15 +244,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 filtres.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
                 filtres.putExtra("terraceFilter", filterGlobal.isTerrace());
                 filtres.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
-                filtres.putExtra("distanceActived",distanceActived);
-                filtres.putExtra("scheduleActived",scheduleActived);
-                filtres.putExtra("typeActived",typeActived);
-                filtres.putExtra("budgetActived",budgetActived);
-                filtres.putExtra("paymentActived",paymentActived);
-                filtres.putExtra("atmosphereActived",atmosphereActived);
-                filtres.putExtra("placesActived",placesActived);
-                filtres.putExtra("waitingTimeActived",waitingTimeActived);
-                filtres.putExtra("otherActived",otherActived);
+                filtres.putExtra("distanceActived", distanceActived);
+                filtres.putExtra("scheduleActived", scheduleActived);
+                filtres.putExtra("typeActived", typeActived);
+                filtres.putExtra("budgetActived", budgetActived);
+                filtres.putExtra("paymentActived", paymentActived);
+                filtres.putExtra("atmosphereActived", atmosphereActived);
+                filtres.putExtra("placesActived", placesActived);
+                filtres.putExtra("waitingTimeActived", waitingTimeActived);
+                filtres.putExtra("otherActived", otherActived);
                 startActivityForResult(filtres, FILTRESCODE);
                 return true;
             default:
@@ -311,7 +314,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void updateMarkerOnMap() {
         mMap.clear();
 
-       /* if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+       /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -340,11 +344,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
 
         if (!allRestos.isEmpty()) {
-            LatLng firstRestaurantPosition = new LatLng(allRestos.get(0).getLatitude(), allRestos.get(0).getLongitude());
-            mMap.addMarker(new MarkerOptions().position(firstRestaurantPosition).title(allRestos.get(0).getName())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.icon_restaurant));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(firstRestaurantPosition));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(12.0f));
-            allRestos.remove(0);
+            LatLng user = new LatLng(50.609645,3.136777);
+            mMap.addMarker(new MarkerOptions().position(user).title("User")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_location));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(user));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(14.0f));
             for (Restaurant resto : allRestos) {
                 LatLng position = new LatLng(resto.getLatitude(), resto.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(position).title(resto.getName())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.icon_restaurant));
