@@ -41,7 +41,7 @@
     </android.support.v7.widget.Toolbar>
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="wrap_content"
@@ -56,7 +56,8 @@
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Distance" />
+                android:text="@string/distance_name"
+                />
 
             <com.platine.liveresto.rangeseekbar.RangeSeekBar
                 android:layout_width="wrap_content"
@@ -70,14 +71,14 @@
 
             <Button
                 android:id="@+id/button_schedule"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Horaires" />
+                android:text="@string/horaires_name" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_schedule"
@@ -95,14 +96,14 @@
 
             <Button
                 android:id="@+id/button_type"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Type de restaurant" />
+                android:text="@string/type_name" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_type"
@@ -112,14 +113,14 @@
 
             <Button
                 android:id="@+id/button_budget"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Budget (en €)" />
+                android:text="@string/budget_name" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_budget"
@@ -129,14 +130,14 @@
 
             <Button
                 android:id="@+id/button_payment"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Moyen de paiement" />
+                android:text="@string/payment_name" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_payment"
@@ -146,14 +147,14 @@
 
             <Button
                 android:id="@+id/button_atmosphere"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Ambiance" />
+                android:text="@string/atmosphere_name" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_atmosphere"
@@ -163,14 +164,14 @@
 
             <Button
                 android:id="@+id/button_number"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Nombre de personnes" />
+                android:text="@string/number_name" />
 
             <com.platine.liveresto.rangeseekbar.RangeSeekBar
                 android:layout_width="wrap_content"
@@ -183,14 +184,14 @@
 
             <Button
                 android:id="@+id/button_waitingtime"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Temps d'attente" />
+                android:text="@string/waitingtime_name" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_waitingtime"
@@ -200,14 +201,14 @@
 
             <Button
                 android:id="@+id/button_other"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
                 android:layout_margin="10dp"
                 android:drawableRight="@drawable/ic_keyboard_arrow_down"
                 android:textSize="25dp"
-                android:text="Autres" />
+                android:text="@string/other_name" />
 
             <Switch
                 android:layout_width="match_parent"
