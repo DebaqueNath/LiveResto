@@ -1,6 +1,8 @@
 package com.platine.liveresto.model;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -300,7 +302,6 @@ public class Filtre {
                 }
             }
             if(!flag){
-                System.out.println("CONTINUE TYPE");
                 continue;}
 
             //Budget

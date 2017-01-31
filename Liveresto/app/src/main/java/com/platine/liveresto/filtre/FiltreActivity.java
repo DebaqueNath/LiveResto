@@ -1,11 +1,13 @@
 package com.platine.liveresto.filtre;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -14,16 +16,21 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.platine.liveresto.R;
+import com.platine.liveresto.db.RestaurantDAO;
 import com.platine.liveresto.model.Data;
 import com.platine.liveresto.filtre.Adapter.ElementsAdapter;
 import com.platine.liveresto.filtre.Adapter.ElementsAdapterSimple;
 import com.platine.liveresto.model.Filtre;
+import com.platine.liveresto.model.Restaurant;
 import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.platine.liveresto.main.MainActivity.PREFS_FILTER;
+
 public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.OnRangeSeekBarChangeListener<Number>, CompoundButton.OnCheckedChangeListener, ElementsAdapterSimple.Listener, ElementsAdapter.Listener{
+
 
     private Button buttonDistance;
     private Button buttonSchedule;
@@ -34,13 +41,13 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     private Button buttonNumber;
     private Button buttonWaitingTime;
     private Button buttonOther;
+    private RecyclerView recyclerViewDistance;
     private RecyclerView recyclerViewSchedule;
     private RecyclerView recyclerViewType;
     private RecyclerView recyclerViewBudget;
     private RecyclerView recyclerViewPayment;
     private RecyclerView recyclerViewAtmosphere;
     private RecyclerView recyclerViewWaitingTime;
-    private RecyclerView recyclerViewOther;
     private Toolbar myToolbar;
     private List<Data> scheduleList;
     private List<Data> typeList;
@@ -49,7 +56,10 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     private List<Data> atmosphereList;
     private List<Data> waitingTimeList;
     private ImageView backArrowFilter;
+    private ImageView refresh;
+    private ImageView reinit;
     private TextView title_toolbar;
+    private TextView countResto;
     private RangeSeekBar rangeSeekBarDistance;
     private RangeSeekBar rangeSeekBarSchedule;
     private RangeSeekBar rangeSeekBarPlaces;
@@ -78,9 +88,9 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
 
         //On récupère l'intent et les données
         Intent i = getIntent();
-        filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter",0.0),i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
+        filterGlobal = new Filtre(0,i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
 
-        distanceActived =  i.getBooleanExtra("distanceActived",false);
+        distanceActived = i.getBooleanExtra("distanceActived",false);
         scheduleActived = i.getBooleanExtra("scheduleActived",false);
         typeActived = i.getBooleanExtra("typeActived",false);
         budgetActived = i.getBooleanExtra("budgetActived",false);
@@ -95,6 +105,39 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             @Override
             public void onClick(View view) {
                 returnToMap();
+            }
+        });
+
+        countResto = (TextView) findViewById(R.id.countresto);
+        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
+        countResto.setText("Restaurants trouvés : "+allRestos.size());
+
+        refresh = (ImageView) findViewById(R.id.refresh);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Requête sur les restaurants correspondants aux filtres en BDD
+                RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+                ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
+                countResto.setText("Restaurants trouvés : "+allRestos.size());
+            }
+        });
+
+        reinit = (ImageView) findViewById(R.id.reinit);
+        reinit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Réinitialisation des filtres
+                filterGlobal = new Filtre(0.0, new ArrayList<String>(), 0.0, 0.0, new ArrayList<String>(),0,0,new ArrayList<String>(),new ArrayList<String>(),0,0,false,false);
+                initFilters();
+                initElementsView();
+                initData();
+                RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+                ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
+                countResto.setText("Restaurants trouvés : "+allRestos.size());
+                //Sauvegarde en sharedsPrefs
+                saveSharedsPrefs();
             }
         });
 
@@ -153,7 +196,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         if(d.getName()=="Végétarien"){
             if(filterGlobal.getType().contains("vegetarien")) {filterGlobal.removeType("vegetarien"); } else { filterGlobal.addType("vegetarien");}
         }
-        if(d.getName()=="Gastronomique"){
+        if(d.getName()=="Etoilé"){
             if(filterGlobal.getType().contains("gastronomique")) {filterGlobal.removeType("gastronomique"); } else { filterGlobal.addType("gastronomique");}
         }
         if(d.getName()=="Bio"){
@@ -176,19 +219,19 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         }
 
         //Budget
-        if(d.getName()=="<20"){
+        if(d.getName()=="<20€"){
             if(filterGlobal.getStartBudget()==0 && filterGlobal.getEndBudget()==19) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(19);}
         }
-        if(d.getName()=="20 à 39"){
+        if(d.getName()=="20 à 39€"){
             if(filterGlobal.getStartBudget()==20 && filterGlobal.getEndBudget()==39) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(20);filterGlobal.setEndBudget(39);}
         }
-        if(d.getName()=="40 à 59"){
+        if(d.getName()=="40 à 59€"){
             if(filterGlobal.getStartBudget()==40 && filterGlobal.getEndBudget()==59) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(40);filterGlobal.setEndBudget(59);}
         }
-        if(d.getName()=="60 à 79"){
+        if(d.getName()=="60 à 79€"){
             if(filterGlobal.getStartBudget()==60 && filterGlobal.getEndBudget()==79) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(60);filterGlobal.setEndBudget(79);}
         }
-        if(d.getName()==">80"){
+        if(d.getName()==">80€"){
             if(filterGlobal.getStartBudget()==80 && filterGlobal.getEndBudget()==1000) {filterGlobal.setStartBudget(0);filterGlobal.setEndBudget(0); } else { filterGlobal.setStartBudget(80);filterGlobal.setEndBudget(1000);}
         }
         if(d.getName()=="TOUSBUDGET"){
@@ -229,7 +272,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         if(d.getName()=="Chic"){
             if(filterGlobal.getAtmosphere().contains("chic")) {filterGlobal.removeAtmosphere("chic"); } else { filterGlobal.addAtmosphere("chic");}
         }
-        if(d.getName()=="Romantique"){
+        if(d.getName()=="Romance"){
             if(filterGlobal.getAtmosphere().contains("romantique")) {filterGlobal.removeAtmosphere("romantique"); } else { filterGlobal.addAtmosphere("romantique");}
         }
         if(d.getName()=="Historique"){
@@ -287,7 +330,6 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         i.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
         i.putExtra("terraceFilter", filterGlobal.isTerrace());
         i.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
-        i.putExtra("distanceActived",distanceActived);
         i.putExtra("scheduleActived",scheduleActived);
         i.putExtra("typeActived",typeActived);
         i.putExtra("budgetActived",budgetActived);
@@ -303,10 +345,9 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
 
 
     public void onRangeSeekBarValuesChanged(RangeSeekBar<Number> bar, Number minValue, Number maxValue){
-        if(bar.equals(this.rangeSeekBarDistance)) {
-            if(minValue==maxValue){
-                rangeSeekBarDistance.setSelectedMaxValue((int)maxValue+1);
-            }
+
+        if(bar.equals(this.rangeSeekBarDistance)){
+            rangeSeekBarDistance.setSelectedMaxValue((int)maxValue);
             filterGlobal.setDistanceMax(Double.parseDouble(maxValue.toString()));
         } else if(bar.equals(this.rangeSeekBarSchedule)){
             //Si les deux valeurs sont égales on désactive un thumb sinon on active les deux
@@ -317,9 +358,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             filterGlobal.setHourEnd(Double.parseDouble(maxValue.toString()));
         } else if(bar.equals(this.rangeSeekBarPlaces)){
             //Si les deux valeurs sont égales on désactive un thumb sinon on active les deux
-            if(minValue==maxValue){
-                rangeSeekBarPlaces.setSelectedMaxValue((int)maxValue+1);
-            }
+            rangeSeekBarPlaces.setSelectedMaxValue((int)maxValue);
             filterGlobal.setPlaces(Integer.parseInt(maxValue.toString()));
         }
     }
@@ -423,7 +462,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
      *
      */
     public void initElementsView(){
-        //Initialize RangeSeekBar
+
         rangeSeekBarDistance = (RangeSeekBar) findViewById(R.id.rangeseekbardistance);
         rangeSeekBarDistance.setLabel("km");
         rangeSeekBarDistance.setRangeValues(0,50);
@@ -509,6 +548,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     }
 
     public void initData(){
+
         //Distance
         rangeSeekBarDistance.setSelectedMaxValue(filterGlobal.getDistanceMax());
 
@@ -526,11 +566,64 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         switchAirConditionner.setChecked(filterGlobal.isAirConditionner());
     }
 
+    protected void onStop() {
+        super.onStop();
+
+        saveSharedsPrefs();
+    }
+
+    public void saveSharedsPrefs(){
+        SharedPreferences sharedPrefs = getSharedPreferences(PREFS_FILTER, 0);
+
+        //Sauvegarde des sharedPreferences
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        float distance = (float) this.filterGlobal.getDistanceMax();
+        String days = "";
+        for (String d : this.filterGlobal.getDays()) {
+            days += d + ",";
+        }
+        float hourBegin = (float) this.filterGlobal.getHourBegin();
+        float hourEnd = (float) this.filterGlobal.getHourEnd();
+        String type = "";
+        for (String d : this.filterGlobal.getType()) {
+            type += d + ",";
+        }
+        int startBudget = this.filterGlobal.getStartBudget();
+        int endBudget = this.filterGlobal.getEndBudget();
+        String payment = "";
+        for (String d : this.filterGlobal.getPayment()) {
+            payment += d + ",";
+
+        }
+        String atmosphere = "";
+        for (String d : this.filterGlobal.getAtmosphere()) {
+            atmosphere += d + ",";
+        }
+        int places = this.filterGlobal.getPlaces();
+        int waitingTime = this.filterGlobal.getWaitingTime();
+        boolean terrace = this.filterGlobal.isTerrace();
+        boolean airConditionner = this.filterGlobal.isAirConditionner();
+        editor.putFloat("distance", distance);
+        editor.putString("days", days);
+        editor.putFloat("hourBegin", hourBegin);
+        editor.putFloat("hourEnd", hourEnd);
+        editor.putString("type", type);
+        editor.putInt("startBudget", startBudget);
+        editor.putInt("endBudget", endBudget);
+        editor.putString("payment", payment);
+        editor.putString("atmosphere", atmosphere);
+        editor.putInt("places", places);
+        editor.putInt("waitingTime", waitingTime);
+        editor.putBoolean("terrace", terrace);
+        editor.putBoolean("airConditionner", airConditionner);
+        editor.commit();
+    }
 
     /**
      *
      */
     public void addListenerOnButton() {
+
         buttonDistance = (Button) findViewById(R.id.button_distance);
         buttonDistance.setOnClickListener(new View.OnClickListener() {
 

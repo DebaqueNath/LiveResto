@@ -104,44 +104,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         filterGlobal = new Filtre(sharedPrefs.getFloat("distance", (float) 0.0), days, sharedPrefs.getFloat("hourBegin", (float) 0.0), sharedPrefs.getFloat("hourEnd", (float) 0.0), type, sharedPrefs.getInt("startBudget", 0), sharedPrefs.getInt("endBudget", 0), payment, atmosphere, sharedPrefs.getInt("places", 0), sharedPrefs.getInt("waitingTime", 0), sharedPrefs.getBoolean("terrace", false), sharedPrefs.getBoolean("airConditionner", false));
 
-        System.out.println("AFFICHAGE DES FILTRES : " + filterGlobal);
 
         // ******************** DB  ********************
         fixtures();
 
-        //Affichage des restaurants crées
-       /* System.out.println("Liste des restaurants : ");
-        RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
-        ArrayList<Restaurant> liste = rdao.getRestaurants();
-        for (Restaurant r : liste) {
-            System.out.println(r);
-        }*/
-
-        System.out.println("RESTAURANTS ----------------------------------------------------------------------------------------------------------------------");
-        //Affichage des restau correspondant aux filtres
-        RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
-        ArrayList<Restaurant> liste2 = filterGlobal.getRestaurantsFilter(rdao.getRestaurants());
-        for (Restaurant r : liste2) {
-            System.out.println(r);
-        }
-
-        //TEST requête BDD par rapport aux filtres
-       /* RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
-
-        ArrayList<String> days = new ArrayList<>();
-        ArrayList<String> type = new ArrayList<>();
-        ArrayList<String> payment = new ArrayList<>();
-        ArrayList<String> atmosphere = new ArrayList<>();
-        Filtre filtreTest = new Filtre(20,days,0.0, 0.0, type, 0, 0, payment, atmosphere, 0, 10, false, false);
-
-        ArrayList<Restaurant> liste = filtreTest.getRestaurantsFilter(rdao.getRestaurants());
-
-        for (Restaurant r : liste) {
-            System.out.println("RESTAURANT");
-            System.out.println(r);
-        }*/
-
-        Log.wtf("TAG","-------------------------creaaaaaaaaaaaate-----------------------");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -246,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 filtres.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
                 filtres.putExtra("terraceFilter", filterGlobal.isTerrace());
                 filtres.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
-                filtres.putExtra("distanceActived", distanceActived);
                 filtres.putExtra("scheduleActived", scheduleActived);
                 filtres.putExtra("typeActived", typeActived);
                 filtres.putExtra("budgetActived", budgetActived);
@@ -262,61 +227,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        Log.wtf("TAG","------------------------------------------------");
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Log.wtf("TAG","-------------------------aaaaaaaaaaaaaaaaaaa-----------------------");
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        /*LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String bestProvider = locationManager.getBestProvider(criteria, true);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(bestProvider);
-        if (location != null) {
-            onLocationChanged(location);
-        }
-        locationManager.requestLocationUpdates(bestProvider, 20000, 0, this);
-        LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 10F));*/
-
         updateMarkerOnMap();
     }
 
     public void updateMarkerOnMap() {
         mMap.clear();
+
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);*/
+
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -334,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (!allRestos.isEmpty()) {
             LatLng user = new LatLng(50.609645,3.136777);
-            mMap.addMarker(new MarkerOptions().position(user).title("User")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_location));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(user));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(14.0f));
             for (Restaurant resto : allRestos) {
