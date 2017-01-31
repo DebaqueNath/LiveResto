@@ -5,16 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final String PREFS_FILTER = "FilterPrefs";
     public static final int FILTRESCODE = 42;
     private GoogleMap mMap;
+    private static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
 
     private boolean distanceActived = false;
     private boolean scheduleActived = false;
@@ -59,7 +61,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermission(android.Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION, getApplicationContext(), MainActivity.this);
+        } else {
+            loadApplication();
+        }
+    }
 
+    public void loadApplication() {
         //Récupération des SharedPreferences
         this.sharedPrefs = getSharedPreferences(PREFS_FILTER, 0);
         SharedPreferences.Editor editor = this.sharedPrefs.edit();
@@ -109,14 +118,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fixtures();
 
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitle("");
         setSupportActionBar(myToolbar);
-
     }
 
 
@@ -151,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int waitingTime = this.filterGlobal.getWaitingTime();
         boolean terrace = this.filterGlobal.isTerrace();
         boolean airConditionner = this.filterGlobal.isAirConditionner();
+
         editor.putFloat("distance", distance);
         editor.putString("days", days);
         editor.putFloat("hourBegin", hourBegin);
@@ -212,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 filtres.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
                 filtres.putExtra("terraceFilter", filterGlobal.isTerrace());
                 filtres.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
+                filtres.putExtra("distanceActived", distanceActived);
                 filtres.putExtra("scheduleActived", scheduleActived);
                 filtres.putExtra("typeActived", typeActived);
                 filtres.putExtra("budgetActived", budgetActived);
@@ -233,14 +243,48 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         updateMarkerOnMap();
     }
 
+    public void requestPermission(String strPermission, int perCode, Context _c, MainActivity _a) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(_a, strPermission)) {
+            loadApplication();
+        } else {
+            ActivityCompat.requestPermissions(_a, new String[]{strPermission}, perCode);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    loadApplication();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied, You cannot access location data.", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
     public void updateMarkerOnMap() {
         mMap.clear();
 
-        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);*/
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        LocationManager lm=(LocationManager)getSystemService(LOCATION_SERVICE);
+        Location location = null;
+        String provider=lm.getBestProvider(new Criteria(), true);
+        if(provider!=null){
+            location=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (location!=null){
+                updateLocationUser(location);
+            }
+        }
 
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -254,18 +298,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
+        //Ajout des marqueurs pour les restaurants
         RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
-
+        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants(),location.getLatitude(),location.getLongitude());
         if (!allRestos.isEmpty()) {
-            LatLng user = new LatLng(50.609645,3.136777);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(user));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(14.0f));
             for (Restaurant resto : allRestos) {
                 LatLng position = new LatLng(resto.getLatitude(), resto.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(position).title(resto.getName())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.icon_restaurant));
             }
         }
+    }
+
+    public void updateLocationUser(Location location){
+        LatLng myLocation = new LatLng(location.getLatitude(),location.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(14.0f));
     }
 
 
@@ -282,8 +329,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(restaurantDao.getRestaurants().isEmpty()) {
 
             //Les deux restaurants pour la vidéo
-            Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.137273, 50.612136, false, false, "fastfood", "musical", 2, 11, "cartebancaire,espece,cheque", 10, 10, true, true);
-            Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.141820, 50.613579, false, false, "fastfood", "jeune", 2, 12, "cartebancaire,espece,cheque,ticketrestaurant", 5, 15, false, true);
+            Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.137273, 50.612136, false, false, "fastfood", "musical", 2, 11, "cartebancaire,espece,cheque", 10, 4, true, true);
+            Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.141820, 50.613579, false, false, "fastfood", "jeune", 2, 12, "cartebancaire,espece,cheque,ticketrestaurant", 5, 3, false, true);
             //Add restaurant
             restaurantDao.putRestaurant(r1);
             restaurantDao.putRestaurant(r2);
@@ -291,16 +338,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // Schedule
             HoraireDAO horaireDao = new HoraireDAO(getApplicationContext());
 
-            Horaire h1 = new Horaire(1, "LU 08.30 14.30");
+            Horaire h1 = new Horaire(1, "LU 08.30 21.30");
             Horaire h2 = new Horaire(1, "LU 19.30 22.30");
             Horaire h3 = new Horaire(2, "MA 08.30 14.30");
             Horaire h4 = new Horaire(2, "MA 17.30 19.30");
+            Horaire h5 = new Horaire(1, "MA 08.30 21.30");
+            Horaire h6 = new Horaire(1, "JE 08.30 21.30");
+            Horaire h7 = new Horaire(1, "VE 08.30 21.30");
+            Horaire h8 = new Horaire(1, "SA 08.30 21.30");
+            Horaire h9 = new Horaire(1, "DI 08.30 21.30");
             //Add schedule
 
             horaireDao.putHoraire(h1);
             horaireDao.putHoraire(h2);
             horaireDao.putHoraire(h3);
             horaireDao.putHoraire(h4);
+            horaireDao.putHoraire(h5);
+            horaireDao.putHoraire(h6);
+            horaireDao.putHoraire(h7);
+            horaireDao.putHoraire(h8);
+            horaireDao.putHoraire(h9);
 
 
             //Remplissage random de la BDD

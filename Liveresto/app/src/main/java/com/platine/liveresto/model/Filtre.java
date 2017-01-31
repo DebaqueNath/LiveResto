@@ -1,8 +1,7 @@
 package com.platine.liveresto.model;
 
 
-import android.util.Log;
-
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -257,22 +256,35 @@ public class Filtre {
     }
 
     //Get restaurant with filter
-    public ArrayList<Restaurant> getRestaurantsFilter(ArrayList<Restaurant> restaurants){
+    public ArrayList<Restaurant> getRestaurantsFilter(ArrayList<Restaurant> restaurants, double latitude, double longitude){
         ArrayList<Restaurant> restaurantsResult = new ArrayList<>();
 
         for (Restaurant r : restaurants) {
-            /*Calcul de la distance du restaurant par rapport à la position de l'utilisateur
-            getPosX de l'user
-            getPosY de l'user
-            ....
-            x user + distanceMax > latitude du restaurant
-            y user + distanceMax > longitude du restaurant
+            //Calcul de la distance du restaurant par rapport à la position de l'utilisateur
+            int Radius = 6371;// radius of earth in Km
+            double lat1 = latitude;
+            double lat2 = r.getLatitude();
+            double lon1 = longitude;
+            double lon2 = r.getLongitude();
+            double dLat = Math.toRadians(lat2 - lat1);
+            double dLon = Math.toRadians(lon2 - lon1);
+            double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                    + Math.cos(Math.toRadians(lat1))
+                    * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                    * Math.sin(dLon / 2);
+            double c = 2 * Math.asin(Math.sqrt(a));
+            double valueResult = Radius * c;
+            double km = valueResult / 1;
+            DecimalFormat newFormat = new DecimalFormat("####");
+            int kmInDec = Integer.valueOf(newFormat.format(km));
+            double meter = valueResult % 1000;
+            int meterInDec = Integer.valueOf(newFormat.format(meter));
 
-            Pour calculer la distance entre 2 coordonnées
-            https://developers.google.com/maps/documentation/distance-matrix/intro?hl=fr
+            double distance = Radius * c;
 
-            Si distance < distanceMax, on garde le restaurant
-            */
+            if(distance>this.getDistanceMax() && this.getDistanceMax() != 0){
+                continue;
+            }
 
             //Horaires du restaurant
             ArrayList<Horaire> schedule = r.getShedule();

@@ -5,11 +5,11 @@
     <string name="demo_max_label">Max</string>
     <string name="distance_name">DISTANCE</string>
     <string name="horaires_name">HORAIRES</string>
-    <string name="type_name">TYPE DE RESTAURANT</string>
+    <string name="type_name">TYPE</string>
     <string name="budget_name">BUDGET</string>
-    <string name="payment_name">MOYEN DE PAIEMENT</string>
+    <string name="payment_name">PAIEMENT</string>
     <string name="atmosphere_name">AMBIANCE</string>
-    <string name="number_name">NOMBRE DE PERSONNES</string>
+    <string name="number_name">PLACES</string>
     <string name="waitingtime_name">TEMPS ATTENTE</string>
     <string name="other_name">AUTRES</string>
 </resources>

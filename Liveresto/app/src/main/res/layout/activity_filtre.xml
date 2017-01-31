@@ -38,23 +38,23 @@
             android:textSize="30dp"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
             android:id="@+id/reinit"
             android:layout_centerHorizontal="true"
             android:layout_gravity="right"
             android:src="@drawable/icon_init"
-            android:layout_marginRight="10dp"
             android:clickable="true"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginRight="15dp"
             android:id="@+id/refresh"
             android:layout_centerHorizontal="true"
             android:layout_gravity="right"
             android:src="@drawable/icon_refresh"
-            android:layout_marginRight="30dp"
             android:clickable="true"/>
 
 
@@ -73,14 +73,14 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal">
 
             <Button
                 android:id="@+id/button_distance"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
@@ -101,7 +101,7 @@
 
             <Button
                 android:id="@+id/button_schedule"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
@@ -127,7 +127,7 @@
 
             <Button
                 android:id="@+id/button_type"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
@@ -145,7 +145,7 @@
 
             <Button
                 android:id="@+id/button_budget"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
@@ -163,7 +163,7 @@
 
             <Button
                 android:id="@+id/button_payment"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
@@ -181,7 +181,7 @@
 
             <Button
                 android:id="@+id/button_atmosphere"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
@@ -198,8 +198,26 @@
                 android:background="@color/background_recyclerview" />
 
             <Button
+                android:id="@+id/button_waitingtime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_border"
+                android:textColor="@color/background_actionbar"
+                android:layout_margin="10dp"
+                android:drawableRight="@drawable/ic_keyboard_arrow_down"
+                android:textSize="25dp"
+                android:layout_gravity="center"
+                android:text="@string/waitingtime_name" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_waitingtime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_recyclerview" />
+
+            <Button
                 android:id="@+id/button_number"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"
@@ -218,27 +236,10 @@
                 android:layout_marginRight="10dp"
                 />
 
-            <Button
-                android:id="@+id/button_waitingtime"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_border"
-                android:textColor="@color/background_actionbar"
-                android:layout_margin="10dp"
-                android:drawableRight="@drawable/ic_keyboard_arrow_down"
-                android:textSize="25dp"
-                android:layout_gravity="center"
-                android:text="@string/waitingtime_name" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_waitingtime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/background_recyclerview" />
 
             <Button
                 android:id="@+id/button_other"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border"
                 android:textColor="@color/background_actionbar"

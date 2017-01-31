@@ -1,13 +1,18 @@
 package com.platine.liveresto.filtre;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -17,9 +22,9 @@ import android.widget.TextView;
 
 import com.platine.liveresto.R;
 import com.platine.liveresto.db.RestaurantDAO;
-import com.platine.liveresto.model.Data;
 import com.platine.liveresto.filtre.Adapter.ElementsAdapter;
 import com.platine.liveresto.filtre.Adapter.ElementsAdapterSimple;
+import com.platine.liveresto.model.Data;
 import com.platine.liveresto.model.Filtre;
 import com.platine.liveresto.model.Restaurant;
 import com.platine.liveresto.rangeseekbar.RangeSeekBar;
@@ -29,7 +34,7 @@ import java.util.List;
 
 import static com.platine.liveresto.main.MainActivity.PREFS_FILTER;
 
-public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.OnRangeSeekBarChangeListener<Number>, CompoundButton.OnCheckedChangeListener, ElementsAdapterSimple.Listener, ElementsAdapter.Listener{
+public class FiltreActivity extends AppCompatActivity implements View.OnClickListener, RangeSeekBar.OnRangeSeekBarChangeListener<Number>, CompoundButton.OnCheckedChangeListener, ElementsAdapterSimple.Listener, ElementsAdapter.Listener {
 
 
     private Button buttonDistance;
@@ -41,7 +46,6 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     private Button buttonNumber;
     private Button buttonWaitingTime;
     private Button buttonOther;
-    private RecyclerView recyclerViewDistance;
     private RecyclerView recyclerViewSchedule;
     private RecyclerView recyclerViewType;
     private RecyclerView recyclerViewBudget;
@@ -80,15 +84,29 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     private boolean waitingTimeActived;
     private boolean otherActived;
 
+    private Location location;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filtre);
 
+        //On récupère la location de l'utilisateur
+
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        location = null;
+        String provider = lm.getBestProvider(new Criteria(), true);
+        if (provider != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+
 
         //On récupère l'intent et les données
         Intent i = getIntent();
-        filterGlobal = new Filtre(0,i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
+        filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter", 0.0),i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
 
         distanceActived = i.getBooleanExtra("distanceActived",false);
         scheduleActived = i.getBooleanExtra("scheduleActived",false);
@@ -110,36 +128,13 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
 
         countResto = (TextView) findViewById(R.id.countresto);
         RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
+        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants(),location.getLatitude(),location.getLongitude());
         countResto.setText("Restaurants trouvés : "+allRestos.size());
 
         refresh = (ImageView) findViewById(R.id.refresh);
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Requête sur les restaurants correspondants aux filtres en BDD
-                RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-                ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
-                countResto.setText("Restaurants trouvés : "+allRestos.size());
-            }
-        });
-
+        refresh.setOnClickListener(this);
         reinit = (ImageView) findViewById(R.id.reinit);
-        reinit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Réinitialisation des filtres
-                filterGlobal = new Filtre(0.0, new ArrayList<String>(), 0.0, 0.0, new ArrayList<String>(),0,0,new ArrayList<String>(),new ArrayList<String>(),0,0,false,false);
-                initFilters();
-                initElementsView();
-                initData();
-                RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-                ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants());
-                countResto.setText("Restaurants trouvés : "+allRestos.size());
-                //Sauvegarde en sharedsPrefs
-                saveSharedsPrefs();
-            }
-        });
+        reinit.setOnClickListener(this);
 
 
         initToolbar();
@@ -153,6 +148,27 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         addListenerOnButton();
 
     }
+
+    public void onClick(View view) {
+        if(view == findViewById(R.id.refresh)){
+            //Refresh
+            RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+            ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants(),location.getLatitude(),location.getLongitude());
+            countResto.setText("Restaurants trouvés : "+allRestos.size());
+        } else if(view == findViewById(R.id.reinit)) {
+            //Réinitialisation des filtres
+            filterGlobal = new Filtre(0.0, new ArrayList<String>(), 0.0, 0.0, new ArrayList<String>(),0,0,new ArrayList<String>(),new ArrayList<String>(),0,0,false,false);
+            initFilters();
+            initElementsView();
+            initData();
+            RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+            ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants(),location.getLatitude(),location.getLongitude());
+            countResto.setText("Restaurants trouvés : "+allRestos.size());
+            //Sauvegarde en sharedsPrefs
+            saveSharedsPrefs();
+        }
+    }
+
 
     //Save filters
     @Override
@@ -330,6 +346,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
         i.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
         i.putExtra("terraceFilter", filterGlobal.isTerrace());
         i.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
+        i.putExtra("distanceActived",distanceActived);
         i.putExtra("scheduleActived",scheduleActived);
         i.putExtra("typeActived",typeActived);
         i.putExtra("budgetActived",budgetActived);
@@ -347,7 +364,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
     public void onRangeSeekBarValuesChanged(RangeSeekBar<Number> bar, Number minValue, Number maxValue){
 
         if(bar.equals(this.rangeSeekBarDistance)){
-            rangeSeekBarDistance.setSelectedMaxValue((int)maxValue);
+            rangeSeekBarDistance.setSelectedMaxValue(maxValue);
             filterGlobal.setDistanceMax(Double.parseDouble(maxValue.toString()));
         } else if(bar.equals(this.rangeSeekBarSchedule)){
             //Si les deux valeurs sont égales on désactive un thumb sinon on active les deux
@@ -357,8 +374,7 @@ public class FiltreActivity extends AppCompatActivity implements RangeSeekBar.On
             filterGlobal.setHourBegin(Double.parseDouble(minValue.toString()));
             filterGlobal.setHourEnd(Double.parseDouble(maxValue.toString()));
         } else if(bar.equals(this.rangeSeekBarPlaces)){
-            //Si les deux valeurs sont égales on désactive un thumb sinon on active les deux
-            rangeSeekBarPlaces.setSelectedMaxValue((int)maxValue);
+            rangeSeekBarPlaces.setSelectedMaxValue(maxValue);
             filterGlobal.setPlaces(Integer.parseInt(maxValue.toString()));
         }
     }
