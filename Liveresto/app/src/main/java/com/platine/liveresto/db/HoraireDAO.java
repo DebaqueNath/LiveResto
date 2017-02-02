@@ -16,12 +16,12 @@ import java.util.ArrayList;
 
 public class HoraireDAO {
 
-    //Info BDD
+    //Informations BDD
     private static int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME ="Liveresto";
     private static final String TABLE_NAME = "horaire";
 
-    //Les champs de la table
+    //Table fields
     private static final String id="ID";
     private static final String idRestaurant="IDRestaurant";
     private static final String schedule="Schedule";
@@ -33,7 +33,7 @@ public class HoraireDAO {
         this.liveRestoDb = new LiveRestoDb(context,DATABASE_NAME,DATABASE_VERSION);
     }
 
-    //Add horaire in Database
+    //Add schedule in Database
     public long putHoraire(Horaire horaire) {
         SQLiteDatabase db = this.liveRestoDb.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -44,7 +44,7 @@ public class HoraireDAO {
         return retour;
     }
 
-    //Get shedule for a restaurant
+    //Get schedule for a restaurant
     public ArrayList<Horaire> getSchedule(Restaurant restaurant){
         ArrayList<Horaire> schedule = new ArrayList<>();
         SQLiteDatabase db = this.liveRestoDb.getReadableDatabase();

@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class LiveRestoDb extends SQLiteOpenHelper {
 
-        //Les champs de la table Restaurant
+        //Fields of restaurant table
         private static final String id="ID";
         private static final String name="Name";
         private static final String adress="Adress";
@@ -31,7 +31,7 @@ public class LiveRestoDb extends SQLiteOpenHelper {
         private static final String airConditionner="AirConditionner";
 
 
-        //Création de la table restaurant
+        //Create restaurant table
         private static final String TABLE_NAME1 = "restaurant";
         private static final String TABLE_CREATE1 =
                 "CREATE TABLE " + TABLE_NAME1 + " (" +
@@ -55,17 +55,17 @@ public class LiveRestoDb extends SQLiteOpenHelper {
                         terrace+ " INTEGER, " +
                         airConditionner+ " INTEGER "+ " );";
 
-        //Suppression de la table
+        //Delete table restaurant
         private static final String TABLE_DROP1 = "DROP TABLE IF EXISTS " + TABLE_NAME1 + ";";
 
 
-        //Les champs de la table horaire
+        //Fields of horaire table
         private static final String id2="ID";
         private static final String idRestaurant="IDRestaurant";
         private static final String schedule="Schedule";
 
 
-        //Création de la table horaire
+        //Create horaire table
         private static final String TABLE_NAME2 = "horaire";
         private static final String TABLE_CREATE2 =
                 "CREATE TABLE " + TABLE_NAME2 + " (" +
@@ -74,43 +74,12 @@ public class LiveRestoDb extends SQLiteOpenHelper {
                         schedule+ " TEXT, " +
                         " FOREIGN KEY ("+idRestaurant+") REFERENCES "+TABLE_NAME1+"(id));";
 
-        //Suppression de la table
+        //Delete table horaire
         private static final String TABLE_DROP2 = "DROP TABLE IF EXISTS " + TABLE_NAME2 + ";";
 
 
-        //TABLE PROFIL
-        //Les champs de la table
-        private static final String id3="ID";
-        private static final String distance="Distance";
-        private static final String days="Days";
-        private static final String startSchedule="StartSchedule";
-        private static final String endSchedule="EndSchedule";
 
-
-        //Création de la table
-        private static final String TABLE_NAME3 = "profil";
-        private static final String TABLE_CREATE3 =
-                "CREATE TABLE " + TABLE_NAME3 + " (" +
-                        id3 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        name + " TEXT NOT NULL UNIQUE, " +
-                        type+ " TEXT, " +
-                        distance+ " INTEGER, " +
-                        atmosphere+ " TEXT, " +
-                        startBudget+ " INTEGER NOT NULL, " +
-                        endBudget+ " INTEGER NOT NULL, " +
-                        payment+ " TEXT, " +
-                        places+ " INTEGER, " +
-                        waitingTime+ " INTEGER, " +
-                        terrace+ " INTEGER NOT NULL, " +
-                        airConditionner+ " INTEGER NOT NULL, " +
-                        days+ " TEXT, " +
-                        startSchedule+ " REAL, " +
-                        endSchedule+ " REAL " + ");";
-
-        //Suppression de la table
-        private static final String TABLE_DROP3 = "DROP TABLE IF EXISTS " + TABLE_NAME3 + ";";
-
-        //Constructeur
+        //Constructor
         public LiveRestoDb(Context context, String dataBaseName, int dataBaseVersion) {
             super(context, dataBaseName, null, dataBaseVersion);
         }
@@ -119,7 +88,6 @@ public class LiveRestoDb extends SQLiteOpenHelper {
         public void onCreate(SQLiteDatabase db) {
                 db.execSQL(TABLE_CREATE1);
                 db.execSQL(TABLE_CREATE2);
-                db.execSQL(TABLE_CREATE3);
 
         }
 
@@ -127,7 +95,6 @@ public class LiveRestoDb extends SQLiteOpenHelper {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL(TABLE_DROP1);
             db.execSQL(TABLE_DROP2);
-            db.execSQL(TABLE_DROP3);
             onCreate(db);
         }
 
@@ -135,7 +102,6 @@ public class LiveRestoDb extends SQLiteOpenHelper {
         public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL(TABLE_DROP1);
             db.execSQL(TABLE_DROP2);
-            db.execSQL(TABLE_DROP3);
             onCreate(db);
         }
 

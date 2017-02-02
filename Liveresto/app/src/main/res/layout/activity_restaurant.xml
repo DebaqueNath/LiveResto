@@ -47,13 +47,9 @@
 
             <ImageView
             android:id="@+id/image_restaurant"
-
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:scaleType="fitXY"
-
-                />
-
+            android:scaleType="fitXY" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="wrap_content"
@@ -82,10 +79,10 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin2" />
 
             <ImageView
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/img_avis_2"
-            android:src="@drawable/ic_action_star_10"/>
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/img_avis_2"
+                android:src="@drawable/ic_action_star_10"/>
 
             <ImageView
                 android:layout_width="25dp"
@@ -121,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Ouvert"
+            android:text="@string/ouvert"
             android:id="@+id/ouvert_resto"
             android:layout_marginLeft="14dp"
             android:textSize="15dp"
@@ -133,7 +130,6 @@
             android:background="@android:color/darker_gray"
             android:id="@+id/view"
             android:layout_marginTop="5dp" />
-
 
 
             <LinearLayout
@@ -169,7 +165,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="dimanche"
+                            android:text="@string/dimanche"
                             android:id="@+id/dimancheLabel"
                             android:layout_marginTop="10dp"/>
 
@@ -177,7 +173,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="lundi"
+                            android:text="@string/lundi"
                             android:id="@+id/lundiLabel"
                             android:layout_marginTop="4dp"/>
 
@@ -185,7 +181,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="mardi"
+                            android:text="@string/mardi"
                             android:id="@+id/mardiLabel"
                             android:layout_marginTop="4dp"/>
 
@@ -194,7 +190,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:id="@+id/mercrediLabel"
-                            android:text="mercredi"
+                            android:text="@string/mercredi"
                             android:layout_marginTop="4dp"/>
 
                         <TextView
@@ -202,7 +198,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:id="@+id/jeudiLabel"
-                            android:text="jeudi"
+                            android:text="@string/jeudi"
                             android:layout_marginTop="4dp"/>
 
                         <TextView
@@ -210,7 +206,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:id="@+id/vendrediLabel"
-                            android:text="vendredi"
+                            android:text="@string/vendredi"
                             android:layout_marginTop="4dp"/>
 
                         <TextView
@@ -218,7 +214,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:id="@+id/samediLabel"
-                            android:text="samedi"
+                            android:text="@string/samedi"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
@@ -233,7 +229,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Fermé"
+                            android:text="@string/ferme"
                             android:textStyle="bold"
                             android:textColor="@android:color/holo_red_dark"
                             android:id="@+id/dimanche"
@@ -244,7 +240,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Fermé"
+                            android:text="@string/ferme"
                             android:textStyle="bold"
                             android:textColor="@android:color/holo_red_dark"
                             android:id="@+id/lundi"
@@ -254,7 +250,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Fermé"
+                            android:text="@string/ferme"
                             android:textStyle="bold"
                             android:textColor="@android:color/holo_red_dark"
                             android:id="@+id/mardi"
@@ -264,7 +260,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Fermé"
+                            android:text="@string/ferme"
                             android:textStyle="bold"
                             android:textColor="@android:color/holo_red_dark"
                             android:id="@+id/mercredi"
@@ -274,7 +270,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Fermé"
+                            android:text="@string/ferme"
                             android:textStyle="bold"
                             android:textColor="@android:color/holo_red_dark"
                             android:id="@+id/jeudi"
@@ -284,7 +280,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Fermé"
+                            android:text="@string/ferme"
                             android:textStyle="bold"
                             android:textColor="@android:color/holo_red_dark"
                             android:id="@+id/vendredi"
@@ -294,7 +290,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Fermé"
+                            android:text="@string/ferme"
                             android:textStyle="bold"
                             android:textColor="@android:color/holo_red_dark"
                             android:id="@+id/samedi"
@@ -319,7 +315,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="4 Rue du Maréchal de Rantzau, 59193 Erquinghem-Lys"
+                        android:text="@string/adresse"
                         android:id="@+id/adresse_resto"
                         android:layout_marginTop="10dp"
                         android:layout_marginLeft="10dp"/>
@@ -344,7 +340,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="pizzabelart.fr"
+                        android:text="@string/siteweb"
                         android:id="@+id/internet_site"
                         android:layout_marginTop="16dp"
                         android:layout_marginLeft="10dp"/>
@@ -368,7 +364,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="03 20 03 33 58"
+                        android:text="@string/phone"
                         android:id="@+id/phone_text"
                         android:layout_marginTop="16dp"
                         android:layout_marginLeft="10dp"/>

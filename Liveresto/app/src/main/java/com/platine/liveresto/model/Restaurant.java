@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Nathanael on 04/01/2017.
+ * Represent a Restaurant
  */
 
 public class Restaurant {
@@ -28,7 +29,7 @@ public class Restaurant {
     private int waitingTime;
     private boolean terrace;
     private boolean airConditionner;
-    //liste des horaires du restaurant
+    //Schedule list
     private ArrayList<Horaire> shedule;
 
 

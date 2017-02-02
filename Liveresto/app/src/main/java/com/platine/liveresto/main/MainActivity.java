@@ -39,14 +39,17 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    //Objet filtre global correspondant aux filtres courant
+    //Current filters
     private Filtre filterGlobal;
+    //All restaurants
+    private ArrayList<Restaurant> restoListe;
     SharedPreferences sharedPrefs;
     public static final String PREFS_FILTER = "FilterPrefs";
     public static final int FILTRESCODE = 42;
     private GoogleMap mMap;
     private static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
 
+    //Keep information about filter actived
     private boolean distanceActived = false;
     private boolean scheduleActived = false;
     private boolean typeActived = false;
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Verify permission for user location
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermission(android.Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION, getApplicationContext(), MainActivity.this);
         } else {
@@ -68,8 +72,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    //Init the activity
     public void loadApplication() {
-        //Récupération des SharedPreferences
+        //Get SharedPreferences
         this.sharedPrefs = getSharedPreferences(PREFS_FILTER, 0);
         SharedPreferences.Editor editor = this.sharedPrefs.edit();
         ArrayList<String> days = new ArrayList<>();
@@ -113,15 +118,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         filterGlobal = new Filtre(sharedPrefs.getFloat("distance", (float) 0.0), days, sharedPrefs.getFloat("hourBegin", (float) 0.0), sharedPrefs.getFloat("hourEnd", (float) 0.0), type, sharedPrefs.getInt("startBudget", 0), sharedPrefs.getInt("endBudget", 0), payment, atmosphere, sharedPrefs.getInt("places", 0), sharedPrefs.getInt("waitingTime", 0), sharedPrefs.getBoolean("terrace", false), sharedPrefs.getBoolean("airConditionner", false));
 
-
-        // ******************** DB  ********************
+        // ******************** DATABASE FIXTURES  ********************
         fixtures();
 
+        //Get all restaurants
+        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+        restoListe = restosDAO.getRestaurants() ;
 
+        //Init mapFragment
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
+        //Init toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitle("");
         setSupportActionBar(myToolbar);
@@ -130,8 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected void onStop() {
         super.onStop();
-
-        //Sauvegarde des sharedPreferences
+        //Save sharedPreferences
         SharedPreferences.Editor editor = this.sharedPrefs.edit();
         float distance = (float) this.filterGlobal.getDistanceMax();
         String days = "";
@@ -177,6 +184,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    /**
+     * When coming back from activity filter, get filters informations
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FILTRESCODE) {
             if (resultCode == RESULT_OK) {
@@ -196,6 +206,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    /**
+     * Toolbar menu
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.home_menu, menu);
@@ -203,6 +216,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    /**
+     * When click on filter button in the toolbar menu
+     * Start FiltreActivity
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         Context context = getApplicationContext();
         switch (item.getItemId()) {
@@ -238,11 +255,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    /**
+     * Map is loaded
+     */
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateMarkerOnMap();
     }
 
+    /**
+     * Request permissions to the user
+     */
     public void requestPermission(String strPermission, int perCode, Context _c, MainActivity _a) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(_a, strPermission)) {
             loadApplication();
@@ -253,6 +276,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     @Override
+    /**
+     * Get result of permissions requested
+     */
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE_LOCATION:
@@ -265,17 +291,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
+    /**
+     * Update the map with restaurants corresponding to filters
+     */
     public void updateMarkerOnMap() {
         mMap.clear();
-
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
+        //Get user location
         LocationManager lm=(LocationManager)getSystemService(LOCATION_SERVICE);
         Location location = null;
         String provider=lm.getBestProvider(new Criteria(), true);
@@ -286,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-
+        //Marker restaurant click -> Call RestaurantActivity
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -297,18 +325,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        //Get restaurants corresponding to filters
+        ArrayList<Restaurant> restoListeFilter = filterGlobal.getRestaurantsFilter(restoListe,location.getLatitude(),location.getLongitude());
 
-        //Ajout des marqueurs pour les restaurants
-        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants(),location.getLatitude(),location.getLongitude());
-        if (!allRestos.isEmpty()) {
-            for (Restaurant resto : allRestos) {
+        //Add markers for restaurants
+       if (!restoListeFilter.isEmpty()) {
+            for (Restaurant resto : restoListeFilter) {
                 LatLng position = new LatLng(resto.getLatitude(), resto.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(position).title(resto.getName())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.icon_restaurant));
             }
         }
     }
 
+    /**
+     * Move the camera on the user location
+     * @param location
+     */
     public void updateLocationUser(Location location){
         LatLng myLocation = new LatLng(location.getLatitude(),location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
@@ -316,26 +348,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     /**
-     * Add restaurant to database
+     * Add restaurants to database
      */
     public void fixtures() {
 
-        // Restaurant
         RestaurantDAO restaurantDao = new RestaurantDAO(getApplicationContext());
 
-        //Si la base est vide on la remplit
+        //If base is empty, we put data in
         if(restaurantDao.getRestaurants().isEmpty()) {
 
-            //Les deux restaurants pour la vidéo
+            //Two restaurants for the video
             Restaurant r1 = new Restaurant("Quick", "5 rue des fleurs 59000 Lille", "0656546576", "www.quick.fr", "r1", 3.137273, 50.612136, false, false, "fastfood", "musical", 2, 11, "cartebancaire,espece,cheque", 10, 4, true, true);
             Restaurant r2 = new Restaurant("KFC", "34 rue des épaules 59000 Lille", "0627678789", "www.kfc.fr", "r2", 3.141820, 50.613579, false, false, "fastfood", "jeune", 2, 12, "cartebancaire,espece,cheque,ticketrestaurant", 5, 3, false, true);
-            //Add restaurant
+            //Add restaurants
             restaurantDao.putRestaurant(r1);
             restaurantDao.putRestaurant(r2);
 
-            // Schedule
+            //Schedule
             HoraireDAO horaireDao = new HoraireDAO(getApplicationContext());
 
             Horaire h1 = new Horaire(1, "LU 08.30 21.30");
@@ -347,8 +377,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Horaire h7 = new Horaire(1, "VE 08.30 21.30");
             Horaire h8 = new Horaire(1, "SA 08.30 21.30");
             Horaire h9 = new Horaire(1, "DI 08.30 21.30");
-            //Add schedule
 
+            //Add schedules
             horaireDao.putHoraire(h1);
             horaireDao.putHoraire(h2);
             horaireDao.putHoraire(h3);
@@ -360,9 +390,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             horaireDao.putHoraire(h9);
 
 
-            //Remplissage random de la BDD
+            //Generate random data in database
 
-            //Listes d'éléments
+            //Elements List
             ArrayList<String> adresses = new ArrayList<>();
             adresses.add("marcel pagnol");
             adresses.add("jean bleu");
@@ -495,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             hours.add("23.30");
             hours.add("24.00");
 
-            //Champs
+            //Fields
             String nom;
             String adresse;
             String tel;
@@ -595,27 +625,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 terrace = rand.nextBoolean();
                 airConditionner = rand.nextBoolean();
 
-                //Ajout du restaurant
+                //Add restaurant in database
                 r = new Restaurant(nom, adresse, tel, site, image, longitude, latitude, false, false, type, atmosphere, startBudget, endBudget, payment, places, waitingTimg, terrace, airConditionner);
                 restaurantDao.putRestaurant(r);
 
-                //Horaires
+                //Schedules
                 rdm = rand.nextInt(16 - 1 + 1) + 1;
                 for( int j = 0 ; j < rdm ; j++) {
-                    //Jours
+                    //Days
                     rdm5 = rand.nextInt(joursListe.size());
                     jour = joursListe.get(rdm5);
-                    //Heure début
+                    //Begin Hour
                     rdm5 = rand.nextInt(hours.size());
                     hourBegin = hours.get(rdm5);
-                    //Heure fin
+                    //End Hour
                     hourEnd = hours.get(rand.nextInt(hours.size() - rdm5) + rdm5);
-                    //Ajout de l'horaire
+                    //Add schedule
                     h = new Horaire(id,jour+" "+hourBegin+" "+hourEnd);
                     horaireDao.putHoraire(h);
                 }
             }
-
         }
     }
 }

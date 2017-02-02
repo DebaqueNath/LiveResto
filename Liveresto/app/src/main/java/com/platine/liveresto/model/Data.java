@@ -4,6 +4,9 @@ package com.platine.liveresto.model;
  * Created by --- on 03/01/2017.
  */
 
+/**
+ * Represent a Data of cardview in Filter
+ */
 public class Data {
     public String name;
     public int imageId;

@@ -40,21 +40,11 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             android:id="@+id/reinit"
             android:layout_centerHorizontal="true"
             android:layout_gravity="right"
             android:src="@drawable/icon_init"
-            android:clickable="true"/>
-
-        <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginRight="15dp"
-            android:id="@+id/refresh"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="right"
-            android:src="@drawable/icon_refresh"
             android:clickable="true"/>
 
 
@@ -298,13 +288,7 @@
                     android:textSize="18dp"
                     android:layout_gravity="center"
                     android:theme="@style/MySwitch"/>
-
-
             </LinearLayout>
-
-
-
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

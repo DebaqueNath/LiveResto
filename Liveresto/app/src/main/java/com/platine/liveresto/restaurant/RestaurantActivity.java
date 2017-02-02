@@ -22,9 +22,11 @@ import java.util.Date;
 
 /**
  * Created by Nath on 17/01/2017.
+ * RestaurantActivity
  */
 public class RestaurantActivity extends AppCompatActivity {
 
+    //Attributs
     private TextView title,type,ouvert,di,lu,ma,me,je,ve,sa,adresse,internet,phoneNum;
     private ImageView imgResto;
     private ImageView backArrow;
@@ -51,7 +53,7 @@ public class RestaurantActivity extends AppCompatActivity {
         this.phoneNum = (TextView) findViewById(R.id.phone_text);
 
 
-        //----------- Récupération du restaurant -------------------
+        //----------- Get Restaurant -------------------
         Intent i = getIntent();
         String title = i.getStringExtra("title");
         RestaurantDAO rdao = new RestaurantDAO(getApplicationContext());
@@ -64,7 +66,7 @@ public class RestaurantActivity extends AppCompatActivity {
         String website = r.getWebsite();
         String img = r.getPicture();
         String phone = r.getPhoneNumber();
-        //Vérifie restaurant ouvert ou fermé
+        //Vérify open or close
         Date d = new Date();
         SimpleDateFormat f = new SimpleDateFormat("HH.mm");
         String s = f.format(d);
@@ -103,7 +105,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
         for (Horaire h : schedule) {
             String day = h.getDay();
-            //Vérifier si ouvert ou fermé
             double b = h.getBeginHour();
             double e = h.getEndHour();
             if(day.equals(jour)) {
@@ -113,7 +114,7 @@ public class RestaurantActivity extends AppCompatActivity {
             }
             String begin = h.getSchedule().substring(3,8);
             String end = h.getSchedule().substring(9,14);
-            //Formatage des données
+            //Format data
             begin = begin.replace('.',':');
             end = end.replace('.',':');
 
@@ -191,7 +192,7 @@ public class RestaurantActivity extends AppCompatActivity {
             }
         }
 
-
+        //Init toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar_resto);
         setSupportActionBar(myToolbar);
         setTitle("");
@@ -205,7 +206,7 @@ public class RestaurantActivity extends AppCompatActivity {
             }
         });
 
-        //Implement views
+        //Implement view with Data
         this.title.setText(name);
         this.imgResto.setImageResource(getResources().getIdentifier(img, "drawable", getPackageName()));
         String type = r.getType();

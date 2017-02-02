@@ -29,14 +29,21 @@ import com.platine.liveresto.model.Filtre;
 import com.platine.liveresto.model.Restaurant;
 import com.platine.liveresto.rangeseekbar.RangeSeekBar;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.platine.liveresto.main.MainActivity.PREFS_FILTER;
 
+
+//Activity represents the filters
 public class FiltreActivity extends AppCompatActivity implements View.OnClickListener, RangeSeekBar.OnRangeSeekBarChangeListener<Number>, CompoundButton.OnCheckedChangeListener, ElementsAdapterSimple.Listener, ElementsAdapter.Listener {
 
 
+    //Attributs
+    private ArrayList<Restaurant> restoListe;
+
+    //Buttons
     private Button buttonDistance;
     private Button buttonSchedule;
     private Button buttonType;
@@ -46,21 +53,28 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
     private Button buttonNumber;
     private Button buttonWaitingTime;
     private Button buttonOther;
+
+    //Recyclerview
     private RecyclerView recyclerViewSchedule;
     private RecyclerView recyclerViewType;
     private RecyclerView recyclerViewBudget;
     private RecyclerView recyclerViewPayment;
     private RecyclerView recyclerViewAtmosphere;
     private RecyclerView recyclerViewWaitingTime;
+
+    //Toolbar
     private Toolbar myToolbar;
+
+    //Lists
     private List<Data> scheduleList;
     private List<Data> typeList;
     private List<Data> budgetList;
     private List<Data> paymentList;
     private List<Data> atmosphereList;
     private List<Data> waitingTimeList;
+
+    //Views
     private ImageView backArrowFilter;
-    private ImageView refresh;
     private ImageView reinit;
     private TextView title_toolbar;
     private TextView countResto;
@@ -69,11 +83,15 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
     private RangeSeekBar rangeSeekBarPlaces;
     private ImageView imageTerrace;
     private ImageView imageAirconditionner;
-    private Filtre filterGlobal;
-    public static final int FILTRESCODE = 42;
     private Switch switchTerrace;
     private Switch switchAirConditionner;
 
+
+    //Others
+    private Filtre filterGlobal;
+    public static final int FILTRESCODE = 42;
+
+    //Filters actived
     private boolean distanceActived;
     private boolean scheduleActived;
     private boolean typeActived;
@@ -91,8 +109,7 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filtre);
 
-        //On récupère la location de l'utilisateur
-
+        //Get user location
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         location = null;
         String provider = lm.getBestProvider(new Criteria(), true);
@@ -103,8 +120,7 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
             location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
 
-
-        //On récupère l'intent et les données
+        //Get intent and datas
         Intent i = getIntent();
         filterGlobal = new Filtre(i.getDoubleExtra("distanceFilter", 0.0),i.getStringArrayListExtra("daysFilter"),i.getDoubleExtra("hourBeginFilter",0.0),i.getDoubleExtra("hourEndFilter",0.0),i.getStringArrayListExtra("typeFilter"),i.getIntExtra("startBudgetFilter",0),i.getIntExtra("endBudgetFilter",0),i.getStringArrayListExtra("paymentFilter"),i.getStringArrayListExtra("atmosphereFilter"),i.getIntExtra("placesFilter",0),i.getIntExtra("waitingTimeFilter",0),i.getBooleanExtra("terraceFilter",false),i.getBooleanExtra("airConditionnerFilter",false));
 
@@ -118,6 +134,7 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
         waitingTimeActived = i.getBooleanExtra("waitingTimeActived",false);
         otherActived = i.getBooleanExtra("otherActived",false);
 
+        //Set listener
         backArrowFilter = (ImageView) findViewById(R.id.back_arrow_filter);
         backArrowFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,52 +142,322 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
                 returnToMap();
             }
         });
-
-        countResto = (TextView) findViewById(R.id.countresto);
-        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants(),location.getLatitude(),location.getLongitude());
-        countResto.setText("Restaurants trouvés : "+allRestos.size());
-
-        refresh = (ImageView) findViewById(R.id.refresh);
-        refresh.setOnClickListener(this);
         reinit = (ImageView) findViewById(R.id.reinit);
         reinit.setOnClickListener(this);
 
+        //Put number of found restaurant
+        RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
+        restoListe = restosDAO.getRestaurants();
+        ArrayList<Restaurant> restoListeFilter = filterGlobal.getRestaurantsFilter(restoListe,location.getLatitude(),location.getLongitude());
+        countResto = (TextView) findViewById(R.id.countresto);
+        countResto.setText("Restaurants trouvés : "+restoListeFilter.size());
 
+        //Init activity
         initToolbar();
-
         initFilters();
-
         initElementsView();
-
         initData();
-
         addListenerOnButton();
+    }
+
+    protected void onStop() {
+        super.onStop();
+        saveSharedsPrefs();
+    }
+
+    /**
+     *  Save sharedPreferences
+     */
+    public void saveSharedsPrefs(){
+        SharedPreferences sharedPrefs = getSharedPreferences(PREFS_FILTER, 0);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        float distance = (float) this.filterGlobal.getDistanceMax();
+        String days = "";
+        for (String d : this.filterGlobal.getDays()) {
+            days += d + ",";
+        }
+        float hourBegin = (float) this.filterGlobal.getHourBegin();
+        float hourEnd = (float) this.filterGlobal.getHourEnd();
+        String type = "";
+        for (String d : this.filterGlobal.getType()) {
+            type += d + ",";
+        }
+        int startBudget = this.filterGlobal.getStartBudget();
+        int endBudget = this.filterGlobal.getEndBudget();
+        String payment = "";
+        for (String d : this.filterGlobal.getPayment()) {
+            payment += d + ",";
+
+        }
+        String atmosphere = "";
+        for (String d : this.filterGlobal.getAtmosphere()) {
+            atmosphere += d + ",";
+        }
+        int places = this.filterGlobal.getPlaces();
+        int waitingTime = this.filterGlobal.getWaitingTime();
+        boolean terrace = this.filterGlobal.isTerrace();
+        boolean airConditionner = this.filterGlobal.isAirConditionner();
+        editor.putFloat("distance", distance);
+        editor.putString("days", days);
+        editor.putFloat("hourBegin", hourBegin);
+        editor.putFloat("hourEnd", hourEnd);
+        editor.putString("type", type);
+        editor.putInt("startBudget", startBudget);
+        editor.putInt("endBudget", endBudget);
+        editor.putString("payment", payment);
+        editor.putString("atmosphere", atmosphere);
+        editor.putInt("places", places);
+        editor.putInt("waitingTime", waitingTime);
+        editor.putBoolean("terrace", terrace);
+        editor.putBoolean("airConditionner", airConditionner);
+        editor.commit();
+    }
+
+
+    /**
+     * Update found restaurant
+     */
+    public void refreshRestos(){
+        ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restoListe,location.getLatitude(),location.getLongitude());
+        countResto.setText("Restaurants trouvés : "+allRestos.size());
+    }
+
+    @Override
+    public void onBackPressed() {
+        returnToMap();
+    }
+
+    /**
+     * Return to the map and put informations in extra (filters actived and selected)
+     */
+    private void returnToMap(){
+        Intent i = getIntent();
+        i.putExtra("distanceFilter", filterGlobal.getDistanceMax());
+        i.putExtra("daysFilter", filterGlobal.getDays());
+        i.putExtra("hourBeginFilter", filterGlobal.getHourBegin());
+        i.putExtra("hourEndFilter", filterGlobal.getHourEnd());
+        i.putExtra("typeFilter", filterGlobal.getType());
+        i.putExtra("startBudgetFilter", filterGlobal.getStartBudget());
+        i.putExtra("endBudgetFilter", filterGlobal.getEndBudget());
+        i.putExtra("paymentFilter", filterGlobal.getPayment());
+        i.putExtra("atmosphereFilter", filterGlobal.getAtmosphere());
+        i.putExtra("placesFilter", filterGlobal.getPlaces());
+        i.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
+        i.putExtra("terraceFilter", filterGlobal.isTerrace());
+        i.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
+        i.putExtra("distanceActived",distanceActived);
+        i.putExtra("scheduleActived",scheduleActived);
+        i.putExtra("typeActived",typeActived);
+        i.putExtra("budgetActived",budgetActived);
+        i.putExtra("paymentActived",paymentActived);
+        i.putExtra("atmosphereActived",atmosphereActived);
+        i.putExtra("placesActived",placesActived);
+        i.putExtra("waitingTimeActived",waitingTimeActived);
+        i.putExtra("otherActived",otherActived);
+        setResult(RESULT_OK, i);
+        finish();
+    }
+
+    //Initialization ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public void initToolbar(){
+        myToolbar = (Toolbar) findViewById(R.id.toolbar_filter);
+        setSupportActionBar(myToolbar);
+        setTitle("");
+        this.title_toolbar = (TextView) findViewById(R.id.toolbar_title_filter);
+        this.title_toolbar.setText("Filtres");
+    }
+
+    public void initFilters(){
+        //Schedule
+        scheduleList = new ArrayList<>();
+        scheduleList.add(new Data("Lundi",R.drawable.icon_monday,filterGlobal.getDays().contains("LU")));
+        scheduleList.add(new Data("Mardi",R.drawable.icon_tuesday,filterGlobal.getDays().contains("MA")));
+        scheduleList.add(new Data("Mercredi", R.drawable.icon_wednesday,filterGlobal.getDays().contains("ME")));
+        scheduleList.add(new Data("Jeudi",R.drawable.icon_thursday,filterGlobal.getDays().contains("JE")));
+        scheduleList.add(new Data("Vendredi",R.drawable.icon_friday,filterGlobal.getDays().contains("VE")));
+        scheduleList.add(new Data("Samedi",R.drawable.icon_saturday,filterGlobal.getDays().contains("SA")));
+        scheduleList.add(new Data("Dimanche",R.drawable.icon_sunday,filterGlobal.getDays().contains("DI")));
+        scheduleList.add(new Data("TOUSDAY",R.drawable.icon_all,filterGlobal.getDays().isEmpty()));
+
+        //Type
+        typeList = new ArrayList<>();
+        typeList.add(new Data("Pizzeria", R.drawable.pizzeria,filterGlobal.getType().contains("pizzeria")));
+        typeList.add(new Data("Halal", R.drawable.halal,filterGlobal.getType().contains("halal")));
+        typeList.add(new Data("Brasserie", R.drawable.brasserie,filterGlobal.getType().contains("brasserie")));
+        typeList.add(new Data("Végétarien", R.drawable.vegetarien,filterGlobal.getType().contains("vegetarien")));
+        typeList.add(new Data("Etoilé", R.drawable.gastronomique,filterGlobal.getType().contains("gastronomique")));
+        typeList.add(new Data("Bio", R.drawable.bio,filterGlobal.getType().contains("bio")));
+        typeList.add(new Data("Fast-food", R.drawable.fastfood,filterGlobal.getType().contains("fastfood")));
+        typeList.add(new Data("Casher", R.drawable.casher,filterGlobal.getType().contains("casher")));
+        typeList.add(new Data("Italien", R.drawable.italien,filterGlobal.getType().contains("italien")));
+        typeList.add(new Data("Chinois", R.drawable.chinois,filterGlobal.getType().contains("chinois")));
+        typeList.add(new Data("TOUSTYPE",R.drawable.icon_all,filterGlobal.getType().isEmpty()));
+
+        //Budget
+        budgetList = new ArrayList<>();
+        budgetList.add(new Data("<20€",R.drawable.icon_inf_20,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==19)) ? true : false));
+        budgetList.add(new Data("20 à 39€",R.drawable.icon_from_20,((filterGlobal.getStartBudget()==20) && (filterGlobal.getEndBudget()==39)) ? true : false));
+        budgetList.add(new Data("40 à 59€",R.drawable.icon_from_40,((filterGlobal.getStartBudget()==40) && (filterGlobal.getEndBudget()==59)) ? true : false));
+        budgetList.add(new Data("60 à 79€",R.drawable.icon_from_60,((filterGlobal.getStartBudget()==60) && (filterGlobal.getEndBudget()==79)) ? true : false));
+        budgetList.add(new Data(">80€",R.drawable.icon_sup_80,((filterGlobal.getStartBudget()==80) && (filterGlobal.getEndBudget()==1000)) ? true : false));
+        budgetList.add(new Data("TOUSBUDGET",R.drawable.icon_all,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==0)) ? true : false));
+
+        //Payment
+        paymentList = new ArrayList<>();
+        paymentList.add(new Data("Carte bancaire",R.drawable.icon_cb,filterGlobal.getPayment().contains("cartebancaire")));
+        paymentList.add(new Data("Cheque",R.drawable.icon_cheque,filterGlobal.getPayment().contains("cheque")));
+        paymentList.add(new Data("Cheque vacances",R.drawable.icon_cheque_vac,filterGlobal.getPayment().contains("chequevac")));
+        paymentList.add(new Data("Espece",R.drawable.icon_espece,filterGlobal.getPayment().contains("espece")));
+        paymentList.add(new Data("Ticket restaurant",R.drawable.icon_ticket,filterGlobal.getPayment().contains("ticketrestaurant")));
+        paymentList.add(new Data("TOUSPAYMENT",R.drawable.icon_all,filterGlobal.getPayment().isEmpty()));
+
+        //Atmosphere
+        atmosphereList = new ArrayList<>();
+        atmosphereList.add(new Data("Retro",R.drawable.icon_retro,filterGlobal.getAtmosphere().contains("retro")));
+        atmosphereList.add(new Data("Musical",R.drawable.icon_music,filterGlobal.getAtmosphere().contains("musical")));
+        atmosphereList.add(new Data("Jeune",R.drawable.icon_jeune,filterGlobal.getAtmosphere().contains("jeune")));
+        atmosphereList.add(new Data("Chic",R.drawable.icon_chic,filterGlobal.getAtmosphere().contains("chic")));
+        atmosphereList.add(new Data("Romance",R.drawable.icon_romantique,filterGlobal.getAtmosphere().contains("romantique")));
+        atmosphereList.add(new Data("Historique",R.drawable.icon_historique,filterGlobal.getAtmosphere().contains("historique")));
+        atmosphereList.add(new Data("Spectacle",R.drawable.icon_spectacle,filterGlobal.getAtmosphere().contains("spectacle")));
+        atmosphereList.add(new Data("TOUSATMOSPHERE",R.drawable.icon_all,filterGlobal.getAtmosphere().isEmpty()));
+
+
+        //WaitingTime
+        waitingTimeList = new ArrayList<>();
+        waitingTimeList.add(new Data("<5min",R.drawable.icon_wait_inf_5,(filterGlobal.getWaitingTime()==5)? true : false));
+        waitingTimeList.add(new Data("<10min",R.drawable.icon_wait_inf_10,(filterGlobal.getWaitingTime()==10)? true : false));
+        waitingTimeList.add(new Data("<15min",R.drawable.icon_wait_inf_15,(filterGlobal.getWaitingTime()==15)? true : false));
+        waitingTimeList.add(new Data("<30min",R.drawable.icon_wait_inf_30,(filterGlobal.getWaitingTime()==30)? true : false));
+        waitingTimeList.add(new Data("<45min",R.drawable.icon_wait_inf_45,(filterGlobal.getWaitingTime()==45)? true : false));
+        waitingTimeList.add(new Data("<60min",R.drawable.icon_wait_inf_60,(filterGlobal.getWaitingTime()==60)? true : false));
+        waitingTimeList.add(new Data("TOUSWAITING",R.drawable.icon_all,(filterGlobal.getWaitingTime()==0)? true : false));
 
     }
 
+    public void initElementsView(){
+        rangeSeekBarDistance = (RangeSeekBar) findViewById(R.id.rangeseekbardistance);
+        rangeSeekBarDistance.setLabel("km");
+        rangeSeekBarDistance.setRangeValues(0,50);
+        rangeSeekBarDistance.setSelectedMaxValue(0);
+        rangeSeekBarDistance.setOnRangeSeekBarChangeListener(this);
+        rangeSeekBarDistance.setVisibility(distanceActived?View.VISIBLE:View.GONE);
+
+        rangeSeekBarSchedule = (RangeSeekBar) findViewById(R.id.rangeseekbarschedule);
+        rangeSeekBarSchedule.setLabel("h");
+        rangeSeekBarSchedule.setRangeValues(0,24);
+        rangeSeekBarSchedule.setSelectedMinValue(0);
+        rangeSeekBarSchedule.setSelectedMaxValue(24);
+        rangeSeekBarSchedule.setOnRangeSeekBarChangeListener(this);
+        rangeSeekBarSchedule.setVisibility(scheduleActived?View.VISIBLE:View.GONE);
+
+        rangeSeekBarPlaces= (RangeSeekBar) findViewById(R.id.rangeseekbarplaces);
+        rangeSeekBarPlaces.setLabel(" personnes");
+        rangeSeekBarPlaces.setRangeValues(0,10);
+        rangeSeekBarPlaces.setSelectedMaxValue(0);
+        rangeSeekBarPlaces.setOnRangeSeekBarChangeListener(this);
+        rangeSeekBarPlaces.setVisibility(placesActived?View.VISIBLE:View.GONE);
+
+        //Initialize Recyclers
+        recyclerViewSchedule = (RecyclerView) findViewById(R.id.recycler_view_schedule);
+        recyclerViewSchedule.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerSchedule = new GridLayoutManager(this, 3);
+        recyclerViewSchedule.setLayoutManager(gridLayoutManagerSchedule);
+        recyclerViewSchedule.setAdapter(new ElementsAdapter(scheduleList,this));
+        recyclerViewSchedule.setVisibility(scheduleActived?View.VISIBLE:View.GONE);
+
+        recyclerViewType = (RecyclerView) findViewById(R.id.recycler_view_type);
+        recyclerViewType.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerType = new GridLayoutManager(this, 3);
+        recyclerViewType.setLayoutManager(gridLayoutManagerType);
+        recyclerViewType.setAdapter(new ElementsAdapter(typeList,this));
+        recyclerViewType.setVisibility(typeActived?View.VISIBLE:View.GONE);
+
+        recyclerViewBudget = (RecyclerView) findViewById(R.id.recycler_view_budget);
+        recyclerViewBudget.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerBudget = new GridLayoutManager(this, 3);
+        recyclerViewBudget.setLayoutManager(gridLayoutManagerBudget);
+        recyclerViewBudget.setAdapter(new ElementsAdapterSimple(budgetList,this));
+        recyclerViewBudget.setVisibility(budgetActived?View.VISIBLE:View.GONE);
+
+        recyclerViewPayment = (RecyclerView) findViewById(R.id.recycler_view_payment);
+        recyclerViewPayment.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerPayment = new GridLayoutManager(this, 3);
+        recyclerViewPayment.setLayoutManager(gridLayoutManagerPayment);
+        recyclerViewPayment.setAdapter(new ElementsAdapter(paymentList,this));
+        recyclerViewPayment.setVisibility(paymentActived?View.VISIBLE:View.GONE);
+
+        recyclerViewAtmosphere = (RecyclerView) findViewById(R.id.recycler_view_atmosphere);
+        recyclerViewAtmosphere.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerAtmosphere = new GridLayoutManager(this, 3);
+        recyclerViewAtmosphere.setLayoutManager(gridLayoutManagerAtmosphere);
+        recyclerViewAtmosphere.setAdapter(new ElementsAdapter(atmosphereList,this));
+        recyclerViewAtmosphere.setVisibility(atmosphereActived?View.VISIBLE:View.GONE);
+
+        recyclerViewWaitingTime = (RecyclerView) findViewById(R.id.recycler_view_waitingtime);
+        recyclerViewWaitingTime.setHasFixedSize(true);
+        GridLayoutManager gridLayoutManagerWaitingTime = new GridLayoutManager(this, 3);
+        recyclerViewWaitingTime.setLayoutManager(gridLayoutManagerWaitingTime);
+        recyclerViewWaitingTime.setAdapter(new ElementsAdapterSimple(waitingTimeList,this));
+        recyclerViewWaitingTime.setVisibility(waitingTimeActived?View.VISIBLE:View.GONE);
+
+        //Initialize Switchs
+        imageTerrace = (ImageView) findViewById(R.id.iconTerrace);
+        imageTerrace.setVisibility(otherActived?View.VISIBLE:View.GONE);
+
+        imageAirconditionner = (ImageView) findViewById(R.id.iconAirConditionner);
+        imageAirconditionner.setVisibility(otherActived?View.VISIBLE:View.GONE);
+
+        switchTerrace = (Switch)findViewById(R.id.switchTerrace);
+        switchTerrace.setChecked(false);
+        switchTerrace.setOnCheckedChangeListener(this);
+        switchTerrace.setVisibility(otherActived?View.VISIBLE:View.GONE);
+
+        switchAirConditionner = (Switch)findViewById(R.id.switchAirConditionner);
+        switchAirConditionner.setChecked(false);
+        switchAirConditionner.setOnCheckedChangeListener(this);
+        switchAirConditionner.setVisibility(otherActived?View.VISIBLE:View.GONE);
+    }
+
+    public void initData(){
+        //Distance
+        rangeSeekBarDistance.setSelectedMaxValue(filterGlobal.getDistanceMax());
+        //Schedule Hours
+        rangeSeekBarSchedule.setSelectedMinValue(filterGlobal.getHourBegin());
+        rangeSeekBarSchedule.setSelectedMaxValue(filterGlobal.getHourEnd());
+        //Number places
+        rangeSeekBarPlaces.setSelectedMaxValue(filterGlobal.getPlaces());
+        //Terrace
+        switchTerrace.setChecked(filterGlobal.isTerrace());
+        //AirConditionner
+        switchAirConditionner.setChecked(filterGlobal.isAirConditionner());
+    }
+
+
+    //Listeners -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     *  Click on reinitialized button
+     */
     public void onClick(View view) {
-        if(view == findViewById(R.id.refresh)){
-            //Refresh
-            RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-            ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants(),location.getLatitude(),location.getLongitude());
-            countResto.setText("Restaurants trouvés : "+allRestos.size());
-        } else if(view == findViewById(R.id.reinit)) {
-            //Réinitialisation des filtres
+        if(view == findViewById(R.id.reinit)) {
+            //Réinitialize filters
             filterGlobal = new Filtre(0.0, new ArrayList<String>(), 0.0, 0.0, new ArrayList<String>(),0,0,new ArrayList<String>(),new ArrayList<String>(),0,0,false,false);
             initFilters();
             initElementsView();
             initData();
-            RestaurantDAO restosDAO = new RestaurantDAO(getApplicationContext());
-            ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restosDAO.getRestaurants(),location.getLatitude(),location.getLongitude());
+            ArrayList<Restaurant> allRestos = filterGlobal.getRestaurantsFilter(restoListe,location.getLatitude(),location.getLongitude());
             countResto.setText("Restaurants trouvés : "+allRestos.size());
-            //Sauvegarde en sharedsPrefs
+            //Sauvegarde sharedsPrefs
             saveSharedsPrefs();
         }
     }
 
 
-    //Save filters
+    /**
+     * Save filters when select it
+     */
     @Override
     public void onCardViewClick(Data d) {
         //Days
@@ -323,46 +610,12 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
         if(d.getName()=="TOUSWAITING"){
             filterGlobal.setWaitingTime(0);
         }
+
+        //Update found restaurants
+        refreshRestos();
     }
-
-    @Override
-    public void onBackPressed() {
-        returnToMap();
-    }
-
-
-    private void returnToMap(){
-        Intent i = getIntent();
-        i.putExtra("distanceFilter", filterGlobal.getDistanceMax());
-        i.putExtra("daysFilter", filterGlobal.getDays());
-        i.putExtra("hourBeginFilter", filterGlobal.getHourBegin());
-        i.putExtra("hourEndFilter", filterGlobal.getHourEnd());
-        i.putExtra("typeFilter", filterGlobal.getType());
-        i.putExtra("startBudgetFilter", filterGlobal.getStartBudget());
-        i.putExtra("endBudgetFilter", filterGlobal.getEndBudget());
-        i.putExtra("paymentFilter", filterGlobal.getPayment());
-        i.putExtra("atmosphereFilter", filterGlobal.getAtmosphere());
-        i.putExtra("placesFilter", filterGlobal.getPlaces());
-        i.putExtra("waitingTimeFilter", filterGlobal.getWaitingTime());
-        i.putExtra("terraceFilter", filterGlobal.isTerrace());
-        i.putExtra("airConditionnerFilter", filterGlobal.isAirConditionner());
-        i.putExtra("distanceActived",distanceActived);
-        i.putExtra("scheduleActived",scheduleActived);
-        i.putExtra("typeActived",typeActived);
-        i.putExtra("budgetActived",budgetActived);
-        i.putExtra("paymentActived",paymentActived);
-        i.putExtra("atmosphereActived",atmosphereActived);
-        i.putExtra("placesActived",placesActived);
-        i.putExtra("waitingTimeActived",waitingTimeActived);
-        i.putExtra("otherActived",otherActived);
-        setResult(RESULT_OK, i);
-        finish();
-    }
-
-
 
     public void onRangeSeekBarValuesChanged(RangeSeekBar<Number> bar, Number minValue, Number maxValue){
-
         if(bar.equals(this.rangeSeekBarDistance)){
             rangeSeekBarDistance.setSelectedMaxValue(maxValue);
             filterGlobal.setDistanceMax(Double.parseDouble(maxValue.toString()));
@@ -377,6 +630,8 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
             rangeSeekBarPlaces.setSelectedMaxValue(maxValue);
             filterGlobal.setPlaces(Integer.parseInt(maxValue.toString()));
         }
+        //Update found restaurants
+        refreshRestos();
     }
 
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -393,253 +648,11 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
                 filterGlobal.setAirConditionner(false);
             }
         }
+        //Update found restaurants
+        refreshRestos();
     }
 
-    /**
-     *
-     */
-    public void initToolbar(){
-        myToolbar = (Toolbar) findViewById(R.id.toolbar_filter);
-        setSupportActionBar(myToolbar);
-        setTitle("");
-        this.title_toolbar = (TextView) findViewById(R.id.toolbar_title_filter);
-        this.title_toolbar.setText("Filtres");
-    }
-
-    /**
-     *
-     */
-    public void initFilters(){
-
-
-        //Schedule
-        scheduleList = new ArrayList<>();
-        scheduleList.add(new Data("Lundi",R.drawable.icon_monday,filterGlobal.getDays().contains("LU")));
-        scheduleList.add(new Data("Mardi",R.drawable.icon_tuesday,filterGlobal.getDays().contains("MA")));
-        scheduleList.add(new Data("Mercredi", R.drawable.icon_wednesday,filterGlobal.getDays().contains("ME")));
-        scheduleList.add(new Data("Jeudi",R.drawable.icon_thursday,filterGlobal.getDays().contains("JE")));
-        scheduleList.add(new Data("Vendredi",R.drawable.icon_friday,filterGlobal.getDays().contains("VE")));
-        scheduleList.add(new Data("Samedi",R.drawable.icon_saturday,filterGlobal.getDays().contains("SA")));
-        scheduleList.add(new Data("Dimanche",R.drawable.icon_sunday,filterGlobal.getDays().contains("DI")));
-        scheduleList.add(new Data("TOUSDAY",R.drawable.icon_all,filterGlobal.getDays().isEmpty()));
-
-        typeList = new ArrayList<>();
-        typeList.add(new Data("Pizzeria", R.drawable.pizzeria,filterGlobal.getType().contains("pizzeria")));
-        typeList.add(new Data("Halal", R.drawable.halal,filterGlobal.getType().contains("halal")));
-        typeList.add(new Data("Brasserie", R.drawable.brasserie,filterGlobal.getType().contains("brasserie")));
-        typeList.add(new Data("Végétarien", R.drawable.vegetarien,filterGlobal.getType().contains("vegetarien")));
-        typeList.add(new Data("Etoilé", R.drawable.gastronomique,filterGlobal.getType().contains("gastronomique")));
-        typeList.add(new Data("Bio", R.drawable.bio,filterGlobal.getType().contains("bio")));
-        typeList.add(new Data("Fast-food", R.drawable.fastfood,filterGlobal.getType().contains("fastfood")));
-        typeList.add(new Data("Casher", R.drawable.casher,filterGlobal.getType().contains("casher")));
-        typeList.add(new Data("Italien", R.drawable.italien,filterGlobal.getType().contains("italien")));
-        typeList.add(new Data("Chinois", R.drawable.chinois,filterGlobal.getType().contains("chinois")));
-        typeList.add(new Data("TOUSTYPE",R.drawable.icon_all,filterGlobal.getType().isEmpty()));
-
-        budgetList = new ArrayList<>();
-        budgetList.add(new Data("<20€",R.drawable.icon_inf_20,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==19)) ? true : false));
-        budgetList.add(new Data("20 à 39€",R.drawable.icon_from_20,((filterGlobal.getStartBudget()==20) && (filterGlobal.getEndBudget()==39)) ? true : false));
-        budgetList.add(new Data("40 à 59€",R.drawable.icon_from_40,((filterGlobal.getStartBudget()==40) && (filterGlobal.getEndBudget()==59)) ? true : false));
-        budgetList.add(new Data("60 à 79€",R.drawable.icon_from_60,((filterGlobal.getStartBudget()==60) && (filterGlobal.getEndBudget()==79)) ? true : false));
-        budgetList.add(new Data(">80€",R.drawable.icon_sup_80,((filterGlobal.getStartBudget()==80) && (filterGlobal.getEndBudget()==1000)) ? true : false));
-        budgetList.add(new Data("TOUSBUDGET",R.drawable.icon_all,((filterGlobal.getStartBudget()==0) && (filterGlobal.getEndBudget()==0)) ? true : false));
-
-        paymentList = new ArrayList<>();
-        paymentList.add(new Data("Carte bancaire",R.drawable.icon_cb,filterGlobal.getPayment().contains("cartebancaire")));
-        paymentList.add(new Data("Cheque",R.drawable.icon_cheque,filterGlobal.getPayment().contains("cheque")));
-        paymentList.add(new Data("Cheque vacances",R.drawable.icon_cheque_vac,filterGlobal.getPayment().contains("chequevac")));
-        paymentList.add(new Data("Espece",R.drawable.icon_espece,filterGlobal.getPayment().contains("espece")));
-        paymentList.add(new Data("Ticket restaurant",R.drawable.icon_ticket,filterGlobal.getPayment().contains("ticketrestaurant")));
-        paymentList.add(new Data("TOUSPAYMENT",R.drawable.icon_all,filterGlobal.getPayment().isEmpty()));
-
-        atmosphereList = new ArrayList<>();
-        atmosphereList.add(new Data("Retro",R.drawable.icon_retro,filterGlobal.getAtmosphere().contains("retro")));
-        atmosphereList.add(new Data("Musical",R.drawable.icon_music,filterGlobal.getAtmosphere().contains("musical")));
-        atmosphereList.add(new Data("Jeune",R.drawable.icon_jeune,filterGlobal.getAtmosphere().contains("jeune")));
-        atmosphereList.add(new Data("Chic",R.drawable.icon_chic,filterGlobal.getAtmosphere().contains("chic")));
-        atmosphereList.add(new Data("Romance",R.drawable.icon_romantique,filterGlobal.getAtmosphere().contains("romantique")));
-        atmosphereList.add(new Data("Historique",R.drawable.icon_historique,filterGlobal.getAtmosphere().contains("historique")));
-        atmosphereList.add(new Data("Spectacle",R.drawable.icon_spectacle,filterGlobal.getAtmosphere().contains("spectacle")));
-        atmosphereList.add(new Data("TOUSATMOSPHERE",R.drawable.icon_all,filterGlobal.getAtmosphere().isEmpty()));
-
-        waitingTimeList = new ArrayList<>();
-        waitingTimeList.add(new Data("<5min",R.drawable.icon_wait_inf_5,(filterGlobal.getWaitingTime()==5)? true : false));
-        waitingTimeList.add(new Data("<10min",R.drawable.icon_wait_inf_10,(filterGlobal.getWaitingTime()==10)? true : false));
-        waitingTimeList.add(new Data("<15min",R.drawable.icon_wait_inf_15,(filterGlobal.getWaitingTime()==15)? true : false));
-        waitingTimeList.add(new Data("<30min",R.drawable.icon_wait_inf_30,(filterGlobal.getWaitingTime()==30)? true : false));
-        waitingTimeList.add(new Data("<45min",R.drawable.icon_wait_inf_45,(filterGlobal.getWaitingTime()==45)? true : false));
-        waitingTimeList.add(new Data("<60min",R.drawable.icon_wait_inf_60,(filterGlobal.getWaitingTime()==60)? true : false));
-        waitingTimeList.add(new Data("TOUSWAITING",R.drawable.icon_all,(filterGlobal.getWaitingTime()==0)? true : false));
-
-    }
-
-
-    /**
-     *
-     */
-    public void initElementsView(){
-
-        rangeSeekBarDistance = (RangeSeekBar) findViewById(R.id.rangeseekbardistance);
-        rangeSeekBarDistance.setLabel("km");
-        rangeSeekBarDistance.setRangeValues(0,50);
-        rangeSeekBarDistance.setSelectedMaxValue(0);
-        rangeSeekBarDistance.setOnRangeSeekBarChangeListener(this);
-        rangeSeekBarDistance.setVisibility(distanceActived?View.VISIBLE:View.GONE);
-
-        rangeSeekBarSchedule = (RangeSeekBar) findViewById(R.id.rangeseekbarschedule);
-        rangeSeekBarSchedule.setLabel("h");
-        rangeSeekBarSchedule.setRangeValues(0,24);
-        rangeSeekBarSchedule.setSelectedMinValue(0);
-        rangeSeekBarSchedule.setSelectedMaxValue(24);
-        rangeSeekBarSchedule.setOnRangeSeekBarChangeListener(this);
-        rangeSeekBarSchedule.setVisibility(scheduleActived?View.VISIBLE:View.GONE);
-
-        rangeSeekBarPlaces= (RangeSeekBar) findViewById(R.id.rangeseekbarplaces);
-        rangeSeekBarPlaces.setLabel(" personnes");
-        rangeSeekBarPlaces.setRangeValues(0,10);
-        rangeSeekBarPlaces.setSelectedMaxValue(0);
-        rangeSeekBarPlaces.setOnRangeSeekBarChangeListener(this);
-        rangeSeekBarPlaces.setVisibility(placesActived?View.VISIBLE:View.GONE);
-
-        //Initialize Recycler
-        recyclerViewSchedule = (RecyclerView) findViewById(R.id.recycler_view_schedule);
-        recyclerViewSchedule.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerSchedule = new GridLayoutManager(this, 3);
-        recyclerViewSchedule.setLayoutManager(gridLayoutManagerSchedule);
-        recyclerViewSchedule.setAdapter(new ElementsAdapter(scheduleList,this));
-        recyclerViewSchedule.setVisibility(scheduleActived?View.VISIBLE:View.GONE);
-
-        recyclerViewType = (RecyclerView) findViewById(R.id.recycler_view_type);
-        recyclerViewType.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerType = new GridLayoutManager(this, 3);
-        recyclerViewType.setLayoutManager(gridLayoutManagerType);
-        recyclerViewType.setAdapter(new ElementsAdapter(typeList,this));
-        recyclerViewType.setVisibility(typeActived?View.VISIBLE:View.GONE);
-
-        recyclerViewBudget = (RecyclerView) findViewById(R.id.recycler_view_budget);
-        recyclerViewBudget.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerBudget = new GridLayoutManager(this, 3);
-        recyclerViewBudget.setLayoutManager(gridLayoutManagerBudget);
-        recyclerViewBudget.setAdapter(new ElementsAdapterSimple(budgetList,this));
-        recyclerViewBudget.setVisibility(budgetActived?View.VISIBLE:View.GONE);
-
-        recyclerViewPayment = (RecyclerView) findViewById(R.id.recycler_view_payment);
-        recyclerViewPayment.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerPayment = new GridLayoutManager(this, 3);
-        recyclerViewPayment.setLayoutManager(gridLayoutManagerPayment);
-        recyclerViewPayment.setAdapter(new ElementsAdapter(paymentList,this));
-        recyclerViewPayment.setVisibility(paymentActived?View.VISIBLE:View.GONE);
-
-        recyclerViewAtmosphere = (RecyclerView) findViewById(R.id.recycler_view_atmosphere);
-        recyclerViewAtmosphere.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerAtmosphere = new GridLayoutManager(this, 3);
-        recyclerViewAtmosphere.setLayoutManager(gridLayoutManagerAtmosphere);
-        recyclerViewAtmosphere.setAdapter(new ElementsAdapter(atmosphereList,this));
-        recyclerViewAtmosphere.setVisibility(atmosphereActived?View.VISIBLE:View.GONE);
-
-
-        recyclerViewWaitingTime = (RecyclerView) findViewById(R.id.recycler_view_waitingtime);
-        recyclerViewWaitingTime.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManagerWaitingTime = new GridLayoutManager(this, 3);
-        recyclerViewWaitingTime.setLayoutManager(gridLayoutManagerWaitingTime);
-        recyclerViewWaitingTime.setAdapter(new ElementsAdapterSimple(waitingTimeList,this));
-        recyclerViewWaitingTime.setVisibility(waitingTimeActived?View.VISIBLE:View.GONE);
-
-        //Initialize Switch
-        imageTerrace = (ImageView) findViewById(R.id.iconTerrace);
-        imageTerrace.setVisibility(otherActived?View.VISIBLE:View.GONE);
-
-        imageAirconditionner = (ImageView) findViewById(R.id.iconAirConditionner);
-        imageAirconditionner.setVisibility(otherActived?View.VISIBLE:View.GONE);
-
-        switchTerrace = (Switch)findViewById(R.id.switchTerrace);
-        switchTerrace.setChecked(false);
-        switchTerrace.setOnCheckedChangeListener(this);
-        switchTerrace.setVisibility(otherActived?View.VISIBLE:View.GONE);
-
-        switchAirConditionner = (Switch)findViewById(R.id.switchAirConditionner);
-        switchAirConditionner.setChecked(false);
-        switchAirConditionner.setOnCheckedChangeListener(this);
-        switchAirConditionner.setVisibility(otherActived?View.VISIBLE:View.GONE);
-    }
-
-    public void initData(){
-
-        //Distance
-        rangeSeekBarDistance.setSelectedMaxValue(filterGlobal.getDistanceMax());
-
-        //Schedule Hours
-        rangeSeekBarSchedule.setSelectedMinValue(filterGlobal.getHourBegin());
-        rangeSeekBarSchedule.setSelectedMaxValue(filterGlobal.getHourEnd());
-
-        //Number places
-        rangeSeekBarPlaces.setSelectedMaxValue(filterGlobal.getPlaces());
-
-        //Terrace
-        switchTerrace.setChecked(filterGlobal.isTerrace());
-
-        //AirConditionner
-        switchAirConditionner.setChecked(filterGlobal.isAirConditionner());
-    }
-
-    protected void onStop() {
-        super.onStop();
-
-        saveSharedsPrefs();
-    }
-
-    public void saveSharedsPrefs(){
-        SharedPreferences sharedPrefs = getSharedPreferences(PREFS_FILTER, 0);
-
-        //Sauvegarde des sharedPreferences
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        float distance = (float) this.filterGlobal.getDistanceMax();
-        String days = "";
-        for (String d : this.filterGlobal.getDays()) {
-            days += d + ",";
-        }
-        float hourBegin = (float) this.filterGlobal.getHourBegin();
-        float hourEnd = (float) this.filterGlobal.getHourEnd();
-        String type = "";
-        for (String d : this.filterGlobal.getType()) {
-            type += d + ",";
-        }
-        int startBudget = this.filterGlobal.getStartBudget();
-        int endBudget = this.filterGlobal.getEndBudget();
-        String payment = "";
-        for (String d : this.filterGlobal.getPayment()) {
-            payment += d + ",";
-
-        }
-        String atmosphere = "";
-        for (String d : this.filterGlobal.getAtmosphere()) {
-            atmosphere += d + ",";
-        }
-        int places = this.filterGlobal.getPlaces();
-        int waitingTime = this.filterGlobal.getWaitingTime();
-        boolean terrace = this.filterGlobal.isTerrace();
-        boolean airConditionner = this.filterGlobal.isAirConditionner();
-        editor.putFloat("distance", distance);
-        editor.putString("days", days);
-        editor.putFloat("hourBegin", hourBegin);
-        editor.putFloat("hourEnd", hourEnd);
-        editor.putString("type", type);
-        editor.putInt("startBudget", startBudget);
-        editor.putInt("endBudget", endBudget);
-        editor.putString("payment", payment);
-        editor.putString("atmosphere", atmosphere);
-        editor.putInt("places", places);
-        editor.putInt("waitingTime", waitingTime);
-        editor.putBoolean("terrace", terrace);
-        editor.putBoolean("airConditionner", airConditionner);
-        editor.commit();
-    }
-
-    /**
-     *
-     */
     public void addListenerOnButton() {
-
         buttonDistance = (Button) findViewById(R.id.button_distance);
         buttonDistance.setOnClickListener(new View.OnClickListener() {
 
@@ -793,8 +806,6 @@ public class FiltreActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
     }
-
-
 
 
 }

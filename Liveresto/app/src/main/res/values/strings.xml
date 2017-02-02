@@ -12,4 +12,18 @@
     <string name="number_name">PLACES</string>
     <string name="waitingtime_name">TEMPS ATTENTE</string>
     <string name="other_name">AUTRES</string>
+    <string name="ouvert">Ouvert</string>
+    <string name="dimanche">dimanche</string>
+    <string name="lundi">lundi</string>
+    <string name="mardi">mardi</string>
+    <string name="mercredi">mercredi</string>
+    <string name="jeudi">jeudi</string>
+    <string name="vendredi">vendredi</string>
+    <string name="samedi">samedi</string>
+    <string name="ferme">Fermé</string>
+    <string name="adresse">4 Rue du Maréchal de Rantzau, 59193 Erquinghem-Lys</string>
+    <string name="siteweb">pizzabelart.fr</string>
+    <string name="phone">03 20 03 33 58</string>
+
+
 </resources>

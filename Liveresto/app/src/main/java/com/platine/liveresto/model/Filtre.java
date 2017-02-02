@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Nath on 17/01/2017.
+ *
+ * Represent a selection of filters
  */
 public class Filtre {
 
@@ -255,12 +257,12 @@ public class Filtre {
                 '}';
     }
 
-    //Get restaurant with filter
+    //Get restaurant corresponding to the filter
     public ArrayList<Restaurant> getRestaurantsFilter(ArrayList<Restaurant> restaurants, double latitude, double longitude){
         ArrayList<Restaurant> restaurantsResult = new ArrayList<>();
 
         for (Restaurant r : restaurants) {
-            //Calcul de la distance du restaurant par rapport à la position de l'utilisateur
+            //Get distance between restaurant and position user
             int Radius = 6371;// radius of earth in Km
             double lat1 = latitude;
             double lat2 = r.getLatitude();
@@ -286,7 +288,7 @@ public class Filtre {
                 continue;
             }
 
-            //Horaires du restaurant
+            //Schedule
             ArrayList<Horaire> schedule = r.getShedule();
             boolean flag = false;
             for (Horaire h : schedule) {
@@ -303,7 +305,7 @@ public class Filtre {
             if(!flag){
                 continue;}
 
-            //Type du restaurant
+            //Type
             String type = r.getType();
             String[] split = type.split(",");
             flag = false;
@@ -356,7 +358,6 @@ public class Filtre {
                 }
             }
 
-
             //WaitingTime
             if(this.waitingTime != 0) {
                 if (r.getWaitingTime() > this.waitingTime) {
@@ -374,10 +375,9 @@ public class Filtre {
                 continue;
             }
 
-            //Si on arrive ici, le restaurant correspond aux filtres
+            //Add restaurant to the list
             restaurantsResult.add(r);
         }
-
         return restaurantsResult;
     }
 }

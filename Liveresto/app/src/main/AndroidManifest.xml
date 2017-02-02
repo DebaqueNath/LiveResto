@@ -29,7 +29,6 @@
 
         </activity>
 
-        <activity android:name=".filtre.DetailActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".restaurant.RestaurantActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".filtre.FiltreActivity" android:screenOrientation="portrait"></activity>
 

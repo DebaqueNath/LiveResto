@@ -15,6 +15,8 @@ import java.util.List;
 /**
  * Created by Nath on 27/01/2017.
  */
+
+//Adapter for reyclerview with multiple selection
 public class ElementsAdapter extends RecyclerView.Adapter<MyViewHolder> implements MyViewHolder.Listener{
     private static final int VIEW_NORMAL = 1;
     private List<Data> contactList;
@@ -28,7 +30,7 @@ public class ElementsAdapter extends RecyclerView.Adapter<MyViewHolder> implemen
 
 
     public void onCardViewClick(int position){
-        //Cas où on appuie sur TOUS
+        //When "TOUS" is selected
         if(position == contactList.size()-1){
             Data d;
             for(int i = 0 ; i < contactList.size(); i++){
@@ -82,7 +84,5 @@ public class ElementsAdapter extends RecyclerView.Adapter<MyViewHolder> implemen
     public interface Listener {
         void onCardViewClick(Data d);
     }
-
-
 
 }

@@ -15,6 +15,8 @@ import java.util.List;
 /**
  * Created by Nath on 27/01/2017.
  */
+
+//Adapter for recyclerView with unique selection
 public class ElementsAdapterSimple extends RecyclerView.Adapter<MyViewHolder> implements MyViewHolder.Listener{
     private static final int VIEW_NORMAL = 1;
     private List<Data> contactList;
