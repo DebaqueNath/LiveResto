@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String provider=lm.getBestProvider(new Criteria(), true);
         if(provider!=null){
             location=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (location!=null){
+            if (location!=null) {
                 updateLocationUser(location);
             }
         }
@@ -326,7 +326,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         //Get restaurants corresponding to filters
-        ArrayList<Restaurant> restoListeFilter = filterGlobal.getRestaurantsFilter(restoListe,location.getLatitude(),location.getLongitude());
+            ArrayList<Restaurant> restoListeFilter = restoListe;
+            if(location != null) {
+                restoListeFilter = filterGlobal.getRestaurantsFilter(restoListe, location.getLatitude(), location.getLongitude());
+            } else {
+                restoListeFilter = filterGlobal.getRestaurantsFilter(restoListe, 50.610182, 3.137375);
+            }
 
         //Add markers for restaurants
        if (!restoListeFilter.isEmpty()) {

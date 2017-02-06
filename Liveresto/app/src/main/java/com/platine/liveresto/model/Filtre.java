@@ -375,9 +375,13 @@ public class Filtre {
                 continue;
             }
 
+            System.out.println("RESTAURANT : "+r.toString());
             //Add restaurant to the list
             restaurantsResult.add(r);
         }
+
+
+
         return restaurantsResult;
     }
 }
